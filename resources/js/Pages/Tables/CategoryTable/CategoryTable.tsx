@@ -1,13 +1,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useState } from "react";
-
 import { Head } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
-
 import { CategoryColumn, CategoryType } from "./CategoryColumn";
 import { DataTable } from "../DataTable";
 import { toast } from "sonner";
-
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Button } from "@/Components/ui/button";
@@ -52,7 +49,7 @@ export default function CategoryTable({ categories }: { categories: CategoryType
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200 transition-colors duration-300">
                     Category
                 </h2>
             }
@@ -61,17 +58,28 @@ export default function CategoryTable({ categories }: { categories: CategoryType
 
             <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
                 <div className="w-full md:w-1/3">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm dark:shadow-slate-800/50 rounded-md sm:rounded-lg border dark:border-slate-800 transition-colors duration-300">
+                        <div className="p-6 text-gray-900 dark:text-gray-100">
                             Add Category
                             <form onSubmit={handleAddCategory} className="container mx-auto py-4">
                                 <div className="mb-4">
-                                    <Label>Category Name</Label>
-                                    <Input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required/>
+                                    <Label className="dark:text-gray-200">Category Name</Label>
+                                    <Input
+                                        type="text"
+                                        value={category}
+                                        onChange={(e) => setCategory(e.target.value)}
+                                        className="dark:bg-customDark2 dark:border-gray-600 dark:text-gray-200"
+                                        required
+                                    />
                                 </div>
                                 <div className="mb-4">
-                                    <Label>Category Image</Label>
-                                    <Input type="file" onChange={handlePreviewImage} required />
+                                    <Label className="dark:text-gray-200">Category Image</Label>
+                                    <Input
+                                        type="file"
+                                        onChange={handlePreviewImage}
+                                        className="dark:bg-customDark2 dark:border-gray-600 dark:text-gray-200"
+                                        required
+                                    />
                                 </div>
                                 {previewImage && (
                                 <div className="mb-4">
@@ -84,8 +92,8 @@ export default function CategoryTable({ categories }: { categories: CategoryType
                     </div>
                 </div>
                 <div className="w-full md:w-2/3">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm dark:shadow-slate-800/50 rounded-md sm:rounded-lg border dark:border-slate-800 transition-colors duration-300">
+                        <div className="p-6 text-gray-900 dark:text-gray-200">
                             Manage Category
                             <div className="container mx-auto py-4">
                                 <DataTable columns={CategoryColumn} data={categories} />

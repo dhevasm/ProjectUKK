@@ -23,15 +23,15 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <Head title="Reset Password" />
                 <Link
                     href={route('login')}
-                    className="flex items-center text-sm text-gray-600  w-fit hover:text-[var(--app-hover-color)]"
+                    className="flex items-center text-sm text-gray-600 dark:text-gray-200  w-fit hover:text-[var(--app-hover-color)]"
                 >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Back to Login
                 </Link>
 
                 <div className="text-center mt-5">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-4">Reset Password</h1>
-                    <p className="text-sm text-gray-600 mb-6">
+                    <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">Reset Password</h1>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
                         Forgot your password? No problem. Enter your email and we'll send you a password reset link.
                     </p>
                 </div>

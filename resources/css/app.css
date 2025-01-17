@@ -80,3 +80,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+    /* Default scrollbar styles */
+    ::-webkit-scrollbar {
+      @apply w-1.5;  /* Width of the scrollbar */
+    }
+
+    /* Track styles */
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+
+    /* Handle styles */
+    ::-webkit-scrollbar-thumb {
+      @apply bg-gray-200 rounded-full hover:bg-gray-300;
+    }
+
+    /* Dark mode styles */
+    .dark ::-webkit-scrollbar-thumb {
+      @apply bg-gray-800 hover:bg-gray-700;
+    }
+  }

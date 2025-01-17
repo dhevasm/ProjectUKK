@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/Components/ui/button';
-import { Input } from '@/Components/ui/input';
 import { FormEventHandler } from 'react';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
@@ -11,6 +10,8 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { LatLngExpression, LeafletEvent, LeafletMouseEvent } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { MapPin, Search } from 'lucide-react';
+import { User } from '@/types';
 
 // Fix leaflet icon
 delete L.Icon.Default.prototype._getIconUrl;
@@ -18,16 +19,6 @@ L.Icon.Default.mergeOptions({
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
-
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    image: string;
-    phone : string;
-    address: string;
-
-}
 
 interface PageProps {
     auth: {
@@ -37,21 +28,30 @@ interface PageProps {
 
 interface NominatimResponse {
     display_name: string;
+    lat?: string;
+    lon?: string;
 }
 
 interface FormData {
     address: string;
+    coordinates: string;
+    searchQuery: string;
 }
 
 export default function AddressInput() {
     const { auth } = usePage<PageProps>().props;
     const [position, setPosition] = useState<LatLngExpression | null>(null);
+    const [map, setMap] = useState<L.Map | null>(null);
+    const [searchResults, setSearchResults] = useState<NominatimResponse[]>([]);
+    const [showRecommendations, setShowRecommendations] = useState(false);
 
     const { data, setData, patch, errors, processing } = useForm<FormData>({
-        address: auth.user.address
+        address: auth.user.address,
+        coordinates: auth.user.coordinates || '',
+        searchQuery: ''
     });
 
-    useEffect(() => {
+    const MyLocation = () => {
         navigator.geolocation.getCurrentPosition(
             (pos: GeolocationPosition) => {
                 setPosition([pos.coords.latitude, pos.coords.longitude]);
@@ -63,6 +63,18 @@ export default function AddressInput() {
                 updateAddress(-6.200000, 106.816666);
             }
         );
+    }
+
+    useEffect(() => {
+        if (auth.user.coordinates) {
+            const [lat, lng] = auth.user.coordinates.split(',').map(Number);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                setPosition([lat, lng]);
+                return;
+            }
+        }
+
+        MyLocation();
     }, []);
 
     const updateAddress = async (lat: number, lng: number): Promise<void> => {
@@ -71,9 +83,59 @@ export default function AddressInput() {
                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
             );
             const data: NominatimResponse = await response.json();
-            setData('address', data.display_name);
+            setData(prev => ({
+                ...prev,
+                address: data.display_name,
+                coordinates: `${lat},${lng}`
+            }));
         } catch (error) {
             toast.error('Gagal mendapatkan alamat');
+        }
+    };
+
+    const searchLocation = async () => {
+        if (!data.searchQuery.trim()) {
+            toast.error('Masukkan nama lokasi untuk mencari');
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(data.searchQuery)}&limit=5`
+            );
+            const results: NominatimResponse[] = await response.json();
+
+            if (results.length === 0) {
+                toast.error('Lokasi tidak ditemukan');
+                setSearchResults([]);
+                return;
+            }
+
+            setSearchResults(results);
+            setShowRecommendations(true);
+        } catch (error) {
+            toast.error('Gagal mencari lokasi');
+        }
+    };
+
+    const selectLocation = (result: NominatimResponse) => {
+        if (result.lat && result.lon) {
+            const latNum = parseFloat(result.lat);
+            const lonNum = parseFloat(result.lon);
+            setPosition([latNum, lonNum]);
+            setData(prev => ({
+                ...prev,
+                address: result.display_name,
+                coordinates: `${latNum},${lonNum}`,
+                searchQuery: ''
+            }));
+
+            if (map) {
+                map.setView([latNum, lonNum], 13);
+            }
+            setShowRecommendations(false);
+            setSearchResults([]);
+            toast.success('Lokasi ditemukan');
         }
     };
 
@@ -90,6 +152,51 @@ export default function AddressInput() {
 
     return (
         <form onSubmit={submit} className="space-y-4">
+            <div className="relative">
+                <div className="flex gap-2">
+                    <div className="flex-1">
+                        <InputLabel htmlFor="searchQuery" value="Cari Lokasi" />
+                        <TextInput
+                            id="searchQuery"
+                            type="text"
+                            className="mt-1 block w-full"
+                            value={data.searchQuery}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                setData('searchQuery', e.target.value);
+                                setShowRecommendations(false);
+                            }}
+                            placeholder="Masukkan nama lokasi..."
+                        />
+                    </div>
+                    <div className="flex items-end ">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={searchLocation}
+                        >
+                            <Search className="w-4 h-4 mr-2" />
+                            Cari
+                        </Button>
+                    </div>
+                </div>
+
+                {showRecommendations && searchResults.length > 0 && (
+                    <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border">
+                        <ul className="py-1">
+                            {searchResults.map((result, index) => (
+                                <li
+                                    key={index}
+                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    onClick={() => selectLocation(result)}
+                                >
+                                    {result.display_name}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+
             <div>
                 <InputLabel htmlFor="address" value="Address" />
                 <TextInput
@@ -105,11 +212,14 @@ export default function AddressInput() {
                 <InputError message={errors.address} className="mt-2" />
             </div>
 
+
+
             <div className="h-64 w-full rounded-lg overflow-hidden">
                 <MapContainer
                     center={position}
                     zoom={13}
                     className="h-full w-full z-0"
+                    ref={setMap}
                 >
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -129,9 +239,30 @@ export default function AddressInput() {
                 </MapContainer>
             </div>
 
-            <Button variant={'theme'} type="submit" disabled={processing}>
-                {processing ? "Menyimpan..." : "Simpan Alamat"}
-            </Button>
+            <div className='flex justify-between items-end'>
+                <Button variant={'theme'} type="submit" disabled={processing}>
+                    {processing ? "Menyimpan..." : "Simpan"}
+                </Button>
+
+
+                <div className='flex gap-2 items-end'>
+                <Button onClick={MyLocation} type='reset' variant={"outline"}>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Lokasi Saat Ini
+                </Button>
+                <div>
+                <InputLabel htmlFor="coordinates" value="Coordinates" />
+                <TextInput
+                    id="coordinates"
+                    type="text"
+                    className="mt-1 block w-full bg-gray-50"
+                    value={data.coordinates}
+                    readOnly
+                />
+                <InputError message={errors.coordinates} className="mt-2" />
+                </div>
+            </div>
+            </div>
         </form>
     );
 }

@@ -3,18 +3,32 @@
 namespace App\Http\Controllers;
 
 use Generator;
+use App\Models\cart;
 use Inertia\Inertia;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ProductImages;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    // public static function middleware()
+    // {
+    //     return [
+    //         'admin'=> ['except' => ['show', 'search',]],
+    //     ];
+    // }
+
+
     public function index()
     {
         $products = Product::with("category")->get();
@@ -77,7 +91,19 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = Product::with(["category", "product_images"])->find($id);
+
+        if (!$product || !$product->visible) {
+            return redirect()->route("welcome");
+        }
+
+        $canLogin = Route::has('login');
+        $canRegister = Route::has('register');
+        $settings = Setting::all();
+        $categories = Category::all();
+        $products = Product::all();
+        $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
+        return Inertia::render('Client/DetailProduct', compact("product", "canLogin", "canRegister", "settings", "categories", "totalCart"));
     }
 
     /**
@@ -170,5 +196,19 @@ class ProductController extends Controller
         unlink(public_path($image->url));
         $image->delete();
         return redirect()->back();
+    }
+
+    public function search(Request $request){
+        $request->validate([
+            'q' => 'required|string'
+        ]);
+
+        $Products = Product::where('name', 'like', '%' . $request->q . '%')->with("product_images")->get();
+        $canLogin = Route::has('login');
+        $canRegister = Route::has('register');
+        $settings = Setting::all();
+        $categories = Category::all();
+        $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
+        return Inertia::render('Client/Search', compact("canLogin", "canRegister", "settings", "categories", "Products", "totalCart"));
     }
 }

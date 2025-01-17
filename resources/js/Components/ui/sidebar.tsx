@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
 import { Separator } from "@/Components/ui/separator"
-import { Sheet, SheetContent } from "@/Components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle } from "@/Components/ui/sheet"
 import { Skeleton } from "@/Components/ui/skeleton"
 import {
   Tooltip,
@@ -192,8 +192,10 @@ const Sidebar = React.forwardRef<
 
     if (isMobile) {
       return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props} >
+            <SheetTitle/>
           <SheetContent
+            aria-describedby=""
             data-sidebar="sidebar"
             data-mobile="true"
             className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
@@ -535,7 +537,7 @@ const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<"button"> & {
     asChild?: boolean
-    isActive?: boolean
+    isActive?: booleane
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
   } & VariantProps<typeof sidebarMenuButtonVariants>
 >(

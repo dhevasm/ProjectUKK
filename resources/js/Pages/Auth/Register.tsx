@@ -43,7 +43,7 @@ export default function Register() {
     return (
         <GuestLayout>
             <Head title="Register" />
-                <h1 className="text-center mb-6 text-3xl font-bold text-gray-800">Create Your Account</h1>
+                <h1 className="text-center mb-6 text-3xl font-bold text-gray-800 dark:text-gray-200">Create Your Account</h1>
 
                 <form onSubmit={submit} className="space-y-4">
                     <div>

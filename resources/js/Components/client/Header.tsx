@@ -1,107 +1,181 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Dropdown from '@/Components/Dropdown';
-import { PageProps } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar"
+import { Input } from '@/Components/ui/input';
+import { settings, Category, User, Product } from '@/types';
+import DarkModeToggle from '../DarkModeToggle';
+
 import {
     ShoppingCart,
-    User,
+    User2,
     Search,
     Menu,
     X
 } from 'lucide-react';
-import { Input } from '@/Components/ui/input';
-
-interface settings {
-    key: string;
-    value: string;
-    type: string;
-}
-
-interface Category {
-    id: number;
-    name: string;
-    image: string;
-}
-
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    image: string;
-    phone: string;
-    address: string;
-    email_verified_at?: string;
-}
 
 interface HeaderProps {
     settings: settings[];
     categories: Category[];
+    products: Product[];
     auth: {
         user: User;
     };
+    totalCart: number;
 }
 
-export default function Header({ settings, categories, auth }: HeaderProps) {
+export default function Header({ settings, categories, auth, products, totalCart }: HeaderProps) {
     const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+    const [event, setEvent] = useState('');
+    const [eventLink, setEventLink] = useState('');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const searchRef = useRef<HTMLDivElement>(null);
+    const [params, setParams] = useState<string>("");
 
-        const [event, setEvent] = useState('');
-        const [eventLink, setEventLink] = useState('');
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
 
-        const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-        const toggleMobileMenu = () => {
-            setIsMobileMenuOpen(!isMobileMenuOpen);
-        };
-
-        useEffect(() => {
-            settings.forEach((setting) => {
-                if (setting.key === "web_event") {
-                    setEvent(setting.value);
-                }
-                if (setting.key === "web_event_link") {
-                    setEventLink(setting.value);
-                }
-            });
-        }, [])
-
-  return (
-    <>
-         {
-                event && <div className="bg-[--app-color] text-white text-center py-2 text-sm">
-                    <a href={eventLink} className='cursor-pointer hover:underline' target='_blank'>
-                    {event}
-                    </a>
-                </div>
+    useEffect(() => {
+        settings.forEach((setting) => {
+            if (setting.key === "web_event") {
+                setEvent(setting.value);
             }
+            if (setting.key === "web_event_link") {
+                setEventLink(setting.value);
+            }
+        });
 
-                <header className="bg-white shadow-md">
-                    <div className="container mx-auto px-4 py-4 hidden md:flex justify-between items-center">
-                        <Link href={"/"} className="text-[var(--app-color)] text-2xl font-bold">
-                            {appName}
-                        </Link>
+        const currentUrl: string = window.location.href;
+        const url: URL = new URL(currentUrl);
+        if (url.pathname === '/search') {
+            const params: URLSearchParams = new URLSearchParams(url.search);
+            const keyword: string | null = params.get('q');
+            if(keyword){
+                setParams(keyword);
+            }
+        }
+    }, []);
 
-                        <div className="flex-grow mx-8 max-w-xl">
-                            <div className="relative">
+    useEffect(() => {
+    const searchBar: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[type='search']");
+        searchBar.forEach(e => {
+            e.value = params;
+        })
+    }, [params])
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+
+        if (value.trim()) {
+            const filtered = products.filter(product =>
+                product.name.toLowerCase().includes(value.toLowerCase())
+            ).slice(0, 5);
+            setFilteredProducts(filtered);
+            setShowSuggestions(true);
+        } else {
+            setFilteredProducts([]);
+            setShowSuggestions(false);
+        }
+    };
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleSuggestionClick = (productId: number) => {
+        router.get(route('product.show', productId));
+        setShowSuggestions(false);
+        setSearchTerm('');
+    };
+
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        router.get(route("search"), { q: searchTerm });
+    }
+
+    return (
+        <>
+            {event && <div className="bg-[--app-color] text-white text-center py-2 text-sm">
+                <a href={eventLink} className='cursor-pointer hover:underline' target='_blank'>
+                    {event}
+                </a>
+            </div>}
+
+            <header className="bg-white dark:bg-customDark shadow-md">
+                <div className="container mx-auto px-4 py-4 hidden md:flex justify-between items-center">
+                    <Link href={"/"} className="text-[var(--app-color)] text-2xl font-bold flex items-center">
+                        <img src="/favicon.ico" alt="favicon" className="w-8 h-8 inline-block mr-2" />
+                        {appName}
+                    </Link>
+
+                    <div className="flex-grow mx-8 max-w-xl">
+                        <div className="relative" ref={searchRef}>
+                            <form onSubmit={handleSearch}>
                             <Input
-                                type="text"
+                                type="search"
                                 placeholder="Search products..."
-                                className="w-full px-4 py-4 border rounded-full"
+                                className="w-full px-4 py-4 border rounded-full searchBar"
+                                value={searchTerm}
+                                onChange={handleSearchChange}
                             />
-                                <button className="absolute right-2 top-2.5">
-                                    <Search size={20} className="hover:text-[var(--app-color)] text-gray-500" />
-                                </button>
-                            </div>
+                            <button type='submit' className="absolute right-2 top-2.5">
+                                <Search size={20} className="hover:text-[var(--app-color)] text-gray-500" />
+                            </button>
+                            </form>
+
+                            {/* Search Suggestions */}
+                            {showSuggestions && filteredProducts.length > 0 && (
+                                <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border dark:border-gray-700">
+                                    {filteredProducts.map((product) => (
+                                        <div
+                                            key={product.id}
+                                            className="p-3 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer flex items-center space-x-3"
+                                            onClick={() => handleSuggestionClick(product.id)}
+                                        >
+                                            <div>
+                                                <div className="font-medium">{product.name}</div>
+                                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {product.price.toLocaleString('id-ID', {
+                                                        style: 'currency',
+                                                        currency: 'IDR'
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
+                    </div>
 
                         <div className="flex items-center space-x-5">
+                        <DarkModeToggle/>
                             {auth.user ? (
                                 <>
-                                <button className="hover:text-[var(--app-color)] relative ">
+                                <button onClick={() => {
+                                    router.get(route('cart.index'));
+                                }} className="hover:text-[var(--app-color)] relative ">
                                     <ShoppingCart size={24} />
-                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
-                                        0
-                                    </span>
+                                    {
+                                        totalCart > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
+                                            {totalCart}
+                                        </span>
+                                    }
                                 </button>
 
                               <Dropdown>
@@ -109,12 +183,13 @@ export default function Header({ settings, categories, auth }: HeaderProps) {
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
+                                                className="inline-flex items-center rounded-md border border-transparent bg-white dark:bg-customDark text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                             >
                                                 <Avatar className='w-10 h-10'>
                                                     {
-                                                        auth.user.image &&
+                                                        auth.user.image && auth.user.image.includes('storage') ?
                                                         <AvatarImage src={"/"+ auth.user.image} className='object-cover' />
+                                                        : <AvatarImage src={auth.user.image} className='object-cover' />
                                                     }
                                                     <AvatarFallback>{auth.user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                                                 </Avatar>
@@ -161,37 +236,66 @@ export default function Header({ settings, categories, auth }: HeaderProps) {
 
                     {/* Mobile Navigation */}
                     <div className="md:hidden">
-                        <div className="flex justify-between items-center p-4">
-                            <div className="themeColor text-2xl font-bold ">
-                                {appName}
-                            </div>
-                            <button onClick={toggleMobileMenu}>
-                                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                            </button>
+                    <div className="flex justify-between items-center p-4">
+                        <div className="themeColor text-2xl font-bold">
+                            {appName}
                         </div>
+                        <button onClick={toggleMobileMenu}>
+                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
 
-                        {isMobileMenuOpen && (
-                            <div className="absolute z-50 w-full bg-white shadow-lg">
-                                <div className="p-4">
-                                    <div className="relative mb-4">
-                                        <Input
-                                            type="text"
-                                            placeholder="Search products..."
-                                            className="w-full px-4 py-2 border rounded-full"
-                                        />
-                                        <button className="absolute right-2 top-2.5">
-                                            <Search size={20} className="text-gray-500" />
-                                        </button>
-                                    </div>
+                    {isMobileMenuOpen && (
+                        <div className="absolute z-50 w-full bg-white dark:bg-customDark shadow-lg">
+                            <div className="p-4">
+                                <div className="relative mb-4" ref={searchRef}>
+                                    <form onSubmit={handleSearch}>
+                                    <Input
+                                        type="search"
+                                        placeholder="Search products..."
+                                        className="w-full px-4 py-4 border rounded-full searchBar"
+                                        value={searchTerm}
+                                        onChange={handleSearchChange}
+                                    />
+                                    <button type='submit' className="absolute right-2 top-2.5">
+                                        <Search size={20} className="hover:text-[var(--app-color)] text-gray-500" />
+                                    </button>
+                                </form>
+
+                                    {/* Mobile Search Suggestions */}
+                                    {showSuggestions && filteredProducts.length > 0 && (
+                                        <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border dark:border-gray-700">
+                                            {filteredProducts.map((product) => (
+                                                <div
+                                                    key={product.id}
+                                                    className="p-3 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer flex items-center space-x-3"
+                                                    onClick={() => handleSuggestionClick(product.id)}
+                                                >
+                                                    <div>
+                                                        <div className="font-medium">{product.name}</div>
+                                                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                            {product.price.toLocaleString('id-ID', {
+                                                                style: 'currency',
+                                                                currency: 'IDR'
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
 
                                     <div className="flex justify-between items-center mb-4">
                                         {auth.user ? (
                                             <div className="flex space-x-4">
                                                 <Link href={route('dashboard')}>
-                                                    <User size={24} />
+                                                    <User2 size={24} />
                                                 </Link>
 
-                                                <button className="relative">
+                                                <button onClick={() => {
+                                                    router.get(route('cart.index'));
+                                                }} className="relative">
                                                     <ShoppingCart size={24} />
                                                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
                                                         0
@@ -218,12 +322,12 @@ export default function Header({ settings, categories, auth }: HeaderProps) {
                                     </div>
                                 </div>
 
-                                <nav className="bg-gray-100">
+                                <nav className="bg-gray-100 dark:bg-slate-800 py-3">
                                     <div className="flex flex-col">
                                         {categories.map((category) => (
                                             <Link
                                                 key={category.id}
-                                                href={`/category/${category.id}`}
+                                                href={route("category.show", category.id)}
                                                 className="themeHover text-gray-700 transition p-4 border-b"
                                             >
                                                 {category.name}
@@ -236,7 +340,7 @@ export default function Header({ settings, categories, auth }: HeaderProps) {
                     </div>
 
                     {/* Desktop Category Navigation */}
-                    <nav className="bg-gray-100 py-3 hidden md:block">
+                    <nav className="bg-gray-100 dark:bg-customDark py-3 hidden md:block">
                         <div className="container mx-auto px-4 flex justify-center space-x-6">
                             {categories.map((category) => (
                                 <Link

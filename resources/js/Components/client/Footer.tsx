@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link } from "@inertiajs/react";
+import { settings } from "@/types";
 import {
     Facebook,
     Twitter,
@@ -7,19 +8,12 @@ import {
     Linkedin,
 } from 'lucide-react';
 
-
 interface FooterData {
     description: string;
     facebook: string;
     instagram: string;
     twitter: string;
     linkedin: string;
-}
-
-interface settings {
-    key: string;
-    value: string;
-    type: string;
 }
 
 export default function Footer({settings} : {settings: settings[]}) {
@@ -53,10 +47,13 @@ export default function Footer({settings} : {settings: settings[]}) {
             }, [])
 
   return (
-    <footer className="bg-gray-100 py-12">
+    <footer className="bg-gray-100 dark:bg-customDark py-12">
     <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-2 lg:col-span-1">
-            <h3 className="font-bold text-lg mb-4">{appName}</h3>
+            <h3 className="font-bold text-lg mb-4 flex items-center">
+                <img src="/favicon.ico" alt="favicon" className="w-8 h-8 inline-block mr-2" />
+                {appName}
+            </h3>
             <p className="text-gray-600 text-sm">
                {footerData.description}
             </p>

@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm, usePage } from '@inertiajs/react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/Components/ui/card';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage
 } from '@/Components/ui/avatar';
-
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';

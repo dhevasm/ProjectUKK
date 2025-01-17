@@ -66,7 +66,7 @@ export default function EventSetting({event, setEvent, eventLink, setEventLink, 
             <span className="self-end flex gap-2">
                 <AlertDialog>
                     <AlertDialogTrigger>
-                        <Button className='px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 rounded-md hover:bg-gray-200 transition-color'>
+                        <Button className='px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 dark:bg-slate-900 hover:dark:bg-slate-950 rounded-md hover:bg-gray-200 transition-color'>
                             Delete
                         </Button>
                     </AlertDialogTrigger>
@@ -88,7 +88,7 @@ export default function EventSetting({event, setEvent, eventLink, setEventLink, 
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
-                <Button onClick={eventSave} className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 rounded-md hover:bg-gray-200 transition-color">
+                <Button onClick={eventSave} className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 dark:bg-slate-900 hover:dark:bg-slate-950 rounded-md hover:bg-gray-200 transition-color">
                     Save
                 </Button>
             </span>

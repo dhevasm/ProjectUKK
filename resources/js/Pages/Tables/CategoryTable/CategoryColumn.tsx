@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/Components/ui/button";
 import { ArrowUpDown, Trash2, Pencil } from "lucide-react";
-
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,10 +13,8 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/Components/ui/alert-dialog";
-
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
-
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 

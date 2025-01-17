@@ -1,15 +1,8 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { router } from "@inertiajs/react";
-
 import { toast } from "sonner";
-
 import { Upload } from "lucide-react";
-
-interface settings {
-    key: string;
-    value: string;
-    type: string;
-}
+import { settings } from "@/types";
 
 interface CarouselSettingProps {
     onImagesChange?: (files: File[]) => void;
@@ -68,7 +61,7 @@ const CarouselSetting: React.FC<CarouselSettingProps> = ({
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-customDark">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <Upload className="w-8 h-8 mb-2 text-gray-500" />
                         <p className="mb-2 text-sm text-gray-500">

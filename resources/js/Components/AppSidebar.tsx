@@ -1,9 +1,7 @@
 import { Link } from "@inertiajs/react";
 import { useState, useEffect, useContext } from "react";
-import { User, LayoutDashboard, Settings, ChartBarStacked, Package, PackagePlus  } from "lucide-react";
-
+import { User, LayoutDashboard, Settings, ChartBarStacked, Package, PackagePlus, Wallet, HandCoins, Truck, ChartNoAxesCombined, Palette  } from "lucide-react";
 import { AdminContext } from "@/Layouts/AuthenticatedLayout";
-
 import {
     Sidebar,
     SidebarContent,
@@ -22,7 +20,7 @@ const items = [
         title: "Dashboard",
         active: "dashboard",
         url: route("dashboard"),
-        icon: LayoutDashboard,
+        icon: ChartNoAxesCombined,
     },
     {
         title: "Users",
@@ -49,13 +47,35 @@ const items = [
         icon: PackagePlus,
     },
     {
+        title: "Transcation",
+        active: "order",
+        url: route("product.create"),
+        icon: Wallet,
+    },
+    {
+        title: "Delivery",
+        active: "tracking",
+        url: route("product.create"),
+        icon: Truck,
+    },
+    {
+        title: "Refunds",
+        active: "refund",
+        url: route("product.create"),
+        icon: HandCoins,
+    },
+    {
         title: "Settings",
         active: "setting",
         url: route("setting.index"),
         icon: Settings,
     },
-
-
+    {
+        title: "FAQ & Support",
+        active: "faq",
+        url: route("setting.index"),
+        icon: Settings,
+    },
 ];
 
 export function AppSidebar() {
@@ -88,28 +108,28 @@ export function AppSidebar() {
                 </Link>
             </SidebarHeader>
             <style>
-                {
-                    `
-                    .active{
+                {`
+                    .active {
                         color: var(--app-color);
                     }
 
-                    .active:hover{
+                    .active:hover {
                         color: var(--app-color) !important;
                     }
-                    `
-                }
+                `}
             </style>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Master Data</SidebarGroupLabel>
+                    <SidebarGroupLabel>General</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
-                                <>
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <Link href={item.url} className={`${item.active == activeTab && "active"} group flex items-center px-2 py-2 text-sm font-medium rounded-md`}>
+                                        <Link
+                                            href={item.url}
+                                            className={`${item.active === activeTab ? "active" : ""} group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
+                                        >
                                             <item.icon />
                                             <span className="group-data-[state=closed]:hidden">
                                                 {item.title}
@@ -117,7 +137,6 @@ export function AppSidebar() {
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
-                                </>
                             ))}
                         </SidebarMenu>
                     </SidebarGroupContent>

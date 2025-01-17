@@ -3,6 +3,7 @@ import React from "react";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Textarea } from "@/Components/ui/textarea";
+import { settings } from "@/types";
 
 interface FooterData {
     description: string;
@@ -10,12 +11,6 @@ interface FooterData {
     instagram: string;
     twitter: string;
     linkedin: string;
-}
-
-interface settings {
-    key: string;
-    value: string;
-    type: string;
 }
 
 interface FooterSettingsProps {

@@ -1,52 +1,64 @@
 import { Card, CardContent } from "@/Components/ui/card";
+import { router } from "@inertiajs/react";
+import { Product } from '@/types';
+import { Badge } from "@/Components/ui/badge";
+import { Heart, Package, Star, Truck } from "lucide-react";
 
-interface CategoryType {
-    id: number;
-    name: string;
-    image: string;
-}
+const ProductCard = ({ product }: { product: Product }) => {
 
-interface productImagesType {
-    id: number;
-    product_id: number;
-    url: string;
-}
-
-interface ProductType {
-    id: number;
-    name: string;
-    category: CategoryType;
-    price: number;
-    min_order: number;
-    sold: number;
-    description: string;
-    visible: boolean;
-    created_at: string;
-    product_images: productImagesType[];
-};
-
-const ProductCard = ({ product } : {product: ProductType}) => {
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 hover:scale-105">
-      <CardContent className="p-4">
-        <div className="aspect-square mb-2 overflow-hidden rounded-lg">
+    <Card
+      onClick={() => {
+        router.get(route('product.show.detail', { id: product.id }));
+      }}
+      className="group hover:shadow-xl transition-all duration-300 cursor-pointer relative overflow-hidden"
+    >
+      <CardContent className="p-0">
+
+
+        {/* Image Container */}
+        <div className="aspect-square overflow-hidden relative">
           <img
-            src={product.product_images[0]?.url || '/placeholder.jpg'}
+            src={"/" + product.product_images[0]?.url || '/placeholder.jpg'}
             alt={product.name}
-            className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
+            className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
           />
+          {/* Image Overlay on Hover */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <span className="text-white text-sm font-medium">View Details</span>
+          </div>
         </div>
-        <div className="space-y-1">
-          <p className="font-medium truncate group-hover:text-[var(--app-color)] transition-colors duration-300">
+
+        {/* Product Info */}
+        <div className="p-4 space-y-3">
+          {/* Product Name */}
+          <h3 className="font-medium line-clamp-2 text-sm leading-tight group-hover:text-[var(--app-color)] transition-colors duration-200">
             {product.name}
-          </p>
-          <p className="text-lg font-bold text-[var(--app-color)]">
-            Rp {product.price.toLocaleString()}
-          </p>
-          <div className="flex items-center text-sm text-gray-500">
-            <span>Min. {product.min_order} pcs</span>
-            <span className="mx-2">•</span>
-            <span>Terjual {product.sold}</span>
+          </h3>
+
+          {/* Pricing */}
+          <div className="space-y-1">
+            <div className="text-lg font-bold text-[var(--app-color)]">
+              Rp {product.price.toLocaleString()} / Lembar
+            </div>
+            <div className="flex items-center text-xs">
+              <Package size={14} className="mr-1" />
+              <span>Min. {product.min_order} lembar</span>
+            </div>
+          </div>
+
+
+          {/* Product Stats */}
+          <div className="flex items-center text-xs text-gray-500 space-x-3">
+            <div className="flex items-center">
+              <Star size={14} className="mr-1 text-yellow-400" />
+              <span>4.8</span>
+            </div>
+
+            <div className="flex items-center">
+              <Truck size={14} className="mr-1" />
+              <span>{product.sold} sold</span>
+            </div>
           </div>
         </div>
       </CardContent>

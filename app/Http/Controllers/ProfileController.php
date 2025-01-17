@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Product;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class ProfileController extends Controller
@@ -44,8 +45,12 @@ class ProfileController extends Controller
         $request->user()->save();
 
         if(isset($request->phone)){
+            $request->validate([
+                'phone' => "numeric|min_digits:10|max_digits:15|unique:users,phone,{$request->user()->id}",
+            ]);
             $user = User::find($request->user()->id);
             $user->phone = $request->phone;
+            $user->phone_verified_at = null;
             $user->save();
         }
 
@@ -103,10 +108,12 @@ class ProfileController extends Controller
     {
         $request->validate([
             'address' => ['required', 'string'],
+            'coordinates' => ['required', 'string'],
         ]);
 
         $user = User::find($request->user()->id);
         $user->address = $request->address;
+        $user->coordinates = $request->coordinates;
         $user->save();
 
         return Redirect::back();
@@ -118,6 +125,8 @@ class ProfileController extends Controller
             'canRegister' => Route::has('register'),
             'settings' =>Setting::all(),
             'categories' =>Category::all(),
+            'products' => Product::all(),
+            "totalCart" => Auth::user() ? Auth::user()->carts->count() : 0,
         ]);
     }
 }

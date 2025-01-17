@@ -8,7 +8,10 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { Button } from '@/Components/ui/button';
 import { FaGoogle, FaFacebook, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { cn } from '@/lib/utils'; // Assuming you have a utility for conditional classNames
+import { cn } from '@/lib/utils';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+import { router } from '@inertiajs/react';
 
 export default function Login({
     status,
@@ -32,10 +35,26 @@ export default function Login({
         });
     };
 
+    const handleGoogleOAuth = (response : any) => {
+        const decoded = jwtDecode(response.credential);
+        router.post(route('googleOauthHandle'), {
+            'name' : decoded.name,
+            'email' : decoded.email,
+            'picture' : decoded.picture,
+            'password' : decoded.sub,
+        });
+        console.log(decoded);
+      };
+
+      const handleGoogleOAuthError = (error : any) => {
+        console.log(error);
+      }
+
+
     return (
         <GuestLayout>
             <Head title="Login" />
-                <h1 className='text-center mb-6 text-3xl font-bold text-gray-800'>Welcome Back</h1>
+                <h1 className='text-center mb-6 text-3xl font-bold text-gray-800 dark:text-gray-200'>Login</h1>
 
                 {status && (
                     <div className="mb-4 text-sm font-medium text-green-600 text-center">
@@ -70,6 +89,7 @@ export default function Login({
                                 className="block w-full rounded-md border-gray-300 shadow-sm pr-10"
                                 autoComplete="current-password"
                                 onChange={(e) => setData('password', e.target.value)}
+                                required
                             />
                             <button
                                 type="button"
@@ -118,25 +138,17 @@ export default function Login({
                             <div className="w-full border-t border-gray-300"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">
+                            <span className="px-2 bg-white dark:bg-customDark dark:text-gray-200 text-gray-500">
                                 Or continue with
                             </span>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <Button
-                            variant="outline"
-                            className="w-full flex items-center justify-center gap-2 border-[var(--app-color)] text-[var(--app-color)] hover:text-[var(--app-hover-color)] hover:bg-gray-200"
-                        >
-                            <FaGoogle /> Google
-                        </Button>
-                        <Button
-                            variant="outline"
-                            className="w-full flex items-center justify-center gap-2 border-[var(--app-color)] text-[var(--app-color)] hover:text-[var(--app-hover-color)] hover:bg-gray-200"
-                        >
-                            <FaFacebook /> Facebook
-                        </Button>
+                    <div className="d-flex flex-col w-full">
+                        <GoogleLogin
+                            onSuccess={handleGoogleOAuth}
+                            onError={() => handleGoogleOAuthError}
+                        />
                     </div>
 
                     <div className="mt-4 text-center">

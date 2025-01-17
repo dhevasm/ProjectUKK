@@ -45,11 +45,10 @@ import {
 
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
-
+import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { Download } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -61,11 +60,8 @@ export function DataTable<TData, TValue>({
     data,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] =
-        React.useState<ColumnFiltersState>([]);
-
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({});
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 
     const table = useReactTable({
         data,
@@ -86,13 +82,9 @@ export function DataTable<TData, TValue>({
 
     const handleExportExcel = () => {
         const wb = XLSX.utils.book_new();
-
-        // Get visible columns
         const visibleColumns = columns.filter(
             (col) => !columnVisibility[col["accessorKey" as keyof typeof col] as string]
         );
-
-        // Format data for export
         const exportData = data.map((row) => {
             const rowData: Record<string, any> = {};
             visibleColumns.forEach((col) => {
@@ -101,7 +93,6 @@ export function DataTable<TData, TValue>({
             });
             return rowData;
         });
-
         const ws = XLSX.utils.json_to_sheet(exportData);
         XLSX.utils.book_append_sheet(wb, ws, "Data");
         XLSX.writeFile(wb, "table-data.xlsx");
@@ -109,11 +100,9 @@ export function DataTable<TData, TValue>({
 
     const handleExportPDF = () => {
         const doc = new jsPDF();
-
         const visibleColumns = columns.filter(
             (col) => !columnVisibility[col["accessorKey" as keyof typeof col] as string]
         );
-
         autoTable(doc, {
             head: [visibleColumns.map((col) => col["accessorKey" as keyof typeof col] as string)],
             body: data.map((row) =>
@@ -124,26 +113,18 @@ export function DataTable<TData, TValue>({
             styles: { fontSize: 8 },
             headStyles: { fillColor: [41, 128, 185] },
         });
-
         doc.save("table-data.pdf");
     };
 
     return (
         <>
             <div className="flex flex-col md:flex-row items-center justify-between">
-                {/* Search Bar */}
-                <div className="flex items-center py-4">
+                <div className=" flex items-center py-4">
                     <Input
                         placeholder="Search Data..."
-                        value={
-                            (table
-                                .getColumn("name")
-                                ?.getFilterValue() as string) ?? ""
-                        }
+                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
-                            table
-                                .getColumn("name")
-                                ?.setFilterValue(event.target.value)
+                            table.getColumn("name")?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
                     />
@@ -169,7 +150,7 @@ export function DataTable<TData, TValue>({
                         <Download className="h-4 w-4" />
                         PDF
                     </Button>
-                    {/* Visibility */}
+
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto">
@@ -200,7 +181,8 @@ export function DataTable<TData, TValue>({
             </div>
 
             <style>
-                {` .custom-table td {
+                {`
+                .custom-table td {
                     padding-top: 0.3rem !important;
                     padding-bottom: 0.3rem !important;
                 }
@@ -209,30 +191,40 @@ export function DataTable<TData, TValue>({
                     background-color: #f2f2f2;
                 }
 
+                .dark .custom-table tr:nth-child(even) {
+                    background-color: rgb(30 41 59); /* Use custom dark color */
+                }
+
                 .custom-table tr:hover {
                     background-color: #ddd;
+                }
+
+                .dark .custom-table tr:hover {
+                    background-color: rgb(51 65 85); /* Use custom dark color */
                 }
 
                 .custom-table tr.no-hover:hover {
                     background-color: transparent;
                 }
+
+                .dark .custom-table tr.no-hover:hover {
+                    background-color: transparent;
+                }
                 `}
             </style>
 
-            {/* Table */}
-            <div className="rounded-md border my-5 md:my-0">
+            <div className="rounded-md border dark:border-slate-700 my-5 md:my-0">
                 <Table className="custom-table">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className="no-hover">
+                            <TableRow key={headerGroup.id} className="no-hover dark:border-slate-700">
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className="dark:text-slate-200">
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
-                                                      header.column.columnDef
-                                                          .header,
+                                                      header.column.columnDef.header,
                                                       header.getContext()
                                                   )}
                                         </TableHead>
@@ -247,12 +239,11 @@ export function DataTable<TData, TValue>({
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    data-state={
-                                        row.getIsSelected() && "selected"
-                                    }
+                                    data-state={row.getIsSelected() && "selected"}
+                                    className="dark:border-slate-700"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className="dark:text-slate-300">
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
@@ -265,7 +256,7 @@ export function DataTable<TData, TValue>({
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 text-center"
+                                    className="h-24 text-center dark:text-slate-300"
                                 >
                                     No results.
                                 </TableCell>
@@ -275,21 +266,18 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
 
-            {/* Pagination */}
             <div className="flex items-center justify-between gap-3 px-2 mt-5 flex-col-reverse md:flex-row space-x-6 lg:space-x-8">
                 <div className="flex items-center space-x-2">
-                    <p className="text-sm font-medium">Rows per page</p>
+                    <p className="text-sm font-medium dark:text-slate-200">Rows per page</p>
                     <Select
                         value={`${table.getState().pagination.pageSize}`}
                         onValueChange={(value) => {
-                            table.setPageSize(Number(value));
+ table.setPageSize(Number(value));
                         }}
                     >
                         <SelectTrigger className="h-8 w-[70px]">
                             <SelectValue
-                                placeholder={
-                                    table.getState().pagination.pageSize
-                                }
+                                placeholder={table.getState().pagination.pageSize}
                             />
                         </SelectTrigger>
                         <SelectContent side="top">
@@ -304,7 +292,7 @@ export function DataTable<TData, TValue>({
                         </SelectContent>
                     </Select>
                 </div>
-                <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                <div className="flex w-[100px] items-center justify-center text-sm font-medium dark:text-slate-200">
                     Page {table.getState().pagination.pageIndex + 1} of{" "}
                     {table.getPageCount()}
                 </div>
@@ -316,7 +304,7 @@ export function DataTable<TData, TValue>({
                         disabled={!table.getCanPreviousPage()}
                     >
                         <span className="sr-only">Go to first page</span>
-                        <ChevronsLeft />
+                        <ChevronsLeft className="dark:text-slate-200" />
                     </Button>
                     <Button
                         variant="outline"
@@ -325,7 +313,7 @@ export function DataTable<TData, TValue>({
                         disabled={!table.getCanPreviousPage()}
                     >
                         <span className="sr-only">Go to previous page</span>
-                        <ChevronLeft />
+                        <ChevronLeft className="dark:text-slate-200" />
                     </Button>
                     <Button
                         variant="outline"
@@ -334,18 +322,16 @@ export function DataTable<TData, TValue>({
                         disabled={!table.getCanNextPage()}
                     >
                         <span className="sr-only">Go to next page</span>
-                        <ChevronRight />
+                        <ChevronRight className="dark:text-slate-200" />
                     </Button>
                     <Button
                         variant="outline"
                         className="h-8 w-8 p-0"
-                        onClick={() =>
-                            table.setPageIndex(table.getPageCount() - 1)
-                        }
+                        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                         disabled={!table.getCanNextPage()}
                     >
                         <span className="sr-only">Go to last page</span>
-                        <ChevronsRight />
+                        <ChevronsRight className="dark:text-slate-200" />
                     </Button>
                 </div>
             </div>

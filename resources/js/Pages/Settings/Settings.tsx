@@ -1,24 +1,16 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useState, useRef, useEffect } from "react";
-
 import { Head } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
-
 import CarouselSetting from "./Partials/CarouselSetting";
 import FooterSetting from "./Partials/FooterSetting";
 import ColorSetting from "./Partials/ColorSetting";
 import EventSetting from "./Partials/EventSetting";
-
 import { Label } from "@/Components/ui/label";
 import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 import { toast } from "sonner";
-
-interface settings {
-    key: string;
-    value: string;
-    type: string;
-}
+import { settings } from "@/types";
 
 interface SettingsProps {
     settings: settings[];
@@ -183,8 +175,8 @@ export default function Settings({ settings }: SettingsProps) {
             <div className="py-12 space-y-3">
                 <div className="flex flex-col md:flex-row gap-2 w-full px-4 sm:px-6 lg:px-8">
                     <div className="w-full ">
-                        <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                            <div className="p-6 text-gray-900">
+                        <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
+                            <div className="p-6 text-gray-900 dark:text-gray-200">
                                 <div>
                                     General Setting
                                     <hr className="py-2" />
@@ -199,7 +191,7 @@ export default function Settings({ settings }: SettingsProps) {
                                         <Input  type="file" onChange={handleIconChange} />
                                     </span>
                                     <span className="self-end">
-                                        <Button onClick={generalSave} className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 rounded-md hover:bg-gray-200 transition-color">
+                                        <Button onClick={generalSave} className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 dark:bg-slate-900 rounded-md hover:bg-gray-200 hover:dark:bg-slate-950 transition-color">
                                             Save
                                         </Button>
                                     </span>
@@ -209,8 +201,8 @@ export default function Settings({ settings }: SettingsProps) {
                     </div>
 
                     <div className="w-full">
-                        <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                            <div className="p-6 text-gray-900 space-y-2">
+                        <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
+                            <div className="p-6 text-gray-900 dark:text-gray-200 space-y-2">
                                 Theme Setting
                                 <hr className="py-2" />
                                 <div className="flex items-center gap-2 pb-2">
@@ -222,8 +214,8 @@ export default function Settings({ settings }: SettingsProps) {
                 </div>
 
                 <div className="w-full px-4 sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
+                        <div className="p-6 text-gray-900 dark:text-gray-200">
                             Header Event Setting
                             <hr className="py-2" />
                             <div className="flex flex-col md:flex-row gap-2">
@@ -247,8 +239,8 @@ export default function Settings({ settings }: SettingsProps) {
                 </div>
 
                 <div className="w-full px-4 sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
+                        <div className="p-6 text-gray-900 dark:text-gray-200">
                             Carousel Setting
                             <hr className="py-2" />
                             <CarouselSetting
@@ -259,8 +251,8 @@ export default function Settings({ settings }: SettingsProps) {
                     </div>
                 </div>
                 <div className="w-full px-4 sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
+                        <div className="p-6 text-gray-900 dark:text-gray-200">
                             Footer Setting
                             <hr className="py-2" />
                             <FooterSetting

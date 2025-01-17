@@ -6,10 +6,11 @@ namespace App\Models;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -19,11 +20,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -47,4 +44,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-}
+
+    public function carts(){
+        return $this->hasMany(Cart::class);
+    }
+
+    public function otp(){
+        return $this->hasOne(Otp::class);
+    }
+
+  }

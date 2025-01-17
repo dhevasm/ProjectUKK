@@ -10,7 +10,6 @@ interface ColorSettingProps {
     colorSave : () => void;
 }
 
-
 export default function ColorSetting({color, handleColorChange, setDefault, setColor, colorSave} : ColorSettingProps) {
 
     const copyToClipboard = () => {
@@ -38,19 +37,19 @@ export default function ColorSetting({color, handleColorChange, setDefault, setC
             </div>
             <Button
                 onClick={setDefault}
-                className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 dark:bg-slate-900 hover:dark:bg-slate-950 rounded-md hover:bg-gray-200 transition-colors"
             >
                 Default
             </Button>
             <Button
                 onClick={copyToClipboard}
-                className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 dark:bg-slate-900 hover:dark:bg-slate-950 rounded-md hover:bg-gray-200 transition-colors"
             >
                 Copy
             </Button>
             <Button
                 onClick={colorSave}
-                className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-sm text-[var(--app-color)] bg-gray-100 dark:bg-slate-900 hover:dark:bg-slate-950 rounded-md hover:bg-gray-200 transition-colors"
             >
                 Save
             </Button>

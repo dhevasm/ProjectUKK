@@ -50,8 +50,8 @@ export default function ResetPassword({
         <GuestLayout>
             <Head title="Reset Password" />
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-4">Reset Password</h1>
-                    <p className="text-sm text-gray-600 mb-6">
+                    <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">Reset Password</h1>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
                         Create a new secure password for your account
                     </p>
                 </div>

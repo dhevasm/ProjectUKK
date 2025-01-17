@@ -11,6 +11,7 @@ import { Switch } from "@/Components/ui/switch";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Button } from "@/Components/ui/button";
+import { Category } from "@/types";
 
 import {
     Command,
@@ -26,15 +27,10 @@ import {
     PopoverTrigger,
 } from "@/Components/ui/popover";
 
-interface categoryType {
-    id: number;
-    name: string;
-}
-
 export default function AddProduct({
     categories,
 }: {
-    categories: categoryType[];
+    categories: Category[];
 }) {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
@@ -111,7 +107,7 @@ export default function AddProduct({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                     Add product
                 </h2>
             }
@@ -120,8 +116,8 @@ export default function AddProduct({
 
             <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
                 <div className="w-full">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg dark:bg-customDark">
+                        <div className="p-6 text-gray- 900 dark:text-gray-300">
                             Add Products
                             <form onSubmit={submit} className="my-4">
                                 <div className="flex gap-4 mb-4">
@@ -134,6 +130,7 @@ export default function AddProduct({
                                                 setData("name", e.target.value)
                                             }
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
                                     <div className="w-[300px]">
@@ -147,7 +144,7 @@ export default function AddProduct({
                                                     variant="outline"
                                                     role="combobox"
                                                     aria-expanded={open}
-                                                    className="w-full justify-between"
+                                                    className="w-full justify-between dark:bg-customDark2 dark:text-gray-300"
                                                 >
                                                     {value
                                                         ? categories.find(
@@ -163,7 +160,7 @@ export default function AddProduct({
                                                 <Command>
                                                     <CommandInput
                                                         placeholder="Search category..."
-                                                        className="h-9"
+                                                        className="h-9 dark:bg-customDark2 dark:text-gray-300"
                                                     />
                                                     <CommandList>
                                                         <CommandEmpty>
@@ -233,6 +230,7 @@ export default function AddProduct({
                                             }
                                             placeholder="0"
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
 
@@ -246,6 +244,7 @@ export default function AddProduct({
                                             }
                                             placeholder="0"
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
 
@@ -262,6 +261,7 @@ export default function AddProduct({
                                             }
                                             placeholder="0"
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
                                 </div>
@@ -278,6 +278,7 @@ export default function AddProduct({
                                                 )
                                             }
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
                                     <div className="w-20">
@@ -297,16 +298,16 @@ export default function AddProduct({
                                 <div className="space-y-4">
                                     <Label>Image</Label>
                                     <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-customDark2 dark:border-gray-600 dark:hover:bg-gray-600">
                                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                                                <p className="mb-2 text-sm text-gray-500">
+                                                <Upload className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-300" />
+                                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
                                                     <span className="font-semibold">
                                                         Click to upload
                                                     </span>{" "}
                                                     or drag and drop
                                                 </p>
-                                                <p className="text-xs text-gray-500">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
                                                     PNG, JPG, GIF up to 10MB
                                                 </p>
                                             </div>

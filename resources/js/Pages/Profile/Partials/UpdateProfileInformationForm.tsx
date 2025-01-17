@@ -6,6 +6,7 @@ import { Button, Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { toast } from 'sonner'
+import { router } from '@inertiajs/react';
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
@@ -23,6 +24,7 @@ export default function UpdateProfileInformation({
             name: user.name,
             email: user.email,
             phone: user.phone,
+            phone_verified_at: user.phone_verified_at,
         });
 
     const submit: FormEventHandler = (e) => {
@@ -46,11 +48,11 @@ export default function UpdateProfileInformation({
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-200">
                     Profile Information
                 </h2>
 
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Update your account's profile information and email address.
                 </p>
             </header>
@@ -85,11 +87,13 @@ export default function UpdateProfileInformation({
                         autoComplete="username"
                     />
 
+
                     <InputError className="mt-2" message={errors.email} />
                 </div>
                 <div>
                     <InputLabel htmlFor="phone" value="Phone Number" />
 
+                    <div className='flex items-center gap-2'>
                     <TextInput
                         id="phone"
                         type="number"
@@ -98,12 +102,24 @@ export default function UpdateProfileInformation({
                         onChange={(e) => setData('phone', e.target.value)}
                         autoComplete="tel-country-code webauthn"
                     />
-                    <InputError className="mt-2" message={errors.phone} />
+                      { user.phone_verified_at === null && user.phone !== null ? (
+                          <PrimaryButton type='reset' className='py-3' onClick={() => router.get(route("sendOTP"))}>Verify</PrimaryButton>
+                    ) : ''}
+
+                    </div>
+
+                    { user.phone_verified_at === null && (
+                        <p className="mt-2 text-sm text-red-600">
+                            Your phone number is unverified. Please verify your phone number immediately.
+                        </p>
+                    )}
+
+
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
-                        <p className="mt-2 text-sm text-gray-800">
+                        <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
                             Your email address is unverified.
                             <Link
                                 href={route('verification.send')}
@@ -138,6 +154,7 @@ export default function UpdateProfileInformation({
                             Saved.
                         </p>
                     </Transition>
+                    <InputError className="mt-2" message={errors.phone} />
                 </div>
             </form>
         </section>

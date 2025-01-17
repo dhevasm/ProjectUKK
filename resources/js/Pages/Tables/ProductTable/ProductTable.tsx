@@ -15,7 +15,7 @@ export default function ProductTable({
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200 transition-colors duration-300">
                     Products
                 </h2>
             }
@@ -24,8 +24,9 @@ export default function ProductTable({
 
             <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
                 <div className="w-full">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm dark:shadow-slate-800/50 rounded-md sm:rounded-lg border dark:border-slate-800 transition-colors duration-300
+">
+                        <div className="p-6 text-gray-900 dark:text-gray-200">
                             <div className="flex justify-between">
                                 Manage Products
                                 <div className="flex gap-2">

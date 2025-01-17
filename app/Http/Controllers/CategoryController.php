@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\cart;
 use Inertia\Inertia;
+use App\Models\Product;
+use App\Models\Setting;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 class CategoryController extends Controller
 {
@@ -55,7 +60,19 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $category = Category::find($id);
+
+        if (!$category) {
+            return redirect()->route("welcome");
+        }
+
+        $canLogin = Route::has('login');
+        $canRegister = Route::has('register');
+        $categories = Category::all();
+        $settings = Setting::all();
+        $Products = Product::where("category_id", $category->id)->with(['category', 'product_images'])->get();
+        $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
+        return Inertia::render('Client/DetailCategory', compact('category', 'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart'));
     }
 
     /**

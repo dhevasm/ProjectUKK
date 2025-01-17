@@ -12,7 +12,6 @@ import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Button } from "@/Components/ui/button";
 import { router } from "@inertiajs/react";
-
 import {
     Command,
     CommandEmpty,
@@ -26,23 +25,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/Components/ui/popover";
-
-interface categoryType {
-    id: number;
-    name: string;
-}
-
-export type ProductType = {
-    id: number;
-    name: string;
-    category_id: number;
-    price: number;
-    min_order: number;
-    sold: number;
-    stock: number;
-    description: string;
-    visible: boolean;
-};
+import { Category, Product } from "@/types";
 
 interface ImagesType {
     id: number;
@@ -55,8 +38,8 @@ export default function EditProduct({
     product,
     productImages,
 }: {
-    categories: categoryType[];
-    product: ProductType;
+    categories: Category[];
+    product: Product;
     productImages: ImagesType[];
 }) {
     const [open, setOpen] = useState(false);
@@ -90,19 +73,18 @@ export default function EditProduct({
     };
 
     useEffect(() => {
-        if(product.visible) {
+        if (product.visible) {
             document.getElementById("visibleSwitch")?.click();
         }
 
         categories.map((category: any) => {
-            if(category.id === product.category_id) {
+            if (category.id === product.category_id) {
                 setSelectedCategory(category.name);
             }
         });
 
-
         productImages.map((image: any) => {
-            const newPreviews = "/"+image.url;
+            const newPreviews = "/" + image.url;
             setPreviews((prevPreviews) => {
                 if (!prevPreviews.includes(newPreviews)) {
                     return [...prevPreviews, newPreviews];
@@ -110,11 +92,11 @@ export default function EditProduct({
                 return prevPreviews;
             });
         });
-    }, [])
+    }, []);
 
     useEffect(() => {
         setValue(selectedCategory);
-    }, [selectedCategory])
+    }, [selectedCategory]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -134,9 +116,8 @@ export default function EditProduct({
         });
     };
 
-    const deleteImage = (name : string) => {
-
-    if(name.includes("storage")) {
+    const deleteImage = (name: string) => {
+        if (name.includes("storage")) {
             router.delete(route("deleteProductImage", name.split("/").pop()?.split(".")[0]), {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -145,27 +126,22 @@ export default function EditProduct({
                         description: "Image has been deleted successfully",
                     });
                 },
-                onError: (errors : any) => {
+                onError: (errors: any) => {
                     toast.error("Failed to delete image", {
                         description: "An error occurred : " + Object.values(errors)[0],
                     });
                 }
-
             });
-        }else{
+        } else {
             setImages(images.filter((image) => image.name !== name));
             setPreviews(previews.filter((preview) => preview !== name));
         }
-    }
-
-    useEffect(() => {
-        console.log(data.visible);
-    }, [data.visible]);
+    };
 
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                     Edit product
                 </h2>
             }
@@ -174,18 +150,18 @@ export default function EditProduct({
 
             <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
                 <div className="w-full">
-                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg dark:bg-customDark">
+                        <div className="p-6 text-gray-900 dark:text-gray-300">
                             <div className="flex justify-between">
-                            Edit Products {product.name}
-                                    <Button
-                                        variant={"outline"}
-                                        onClick={() =>
-                                            router.get(route("product.index"))
-                                        }
-                                    >
-                                        Back
-                                    </Button>
+                                Edit Products {product.name}
+                                <Button
+                                    variant={"outline"}
+                                    onClick={() =>
+                                        router.get(route("product.index"))
+                                    }
+                                >
+                                    Back
+                                </Button>
                             </div>
                             <form onSubmit={submit} className="my-4">
                                 <div className="flex gap-4 mb-4">
@@ -198,6 +174,7 @@ export default function EditProduct({
                                                 setData("name", e.target.value)
                                             }
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
                                     <div className="w-[300px]">
@@ -211,7 +188,7 @@ export default function EditProduct({
                                                     variant="outline"
                                                     role="combobox"
                                                     aria-expanded={open}
-                                                    className="w-full justify-between"
+                                                    className="w-full justify-between dark:bg-customDark2 dark:text-gray-300"
                                                 >
                                                     {value
                                                         ? categories.find(
@@ -227,13 +204,13 @@ export default function EditProduct({
                                                 <Command>
                                                     <CommandInput
                                                         placeholder="Search category..."
-                                                        className="h-9"
+                                                        className="h-9 dark:bg-customDark2 dark:text-gray-300"
                                                     />
                                                     <CommandList>
                                                         <CommandEmpty>
                                                             No category found.
                                                         </CommandEmpty>
-                                                        <CommandGroup defaultValue={"Erba"}>
+                                                        <CommandGroup>
                                                             {categories.map(
                                                                 (
                                                                     category: any
@@ -245,7 +222,6 @@ export default function EditProduct({
                                                                         value={
                                                                             category.name
                                                                         }
-
                                                                         onSelect={(
                                                                             currentValue
                                                                         ) => {
@@ -301,6 +277,7 @@ export default function EditProduct({
                                             }
                                             placeholder="0"
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
 
@@ -317,6 +294,7 @@ export default function EditProduct({
                                             }
                                             placeholder="0"
                                             required
+                                            className="dark:bg-customDark2 dark:text -gray-300"
                                         />
                                     </div>
 
@@ -333,6 +311,7 @@ export default function EditProduct({
                                             }
                                             placeholder="0"
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
                                 </div>
@@ -349,6 +328,7 @@ export default function EditProduct({
                                                 )
                                             }
                                             required
+                                            className="dark:bg-customDark2 dark:text-gray-300"
                                         />
                                     </div>
                                     <div className="w-20">
@@ -369,16 +349,16 @@ export default function EditProduct({
                                 <div className="space-y-4">
                                     <Label>Image</Label>
                                     <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-customDark2 dark:border-gray-600 dark:hover:bg-gray-600">
                                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                                                <p className="mb-2 text-sm text-gray-500">
+                                                <Upload className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-300" />
+                                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
                                                     <span className="font-semibold">
                                                         Click to upload
                                                     </span>{" "}
                                                     or drag and drop
                                                 </p>
-                                                <p className="text-xs text-gray-500">
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">
                                                     PNG, JPG, GIF up to 10MB
                                                 </p>
                                             </div>

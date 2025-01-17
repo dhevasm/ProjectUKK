@@ -8,6 +8,7 @@ import { createRoot } from 'react-dom/client';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const appColor = import.meta.env.VITE_APP_COLOR || '#3b82f6'
 document.documentElement.style.setProperty('--app-color', appColor);
+document.documentElement.style.setProperty('--app-progress-color', appColor);
 const shadeColor = (color: string, percent: number) => {
     const f = parseInt(color.slice(1), 16);
     const t = percent < 0 ? 0 : 255;
