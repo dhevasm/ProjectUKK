@@ -12,6 +12,7 @@ import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { Button } from "@/Components/ui/button";
 import { router } from "@inertiajs/react";
+
 import {
     Command,
     CommandEmpty,
@@ -70,6 +71,21 @@ export default function EditProduct({
 
         const newPreviews = files.map((file) => URL.createObjectURL(file));
         setPreviews([...previews, ...newPreviews]);
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+        e.preventDefault();
+
+        const fileList = e.dataTransfer.files;
+        if (fileList.length === 0) return;
+
+        const inputEvent = {
+            target: {
+                files: fileList,
+            },
+        } as unknown as ChangeEvent<HTMLInputElement>;
+
+        handleImageChange(inputEvent);
     };
 
     useEffect(() => {
@@ -148,7 +164,7 @@ export default function EditProduct({
         >
             <Head title="Edit Product" />
 
-            <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
+            <div className="py-12 flex-col md:flex-row flex gap-4 px-4 md:px-2 md:ps-6">
                 <div className="w-full">
                     <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg dark:bg-customDark">
                         <div className="p-6 text-gray-900 dark:text-gray-300">
@@ -164,7 +180,7 @@ export default function EditProduct({
                                 </Button>
                             </div>
                             <form onSubmit={submit} className="my-4">
-                                <div className="flex gap-4 mb-4">
+                                <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="w-full">
                                         <Label>Name</Label>
                                         <Input
@@ -263,7 +279,7 @@ export default function EditProduct({
                                     </div>
                                 </div>
 
-                                <div className="flex gap-4 mb-4">
+                                <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="w-full">
                                         <Label>Price</Label>
                                         <Input
@@ -349,14 +365,15 @@ export default function EditProduct({
                                 <div className="space-y-4">
                                     <Label>Image</Label>
                                     <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-customDark2 dark:border-gray-600 dark:hover:bg-gray-600">
+                                        <label
+                                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-customDark2 dark:border-gray-600 dark:hover:bg-gray-600"
+                                            onDragOver={(e) => e.preventDefault()}
+                                            onDrop={handleDrop}
+                                        >
                                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                 <Upload className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-300" />
                                                 <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
-                                                    <span className="font-semibold">
-                                                        Click to upload
-                                                    </span>{" "}
-                                                    or drag and drop
+                                                    <span className="font-semibold">Click to upload</span> or drag and drop
                                                 </p>
                                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                                     PNG, JPG, GIF up to 10MB

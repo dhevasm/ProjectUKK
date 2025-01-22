@@ -58,9 +58,9 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $name)
     {
-        $category = Category::find($id);
+        $category = Category::where('name', str_replace("-", " ", $name))->first();
 
         if (!$category) {
             return redirect()->route("welcome");
@@ -70,9 +70,10 @@ class CategoryController extends Controller
         $canRegister = Route::has('register');
         $categories = Category::all();
         $settings = Setting::all();
-        $Products = Product::where("category_id", $category->id)->with(['category', 'product_images'])->get();
+        $Products = Product::where("category_id", $category->id)->with(['category', 'product_images', 'reviews'])->get();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
-        return Inertia::render('Client/DetailCategory', compact('category', 'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart'));
+        $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
+        return Inertia::render('Client/DetailCategory', compact('category', 'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', "role"));
     }
 
     /**

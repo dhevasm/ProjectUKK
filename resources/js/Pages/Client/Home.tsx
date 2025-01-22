@@ -18,10 +18,15 @@ interface HomeProps {
     products: Product[];
 }
 
+interface CarouselLink {
+    key: string;
+    value: string;
+  }
+
 export default function Home({ settings, categories, products }: HomeProps) {
     const [images, setImages] = useState<string[]>([]);
     const nextButton = useRef<HTMLButtonElement>(null);
-
+    const [carouselLink, setCarouselLink] = useState<CarouselLink[]>([]);
     const latestProducts = [...products]
         .sort(
             (a, b) =>
@@ -48,7 +53,33 @@ export default function Home({ settings, categories, products }: HomeProps) {
             .map((setting) => setting.value);
 
         setImages(newImages);
+
+        settings.forEach((setting) => {
+            if (setting.key.includes("carousel_link")) {
+                setCarouselLink((prevLinks) => {
+                  const key = setting.key.split("_").pop() as string;
+                  const value = setting.value as string;
+                  if (!prevLinks.some((link) => link.key === key)) {
+                    return [...prevLinks, { key, value }];
+                  }
+                  return prevLinks;
+                });
+              }
+        });
     }, [settings]);
+
+    useEffect(() => {
+        if (carouselLink.length > 0) {
+            carouselLink.forEach((link) => {
+                const anchor = document.querySelector(
+                    `#anchor${link.key}`
+                ) as HTMLAnchorElement;
+                if (anchor) {
+                    anchor.href = link.value;
+                }
+            }
+        )};
+    }, [carouselLink]);
 
 
     // Handle Categories
@@ -82,11 +113,13 @@ export default function Home({ settings, categories, products }: HomeProps) {
                 <CarouselContent>
                     {images.map((image, index) => (
                         <CarouselItem key={index}>
-                            <img
-                                src={image}
-                                alt="slider"
-                                className="object-cover w-full h-[150px] md:h-[250px] rounded-lg"
-                            />
+                            <a href="#" id={`anchor${image.split("/").pop()?.split(".")[0]}`}>
+                                <img
+                                    src={image}
+                                    alt="slider"
+                                    className="object-cover w-full h-[150px] md:h-[250px] rounded-lg"
+                                />
+                            </a>
                         </CarouselItem>
                     ))}
                 </CarouselContent>
@@ -110,7 +143,7 @@ export default function Home({ settings, categories, products }: HomeProps) {
                     <Card
                         key={category.id}
                         className="group hover:shadow-xl transition-all duration-300 cursor-pointer transform"
-                        onClick={() => router.get(route("category.show", category.id))}
+                        onClick={() => router.get(route("category.show", category.name.replace(/\s+/g, "-")))}
                     >
                         <CardContent className="p-4">
                             <div className="aspect-square mb-2 overflow-hidden rounded-lg">

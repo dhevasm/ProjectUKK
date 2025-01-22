@@ -16,7 +16,7 @@ class cart extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function dataundangan(){
+    public function data_undangan(){
         return $this->belongsTo(DataUndangan::class);
     }
 }

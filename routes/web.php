@@ -13,13 +13,18 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\TransactionController;
+use App\Models\User;
 
 Route::get('/', [UserController::class, 'rootPage'])->name('welcome');
 Route::get("/search", [ProductController::class, "search"])->name("search");
 Route::post('/googleOauthHandle', [UserController::class, 'googleOauthHandle'])->name('googleOauthHandle');
 Route::get('/category/{id}', [CategoryController::class, 'show'])->name('category.show');
-Route::get('/product-details/{id}', [ProductController::class, 'show'])->name('product.show.detail');
+Route::get('/product-details/{name}', [ProductController::class, 'show'])->name('product.show.detail');
 Route::get('/banned/{id}', [UserController::class, 'bannedPage'])->name('user.banned');
 
 Route::middleware('auth', 'verified')->group(function () {
@@ -31,7 +36,17 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::resource('cart', CartController::class);
     Route::get('/cart-search', [CartController::class, 'search'])->name('cart.search');
     Route::post('/cart-qty/{id}', [CartController::class, 'changeQuantity'])->name("cart.qty");
-
+    Route::post("/buy-now", [CheckoutController::class, 'buyNow'])->name('buy.now');
+    Route::get("/checkout", [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post("/checkout", [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::post("/create-payment", [CheckoutController::class, 'createPayment'])->name('checkout.update');
+    Route::get("/payment-status/{id}", [CheckoutController::class, 'paymentStatus'])->name('payment.status');
+    Route::get("/cancel-transaction/{id}", [TransactionController::class, "cancelTransaction"])->name("transaction.cancel");
+    Route::get("/history", [TransactionController::class, 'userIndex'])->name('order.history');
+    Route::get("/delete-history/{id}", [TransactionController::class, 'deleteHistory'])->name('delete.history');
+    Route::post("/review", [ReviewController::class, 'store'])->name('review.store');
+    Route::delete("/review/{id}", [ReviewController::class, 'destroy'])->name('review.destroy');
+    Route::get("/confirm-delivery/{id}", [DeliveryController::class, 'confirmDelivery'])->name('delivery.confirm');
     Route::get("/sendOTP", [UserController::class, 'createOTP'])->name('sendOTP');
     Route::post("/verifyOTP", [UserController::class, 'verifyOTP'])->name('verifyOTP');
     Route::get("/phone-verify", function() {return Inertia::render('Auth/VerifyPhone');})->name('phone-verify');
@@ -54,13 +69,17 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::resource('setting', SettingController::class);
     Route::post("/footerSetting", [SettingController::class, 'footerSetting'])->name('footerSetting');
     Route::post("/carouselSetting", [SettingController::class, 'carouselSetting'])->name('carouselSetting');
+    Route::post("/updateCarouselLink", [SettingController::class, 'setCarouselLink'])->name('setCarouselLink');
     Route::delete("/deleteEvent", [SettingController::class, 'deleteEvent'])->name('deleteEvent');
     Route::delete("/deleteCarousel/{id}", [SettingController::class, 'deleteCarousel'])->name('deleteCarousel');
-
+    Route::post("/priceSetting", [SettingController::class, 'priceSetting'])->name('priceSetting');
+    Route::get("/transaction", [TransactionController::class, 'index'])->name('transaction.index');
+    Route::get("/transactionStatus/{status}/{id}", [TransactionController::class, 'changeStatus'])->name('transaction.changeStatus');
+    Route::get("/delivery", [DeliveryController::class, "index"])->name("delivery.index");
+    Route::get("/deliveryStatus/{status}/{id}", [DeliveryController::class, 'changeStatus'])->name('delivery.changeStatus');
     Route::post("/banUser/{id}", [UserController::class, 'handleban'])->name('user.ban');
     Route::get("/unbanUser/{id}", [UserController::class, 'unban'])->name('user.unban');
 });
-
 
 
 require __DIR__.'/auth.php';

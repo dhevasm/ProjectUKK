@@ -1,10 +1,8 @@
-import { ArrowLeft } from "lucide-react";
-import { router } from "@inertiajs/react";
-import { settings, Category, Product, User } from "@/types";
-import Header from "@/Components/client/Header";
-import Footer from "@/Components/client/Footer";
+import ClientLayout from "@/Layouts/ClientLayout";
 import ProductCard from "@/Components/ProductCard";
-import { Head } from "@inertiajs/react";
+import { settings, Category, Product, User } from "@/types";
+import { router } from "@inertiajs/react";
+import { ArrowLeft } from "lucide-react";
 
 interface PropsType {
     category: Category;
@@ -15,6 +13,7 @@ interface PropsType {
         user: User;
     };
     totalCart: number;
+    role: string;
 }
 
 export default function DetailCategory({
@@ -23,14 +22,14 @@ export default function DetailCategory({
     settings,
     Products,
     auth,
-    totalCart
+    totalCart,
+    role
 }: PropsType) {
     return (
         <>
-            <Header settings={settings} totalCart={totalCart} categories={categories} auth={auth} products={Products} />
-            <Head title={category.name} />
+            <ClientLayout role={role} categories={categories} settings={settings} Products={Products} auth={auth} totalCart={totalCart} header={category.name}>
             <div className="min-h-screen bg-gray-50 dark:bg-customDark2">
-                <div className="relative h-[300px] overflow-hidden">
+                <div className="    relative h-[300px] overflow-hidden">
                     <img
                         src={"/" + category.image}
                         alt={category.name}
@@ -73,8 +72,7 @@ export default function DetailCategory({
                     </div>
                 </main>
             </div>
-
-            <Footer settings={settings} />
+            </ClientLayout>
         </>
     );
 }

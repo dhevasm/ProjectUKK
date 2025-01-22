@@ -13,14 +13,22 @@ class Transaction extends Model
     }
 
     public function payment(){
-        return $this->hasOne(Payment::class);
+        return $this->belongsTo(Payment::class);
     }
 
     public function cart(){
-        return $this->hasOne(Cart::class);
+        return $this->belongsTo(Cart::class);
     }
 
     public function delivery(){
-        return $this->hasOne(Delivery::class);
+        return $this->belongsTo(Delivery::class);
+    }
+
+    public function data_undangan(){
+        return $this->belongsTo(DataUndangan::class);
+    }
+
+    public function product(){
+        return $this->belongsTo(Product::class);
     }
 }

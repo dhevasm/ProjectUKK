@@ -82,13 +82,13 @@ export default function Authenticated({
                                         <Dropdown.Content>
                                             <Dropdown.Link
                                                 href={route('profile.edit')}
-                                                className="dark:hover:bg-slate-800"
+                                                className="dark:hover:bg-customDark2"
                                             >
                                                 Profile
                                             </Dropdown.Link>
                                             <Dropdown.Link
                                                 href={route('welcome')}
-                                                className="dark:hover:bg-slate-800"
+                                                className="dark:hover:bg-customDark2"
                                             >
                                                 Store Page
                                             </Dropdown.Link>
@@ -96,7 +96,7 @@ export default function Authenticated({
                                                 href={route('logout')}
                                                 method="post"
                                                 as="button"
-                                                className="dark:hover:bg-slate-800"
+                                                className="dark:hover:bg-customDark2"
                                             >
                                                 Log Out
                                             </Dropdown.Link>

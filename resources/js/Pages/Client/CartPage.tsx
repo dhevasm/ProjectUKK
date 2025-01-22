@@ -1,7 +1,6 @@
 import { Head } from "@inertiajs/react";
 import CartHeader from "@/Components/client/CartHeader";
 import Footer from "@/Components/client/Footer";
-import { PageProps } from "@/types";
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/Components/ui/button";
 import { Checkbox } from "@/Components/ui/checkbox";
@@ -22,6 +21,9 @@ import { toast, Toaster } from "sonner";
 import { settings, Category, Product, User, Cart, dataUndangan } from "@/types";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/Components/ui/dialog";
 
+import CartEdit from "./CartEdit";
+import { error } from "console";
+
 interface CartProps {
     settings: settings[];
     categories: Category[];
@@ -30,6 +32,7 @@ interface CartProps {
         user: User;
     };
     carts: Cart[];
+    role: string;
 }
 
 export default function CartPage({
@@ -38,11 +41,18 @@ export default function CartPage({
     products,
     auth,
     carts,
+    role
 }: CartProps) {
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [selectAll, setSelectAll] = useState<boolean>(false);
     const [subtotal, setSubtotal] = useState<number>(0);
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [priceData, setPriceData] = useState({
+        productionPrice: 0,
+        deliveryPrice: 0,
+        tax: 0,
+    });
 
     useEffect(() => {
         const savedMode = localStorage.getItem('darkMode');
@@ -51,6 +61,18 @@ export default function CartPage({
         } else {
             setTheme('light');
         }
+
+        settings.forEach((setting) => {
+            if (setting.key === "production_price") {
+                setPriceData((prev) => ({ ...prev, productionPrice: parseInt(setting.value) }));
+            }
+            if (setting.key === "delivery_price") {
+                setPriceData((prev) => ({ ...prev, deliveryPrice: parseInt(setting.value) }));
+            }
+            if (setting.key === "tax") {
+                setPriceData((prev) => ({ ...prev, tax: parseInt(setting.value) }));
+            }
+        });
     }, []);
 
     const handleSelectAll = (checked: boolean) => {
@@ -79,6 +101,7 @@ export default function CartPage({
         });
     };
 
+
         useEffect(() => {
             setSelectAll(selectedItems.length === carts.length);
 
@@ -91,7 +114,29 @@ export default function CartPage({
             }, 0);
 
             setSubtotal(newSubtotal);
-        }, [selectedItems, carts]);
+
+            const subtotal = carts.reduce((total, cart, selectedId) => {
+                if (!selectedItems.includes(cart.id)) {
+                    return total;
+                }
+                return total + cart.product.price * cart.quantity;
+            }, 0);
+
+            if (subtotal === 0) {
+                setTotalPrice(0);
+                return;
+            }
+
+            const productionCost = priceData.productionPrice;
+            const shippingCost = priceData.deliveryPrice;
+            const tax = priceData.tax;
+
+            const taxPrice = subtotal * (tax / 100);
+            const total = subtotal + productionCost + shippingCost + taxPrice;
+
+            setTotalPrice(total);
+        }, [selectedItems, carts, priceData]);
+
 
     const [quantities, setQuantities] = useState<{ [key: number]: number }>(
         () => {
@@ -184,6 +229,8 @@ export default function CartPage({
         };
     }, [timeoutIds]);
 
+
+
     const handleDelete = (id:number) => {
         router.delete(route("cart.destroy", id),{
             preserveScroll: true,
@@ -202,11 +249,34 @@ export default function CartPage({
         });
     }
 
+    const handleCheckout = () => {
+        if(selectedItems.length === 0) {
+            toast.error("Please select at least one item to checkout");
+            return;
+        }
+        router.get(route("checkout.index"), {
+            ids: selectedItems,
+        }, {
+            preserveScroll: true,
+            onError: (errors: any) => {
+                setTimeout(() => {
+                    toast.error(`${errors[0]}`);
+                }, 100);
+                setTimeout(() => {
+                    router.get(route("user.profile"));
+                }, 1000);
+            },
+        });
+    }
+
+
+
     return (
         <>
             <Head title="Cart" />
             <div className="bg-gray-50 dark:bg-customDark2 min-h-screen flex flex-col">
                 <CartHeader
+                    role={role}
                     settings={settings}
                     categories={categories}
                     auth={auth}
@@ -269,8 +339,8 @@ export default function CartPage({
                                                 </div>
 
                                                 <div className="flex-grow space-y-2">
-                                                    <h3 onClick={() => router.get(route("product.show.detail", item.product.id))} className="font-medium line-clamp-2 hover:cursor-pointer hover:underline">
-                                                        {item.product.name}
+                                                    <h3 onClick={() => router.get(route("product.show.detail", item.product.name.replace(/\s+/g, "-")))} className="font-medium line-clamp-2 hover:cursor-pointer hover:underline w-fit">
+                                                        {item.product.name} {"("+ item.data_undangan.bride_name + " & " + item.data_undangan.groom_name +")"}
                                                     </h3>
 
                                                     <div className="text-sm text-gray-500">
@@ -362,6 +432,7 @@ export default function CartPage({
                                                                     </DialogFooter>
                                                                 </DialogContent>
                                                             </Dialog>
+                                                           <CartEdit product={item.product} dataUndangan={item.data_undangan}  />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -397,20 +468,42 @@ export default function CartPage({
 
                                         <div className="space-y-2 text-sm">
                                             <div className="flex justify-between">
-                                                <span>Subtotal {carts.length} items</span>
-                                                <span>Rp {subtotal}</span>
+                                                <span>Subtotal</span>
+                                                <span>Rp {subtotal.toLocaleString("id-ID")}</span>
                                             </div>
 
-                                            <div className="flex justify-between">
-                                                <span>Shipping Cost</span>
-                                                <span>Rp 200</span>
-                                            </div>
+                                            {
+                                                priceData.productionPrice > 0 && subtotal > 0 ? (
+                                                    <div className="flex justify-between">
+                                                        <span>Production Cost</span>
+                                                        <span>Rp {priceData.productionPrice.toLocaleString("id-ID")}</span>
+                                                    </div>
+                                                ) : ""
+                                            }
+
+                                            {
+                                                priceData.deliveryPrice > 0 && subtotal > 0 ? (
+                                                    <div className="flex justify-between">
+                                                        <span>Delivery Cost</span>
+                                                        <span>Rp {priceData.deliveryPrice.toLocaleString("id-ID")}</span>
+                                                    </div>
+                                                ) : ""
+                                            }
+
+                                            {
+                                                priceData.tax > 0 && subtotal > 0 ? (
+                                                    <div className="flex justify-between">
+                                                        <span>Tax {priceData.tax} %</span>
+                                                        <span>Rp {(subtotal * (priceData.tax/100)).toLocaleString("id-ID")}</span>
+                                                    </div>
+                                                ) : ""
+                                            }
 
                                             <div className="pt-2 border-t">
                                                 <div className="flex justify-between font-semibold text-lg">
                                                     <span>Total</span>
                                                     <span className="text-[var(--app-color)]">
-                                                        Rp 200
+                                                        Rp {totalPrice.toLocaleString("id-ID")}
                                                     </span>
                                                 </div>
                                             </div>
@@ -420,6 +513,7 @@ export default function CartPage({
                                             variant={"theme"}
                                             className="w-full"
                                             size="lg"
+                                            onClick={handleCheckout}
                                         >
                                             Proceed to Checkout
                                             <ArrowRight className="ml-2 h-4 w-4" />
@@ -432,8 +526,7 @@ export default function CartPage({
                                         <div className="flex items-start space-x-3 text-sm text-gray-600">
                                             <Truck className="h-5 w-5 flex-shrink-0 mt-1" />
                                             <p>
-                                                Free shipping for orders above
-                                                Rp 500,000 to selected areas
+                                                Produk akan dikerjakan paling cepat 5 hari setelah pembayaran
                                             </p>
                                         </div>
                                     </CardContent>

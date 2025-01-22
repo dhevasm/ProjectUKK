@@ -6,6 +6,7 @@ import CarouselSetting from "./Partials/CarouselSetting";
 import FooterSetting from "./Partials/FooterSetting";
 import ColorSetting from "./Partials/ColorSetting";
 import EventSetting from "./Partials/EventSetting";
+import PriceSetting from "./Partials/PriceSetting";
 import { Label } from "@/Components/ui/label";
 import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
@@ -29,6 +30,7 @@ export default function Settings({ settings }: SettingsProps) {
     const [color, setColor] = useState(import.meta.env.VITE_APP_COLOR || "#3b82f6");
     const [event, setEvent] = useState( "");
     const [eventLink, setEventLink] = useState("");
+    const [eventMovingText, setEventMovingText] = useState(false);
     const [webName, setWebName] = useState(import.meta.env.VITE_APP_NAME || 'Laravel');
     const [webIcon, setWebIcon] = useState<File | null>(null);
 
@@ -39,6 +41,9 @@ export default function Settings({ settings }: SettingsProps) {
             }
             if (setting.key === "web_event_link") {
                 setEventLink(setting.value);
+            }
+            if(setting.key === "web_event_moving"){
+                setEventMovingText(setting.value == "1" ? true : false);
             }
         });
     }, [])
@@ -108,6 +113,7 @@ export default function Settings({ settings }: SettingsProps) {
         router.post(route("setting.store"), {
             "web_event" : event,
             "web_event_link" : eventLink,
+            "web_event_moving" : eventMovingText,
         },{
             preserveScroll: true,
             onSuccess: () => {
@@ -173,8 +179,8 @@ export default function Settings({ settings }: SettingsProps) {
         >
             <Head title="Settings" />
             <div className="py-12 space-y-3">
-                <div className="flex flex-col md:flex-row gap-2 w-full px-4 sm:px-6 lg:px-8">
-                    <div className="w-full ">
+                <div className="flex flex-col md:flex-row gap-2 w-full px-4  lg:px-8">
+                    <div className="w-full">
                         <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
                             <div className="p-6 text-gray-900 dark:text-gray-200">
                                 <div>
@@ -216,23 +222,47 @@ export default function Settings({ settings }: SettingsProps) {
                 <div className="w-full px-4 sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-200">
+                           Additional Price Setting
+                            <hr className="py-2" />
+                            <div className="flex flex-col md:flex-row gap-2 items-end">
+                                <PriceSetting settings={settings} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="w-full px-4 sm:px-6 lg:px-8">
+                    <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
+                        <div className="p-6 text-gray-900 dark:text-gray-200">
                             Header Event Setting
                             <hr className="py-2" />
                             <div className="flex flex-col md:flex-row gap-2">
-                                <EventSetting eventSave={eventSave} event={event} setEvent={setEvent} eventLink={eventLink} setEventLink={setEventLink} />
+                                <EventSetting eventMovingText={eventMovingText} setEventMovingText={setEventMovingText} eventSave={eventSave} event={event} setEvent={setEvent} eventLink={eventLink} setEventLink={setEventLink} />
                             </div>
                             <p className="mt-3">Preview</p>
                             <div
                                 ref={eventPrefiew}
-                                className={`text-white text-center py-2 min-h-9 text-sm`}
+                                className={`text-white text-center py-2 min-h-9 max-h-9 text-sm`}
                             >
-                                <a
-                                    href={eventLink}
-                                    target="_blank"
-                                    className="hover:underline"
-                                >
-                                    {event}
-                                </a>
+                                {
+                                    eventMovingText ? <div dangerouslySetInnerHTML={{ __html:
+                                    `<marquee>
+                                    <a
+                                        href=${eventLink}
+                                        target="_blank"
+                                        className="hover:underline"
+                                    >
+                                        ${event}
+                                    </a></marquee>` }} /> :
+                                     <a
+                                     href={eventLink}
+                                     target="_blank"
+                                     className="hover:underline"
+                                 >
+                                     {event}
+                                 </a>
+                                }
+
                             </div>
                         </div>
                     </div>

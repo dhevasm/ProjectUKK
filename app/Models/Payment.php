@@ -9,6 +9,6 @@ class Payment extends Model
     protected $guarded = [];
 
     public function transaction(){
-        return $this->belongsTo(Transaction::class);
+        return $this->hasMany(Transaction::class);
     }
 }

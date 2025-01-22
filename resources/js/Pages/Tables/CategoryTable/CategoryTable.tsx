@@ -56,7 +56,7 @@ export default function CategoryTable({ categories }: { categories: CategoryType
         >
             <Head title="Categories" />
 
-            <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
+            <div className="py-12 flex-col md:flex-row flex gap-4 px-4 md:px-2 md:ps-6">
                 <div className="w-full md:w-1/3">
                     <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm dark:shadow-slate-800/50 rounded-md sm:rounded-lg border dark:border-slate-800 transition-colors duration-300">
                         <div className="p-6 text-gray-900 dark:text-gray-100">

@@ -198,7 +198,12 @@ export default function AddressInput() {
             </div>
 
             <div>
+                <div className='flex justify-between'>
                 <InputLabel htmlFor="address" value="Address" />
+                {
+                    auth.user.address == null && <p className="text-sm text-red-500">Alamat belum disimpan</p>
+                }
+                </div>
                 <TextInput
                     id="address"
                     type="text"
@@ -244,14 +249,13 @@ export default function AddressInput() {
                     {processing ? "Menyimpan..." : "Simpan"}
                 </Button>
 
-
                 <div className='flex gap-2 items-end'>
                 <Button onClick={MyLocation} type='reset' variant={"outline"}>
                     <MapPin className="w-4 h-4 mr-2" />
                     Lokasi Saat Ini
                 </Button>
-                <div>
-                <InputLabel htmlFor="coordinates" value="Coordinates" />
+                <div className='hidden'>
+                <InputLabel htmlFor="coordinates" value="Coordinates"  />
                 <TextInput
                     id="coordinates"
                     type="text"

@@ -24,20 +24,22 @@ class CartController extends Controller
         $carts = Cart::with([
             'product',
             'product.product_images',
-            'dataundangan',
+            'data_undangan',
             'user'
         ])->where('user_id', Auth::user()->id)->get();
-
+        $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         return Inertia::render('Client/CartPage', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'settings' => Setting::all(),
             'categories' => Category::all(),
             'carts' => $carts,
+            "role" =>  $role,
         ]);
     }
 
     public function search(Request $request){
+        $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         $request->validate([
             'q' => 'required|string'
         ]);
@@ -52,6 +54,8 @@ class CartController extends Controller
             'settings' => Setting::all(),
             'categories' => Category::all(),
             'carts' => $carts,
+            "role" =>  $role,
+
         ]);
     }
 
@@ -144,7 +148,33 @@ class CartController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            "bride_name" => "required|string",
+            "bride_father_name" => "required|string",
+            "bride_mother_name" => "required|string",
+            "groom_name" => "required|string",
+            "groom_father_name" => "required|string",
+            "groom_mother_name" => "required|string",
+            "location" => "required|string",
+            "akad" => "required|date",
+            "resepsi" => "required|date",
+            "product_id" => "required|integer",
+        ]);
+
+        $dataUndangan = DataUndangan::find($id)->update([
+            "bride_name" => $request->bride_name,
+            "bride_father_name" => $request->bride_father_name,
+            "bride_mother_name" => $request->bride_mother_name,
+            "groom_name" => $request->groom_name,
+            "groom_father_name" => $request->groom_father_name,
+            "groom_mother_name" => $request->groom_mother_name,
+            "location" => $request->location,
+            "akad" => $request->akad,
+            "resepsi" => $request->resepsi,
+            "note" => $request->note,
+        ]);
+
+        return redirect()->back();
     }
 
     /**

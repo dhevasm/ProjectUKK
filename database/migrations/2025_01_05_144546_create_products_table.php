@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->integer('price');
             $table->integer('min_order');

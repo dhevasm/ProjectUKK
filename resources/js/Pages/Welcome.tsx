@@ -4,12 +4,12 @@ import Home from './Client/Home';
 import Footer from '@/Components/client/Footer';
 import Header from '@/Components/client/Header';
 
-export default function Welcome({auth, settings, categories, products, totalCart}: PageProps) {
+export default function Welcome({auth, settings, categories, products, totalCart, role}: PageProps) {
     return (
         <>
             <Head title="E-commerce" />
             <div className="bg-white dark:bg-customDark2 min-h-screen flex flex-col">
-                <Header settings={settings} categories={categories} auth={auth} products={products} totalCart={totalCart} />
+                <Header settings={settings} categories={categories} auth={auth} products={products} totalCart={totalCart} role={role} />
                     <main className="flex-grow container mx-auto px-4 py-8">
                         {
                             auth.user && auth.user.email_verified_at === null ? (

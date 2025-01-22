@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ProductImages;
 use App\Http\Controllers\Controller;
+use App\Models\review;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -89,9 +91,10 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $name)
     {
-        $product = Product::with(["category", "product_images"])->find($id);
+
+        $product = Product::with(["category", "product_images"])->where("name", str_replace("-", " ", $name))->first();
 
         if (!$product || !$product->visible) {
             return redirect()->route("welcome");
@@ -103,7 +106,14 @@ class ProductController extends Controller
         $categories = Category::all();
         $products = Product::all();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
-        return Inertia::render('Client/DetailProduct', compact("product", "canLogin", "canRegister", "settings", "categories", "totalCart"));
+        $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
+        $reviews = review::where("product_id", $product->id)->with("user")->get();
+        $isCanReview = Transaction::where("user_id", Auth::user()->id)->where("product_id", $product->id)->where("status", "completed")->count() > 0 ? true : false;
+        if(review::where("user_id", Auth::user()->id)->where("product_id", $product->id)->count() > 0){
+            $isCanReview = false;
+        }
+
+        return Inertia::render('Client/DetailProduct', compact("product", "canLogin", "canRegister", "settings", "categories", "totalCart", 'role', 'reviews', 'isCanReview'));
     }
 
     /**
@@ -203,12 +213,13 @@ class ProductController extends Controller
             'q' => 'required|string'
         ]);
 
-        $Products = Product::where('name', 'like', '%' . $request->q . '%')->with("product_images")->get();
+        $Products = Product::where('name', 'like', '%' . $request->q . '%')->with(["product_images", "reviews"])->get();
         $canLogin = Route::has('login');
         $canRegister = Route::has('register');
         $settings = Setting::all();
         $categories = Category::all();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
-        return Inertia::render('Client/Search', compact("canLogin", "canRegister", "settings", "categories", "Products", "totalCart"));
+        $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
+        return Inertia::render('Client/Search', compact("canLogin", "canRegister", "settings", "categories", "Products", "totalCart", "role"));
     }
 }

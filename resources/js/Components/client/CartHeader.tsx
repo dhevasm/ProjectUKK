@@ -15,6 +15,7 @@ interface HeaderProps {
         user: User;
     };
     totalCart: number;
+    role: string;
 }
 
 export default function CartHeader({
@@ -22,12 +23,13 @@ export default function CartHeader({
     categories,
     auth,
     totalCart,
+    role
 }: HeaderProps) {
     const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
     const [event, setEvent] = useState("");
     const [eventLink, setEventLink] = useState("");
-
+    const [eventMovingText, setEventMovingText] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState("");
@@ -44,6 +46,9 @@ export default function CartHeader({
             }
             if (setting.key === "web_event_link") {
                 setEventLink(setting.value);
+            }
+            if(setting.key === "web_event_moving"){
+                setEventMovingText(setting.value == "1" ? true : false);
             }
         });
 
@@ -79,14 +84,25 @@ export default function CartHeader({
     return (
         <>
             {event && (
-                <div className="bg-[--app-color] text-white text-center py-2 text-sm">
+                <div className="bg-[--app-color]  mt-0.5  text-white text-center py-2 max-h-9 min-h-9 text-sm">
+                     {
+                    eventMovingText ? <div dangerouslySetInnerHTML={{ __html:
+                    `<marquee>
                     <a
-                        href={eventLink}
-                        className="cursor-pointer hover:underline"
+                        href=${eventLink}
                         target="_blank"
+                        className="hover:underline"
+                    >
+                        ${event}
+                    </a></marquee>` }} /> :
+                        <a
+                        href={eventLink}
+                        target="_blank"
+                        className="hover:underline"
                     >
                         {event}
                     </a>
+                }
                 </div>
             )}
 
@@ -184,6 +200,20 @@ export default function CartHeader({
                                     <Dropdown.Link href={route("user.profile")}>
                                         Profile
                                     </Dropdown.Link>
+                                    {
+                                        role === "admin" ? (
+                                            <Dropdown.Link
+                                                href={route("dashboard")}
+                                            >
+                                                Admin
+                                            </Dropdown.Link>
+                                        ) : ""
+                                    }
+                                     <Dropdown.Link
+                                        href={route('order.history')}
+                                    >
+                                        Order History
+                                    </Dropdown.Link>
                                     <Dropdown.Link
                                         href={route("logout")}
                                         method="post"
@@ -251,7 +281,7 @@ export default function CartHeader({
                                         .map((category) => (
                                             <Link
                                                 key={category.id}
-                                                href={`/category/${category.id}`}
+                                                href={`/category/${category.name.replace(/\s+/g, "-")}`}
                                                 className="themeHover text-gray-700 transition p-4 border-b"
                                             >
                                                 {category.name}

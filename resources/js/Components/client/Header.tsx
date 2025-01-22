@@ -22,12 +22,14 @@ interface HeaderProps {
         user: User;
     };
     totalCart: number;
+    role: string;
 }
 
-export default function Header({ settings, categories, auth, products, totalCart }: HeaderProps) {
+export default function Header({ settings, categories, auth, products, totalCart, role }: HeaderProps) {
     const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
     const [event, setEvent] = useState('');
     const [eventLink, setEventLink] = useState('');
+    const [eventMovingText, setEventMovingText] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -39,7 +41,6 @@ export default function Header({ settings, categories, auth, products, totalCart
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-
     useEffect(() => {
         settings.forEach((setting) => {
             if (setting.key === "web_event") {
@@ -47,6 +48,9 @@ export default function Header({ settings, categories, auth, products, totalCart
             }
             if (setting.key === "web_event_link") {
                 setEventLink(setting.value);
+            }
+            if(setting.key === "web_event_moving"){
+                setEventMovingText(setting.value == "1" ? true : false);
             }
         });
 
@@ -97,8 +101,9 @@ export default function Header({ settings, categories, auth, products, totalCart
         };
     }, []);
 
-    const handleSuggestionClick = (productId: number) => {
-        router.get(route('product.show', productId));
+    const handleSuggestionClick = (productName: string) => {
+        console.log(productName);
+        router.get(route('product.show.detail', productName));
         setShowSuggestions(false);
         setSearchTerm('');
     };
@@ -110,10 +115,25 @@ export default function Header({ settings, categories, auth, products, totalCart
 
     return (
         <>
-            {event && <div className="bg-[--app-color] text-white text-center py-2 text-sm">
-                <a href={eventLink} className='cursor-pointer hover:underline' target='_blank'>
-                    {event}
-                </a>
+            {event && <div className="bg-[--app-color] mt-0.5 text-white text-center py-2 min-h-9 max-h-9 text-sm">
+                {
+                    eventMovingText ? <div dangerouslySetInnerHTML={{ __html:
+                    `<marquee>
+                    <a
+                        href=${eventLink}
+                        target="_blank"
+                        className="hover:underline"
+                    >
+                        ${event}
+                    </a></marquee>` }} /> :
+                        <a
+                        href={eventLink}
+                        target="_blank"
+                        className="hover:underline"
+                    >
+                        {event}
+                    </a>
+                }
             </div>}
 
             <header className="bg-white dark:bg-customDark shadow-md">
@@ -145,7 +165,7 @@ export default function Header({ settings, categories, auth, products, totalCart
                                         <div
                                             key={product.id}
                                             className="p-3 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer flex items-center space-x-3"
-                                            onClick={() => handleSuggestionClick(product.id)}
+                                            onClick={() => handleSuggestionClick(product.name.replace(/\s+/g, "-"))}
                                         >
                                             <div>
                                                 <div className="font-medium">{product.name}</div>
@@ -202,6 +222,20 @@ export default function Header({ settings, categories, auth, products, totalCart
                                             href={route('user.profile')}
                                         >
                                             Profile
+                                        </Dropdown.Link>
+                                        {
+                                            role === 'admin' && (
+                                                <Dropdown.Link
+                                                    href={route('dashboard')}
+                                                >
+                                                    Admin
+                                                </Dropdown.Link>
+                                            )
+                                        }
+                                        <Dropdown.Link
+                                            href={route('order.history')}
+                                        >
+                                            Order History
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('logout')}
@@ -269,7 +303,7 @@ export default function Header({ settings, categories, auth, products, totalCart
                                                 <div
                                                     key={product.id}
                                                     className="p-3 hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer flex items-center space-x-3"
-                                                    onClick={() => handleSuggestionClick(product.id)}
+                                                    onClick={() => handleSuggestionClick(product.name.replace(/\s+/g, "-"))}
                                                 >
                                                     <div>
                                                         <div className="font-medium">{product.name}</div>
@@ -327,7 +361,7 @@ export default function Header({ settings, categories, auth, products, totalCart
                                         {categories.map((category) => (
                                             <Link
                                                 key={category.id}
-                                                href={route("category.show", category.id)}
+                                                href={route("category.show", category.name.replace(/\s+/g, "-"))}
                                                 className="themeHover text-gray-700 transition p-4 border-b"
                                             >
                                                 {category.name}
@@ -345,7 +379,7 @@ export default function Header({ settings, categories, auth, products, totalCart
                             {categories.map((category) => (
                                 <Link
                                     key={category.id}
-                                    href={`/category/${category.id}`}
+                                    href={`/category/${category.name.replace(/\s+/g, "-")}`}
                                     className="text-gray-700 hover:text-[var(--app-color)] transition"
                                 >
                                     {category.name}

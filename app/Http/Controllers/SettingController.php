@@ -88,6 +88,21 @@ class SettingController extends Controller
 
                 Setting::upsert($linkValue, ["key"] , ["key", "value", "type"]);
             }
+
+            if(isset($request->web_event_moving)){
+                $request->validate([
+                    'web_event_moving' => 'boolean',
+                ]);
+
+                $movingValue = [
+                    "key" => "web_event_moving",
+                    "value" => $request->web_event_moving,
+                    "type" => "boolean",
+                ];
+
+                Setting::upsert($movingValue, ["key"] , ["key", "value", "type"]);
+            }
+
             $eventValue = [
                 "key" => "web_event",
                 "value" => $request->web_event,
@@ -194,6 +209,28 @@ class SettingController extends Controller
         return redirect()->route('setting.index');
     }
 
+    public function setCarouselLink(Request $request)
+    {
+        $request->validate([
+            'carousel_name' => 'string',
+            'carousel_link' => 'string',
+        ]);
+
+        $name = Setting::where("value", $request->carousel_name)->first()->key;
+
+        $name = str_replace('image', 'link', $name);
+
+        $linkValue = [
+            "key" => $name,
+            "value" =>  $request->carousel_link,
+            "type" => "link",
+        ];
+
+        Setting::upsert($linkValue, ["key"] , ["key", "value", "type"]);
+
+        return redirect()->route('setting.index');
+    }
+
     /**
      * Display the specified resource.
      */
@@ -236,6 +273,58 @@ class SettingController extends Controller
         $file = Setting::where("key", $id)->first();
         unlink(public_path($file->value));
         $file->delete();
+
+        $link = str_replace('image', 'link', $id);
+        Setting::where("key", $link)->delete();
+        return redirect()->route('setting.index');
+    }
+
+    public function priceSetting(Request $request)
+    {
+
+        if($request->has('production_price')){
+            $request->validate([
+                'production_price' => 'required|numeric',
+            ]);
+
+            $priceValue = [
+                "key" => "production_price",
+                "value" => $request->production_price,
+                "type" => "number",
+            ];
+
+            Setting::upsert($priceValue, ["key"] , ["key", "value", "type"]);
+        }
+
+        if($request->has('delivery_price')){
+            $request->validate([
+                'delivery_price' => 'required|numeric',
+            ]);
+
+            $priceValue = [
+                "key" => "delivery_price",
+                "value" => $request->delivery_price,
+                "type" => "number",
+            ];
+
+            Setting::upsert($priceValue, ["key"] , ["key", "value", "type"]);
+        }
+
+        if($request->has('tax')){
+            $request->validate([
+                'tax' => 'required|numeric',
+            ]);
+
+            $priceValue = [
+                "key" => "tax",
+                "value" => $request->tax,
+                "type" => "percentage",
+            ];
+
+            Setting::upsert($priceValue, ["key"] , ["key", "value", "type"]);
+        }
+
+
         return redirect()->route('setting.index');
     }
 

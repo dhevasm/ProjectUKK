@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('order_id')->unique();
             $table->string('snap_token')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('payment_method');
-            $table->enum('status', ["pending", "settlement","failure", "cancel", "expire", "refund"])->default('pending');
+            $table->string('payment_method')->nullable();
+            $table->integer('gross_amount');
+            $table->enum('status', ["pending", "settlement","failed", "refund"])->default('pending');
             $table->timestamps();
         });
     }

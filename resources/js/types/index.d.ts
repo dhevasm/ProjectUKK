@@ -37,6 +37,15 @@ export interface ProductImages {
     url: string;
 }
 
+export interface Review {
+    id: number;
+    rating: number;
+    comment: string;
+    created_at: string;
+    user: User;
+}
+
+
 export interface Product {
     id: number;
     name: string;
@@ -50,6 +59,7 @@ export interface Product {
     visible: boolean;
     created_at: string;
     product_images: ProductImages[];
+    reviews: Review[];
 };
 
 export  interface dataUndangan{
@@ -84,4 +94,5 @@ export type PageProps<
     categories: Category[];
     products: Product[];
     totalCart: number;
+    role: string;
 };

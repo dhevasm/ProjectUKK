@@ -30,7 +30,13 @@ export type ProductType = {
 export const ProductsColumn: ColumnDef<ProductType>[] = [
     {
         accessorKey: "name",
-        header: "Name",
+        header: ({ column }) => {
+            return (
+                <div className="whitespace-nowrap w-20">
+                    Name
+                </div>
+            );
+        },
     },
     {
         accessorKey: "category.name",
@@ -55,8 +61,33 @@ export const ProductsColumn: ColumnDef<ProductType>[] = [
     },
     {
         accessorKey: "min_order",
-        header: () => <div className="w-20">Min Order</div>,
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                }
+            >
+                Min Order
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
         cell: ({ row }) => row.getValue("min_order"),
+    },
+    {
+        accessorKey: "stock",
+       header: ({ column }) => (
+            <Button
+                variant="ghost"
+                onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                }
+            >
+                Stock
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => row.getValue("stock"),
     },
     {
         accessorKey: "sold",
@@ -136,14 +167,14 @@ export const ProductsColumn: ColumnDef<ProductType>[] = [
 
             return (
                 <div className="flex gap-1">
-                    <Button onClick={() => handleEdit(row.getValue("id"))} className="bg-blue-500 hover:bg-blue-600 px-2 py-1 text-sm rounded h-8">
+                    <Button title="Edit Produk" onClick={() => handleEdit(row.getValue("id"))} className="bg-blue-500 hover:bg-blue-600 px-2 py-1 text-sm rounded h-8">
                         <Pencil />
                     </Button>
 
                     {/* Modal Delete */}
                     <AlertDialog>
                         <AlertDialogTrigger>
-                            <Button className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8">
+                            <Button title="Hapus Produk" className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8">
                                 <Trash2 />
                             </Button>
                         </AlertDialogTrigger>

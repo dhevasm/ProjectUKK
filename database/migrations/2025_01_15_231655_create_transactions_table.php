@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId("product_id")->constrained()->onDelete("cascade");
             $table->foreignId("data_undangan_id")->constrained()->onDelete("cascade");
             $table->integer("quantity")->default(1);
-            $table->enum("status", ["pending", "cancelled", "proccess", "delivery", "success"])->default("pending");
+            $table->enum("status", ["pending", "cancelled", "proccess", "delivery", "completed"])->default("pending");
             $table->timestamps();
         });
     }

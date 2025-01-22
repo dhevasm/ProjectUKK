@@ -21,8 +21,8 @@ export default function Edit({
         >
             <Head title="Profile" />
 
-            <div className="py-12 ">
-                <div className="w-full px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="py-12 flex-col md:flex-row flex gap-4 px-4 md:px-2 md:ps-6">
+                <div className="w-full space-y-6">
                     <div className='grid grid-col-1 md:grid-cols-2 gap-4'>
                         <div className="bg-white dark:bg-customDark p-4 shadow sm:rounded-lg sm:p-8">
                             <UpdateImage/>

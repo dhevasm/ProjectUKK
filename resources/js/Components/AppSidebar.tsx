@@ -1,7 +1,9 @@
 import { Link } from "@inertiajs/react";
 import { useState, useEffect, useContext } from "react";
-import { User, LayoutDashboard, Settings, ChartBarStacked, Package, PackagePlus, Wallet, HandCoins, Truck, ChartNoAxesCombined, Palette  } from "lucide-react";
+import { User, LayoutDashboard, Settings, ChartBarStacked, Package, Wallet, Truck, ChartNoAxesCombined } from "lucide-react";
 import { AdminContext } from "@/Layouts/AuthenticatedLayout";
+import { Input } from "@/Components/ui/input";
+import { Search } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -41,38 +43,20 @@ const items = [
         icon: Package,
     },
     {
-        title: "Add Product",
-        active: "product/create",
-        url: route("product.create"),
-        icon: PackagePlus,
-    },
-    {
         title: "Transcation",
-        active: "order",
-        url: route("product.create"),
+        active: "transaction",
+        url: route("transaction.index"),
         icon: Wallet,
     },
     {
         title: "Delivery",
-        active: "tracking",
-        url: route("product.create"),
+        active: "delivery",
+        url: route("delivery.index"),
         icon: Truck,
-    },
-    {
-        title: "Refunds",
-        active: "refund",
-        url: route("product.create"),
-        icon: HandCoins,
     },
     {
         title: "Settings",
         active: "setting",
-        url: route("setting.index"),
-        icon: Settings,
-    },
-    {
-        title: "FAQ & Support",
-        active: "faq",
         url: route("setting.index"),
         icon: Settings,
     },
@@ -82,14 +66,19 @@ export function AppSidebar() {
     const appName = import.meta.env.VITE_APP_NAME || "Laravel";
     const activeTab = new URL(window.location.href).pathname.substring(1);
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [search, setSearch] = useState("");
 
     const { state } = useSidebar();
     const adminContext = useContext(AdminContext);
 
     useEffect(() => {
-        state == "collapsed" ? setIsCollapsed(true) : setIsCollapsed(false);
-        adminContext?.setIsSidebarCollapsed(state == "collapsed" ? true : false);
+        state === "collapsed" ? setIsCollapsed(true) : setIsCollapsed(false);
+        adminContext?.setIsSidebarCollapsed(state === "collapsed" ? true : false);
     }, [state]);
+
+    const filteredItems = items.filter((item) =>
+        item.title.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <Sidebar collapsible="icon" className="z-50">
@@ -107,37 +96,53 @@ export function AppSidebar() {
                     {appName}
                 </Link>
             </SidebarHeader>
+
+            <div className={isCollapsed ? "hidden" : "block p-3  relative"}>
+                <Search className="absolute left-6 top-1/2 transform -translate-y-1/2  w-5 h-5" />
+                <Input
+                    type="text"
+                    placeholder="Search menu..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="border border-gray-300 dark:border-gray-800 text-sm rounded-md pl-10 pr-4 py-2 w-full focus:ring-2 focus:ring-[var(--app-color)]"
+                />
+            </div>
+
             <style>
                 {`
                     .active {
                         color: var(--app-color);
                     }
-
                     .active:hover {
                         color: var(--app-color) !important;
                     }
                 `}
             </style>
+
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>General</SidebarGroupLabel>
+                    <SidebarGroupLabel>Menu</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <Link
-                                            href={item.url}
-                                            className={`${item.active === activeTab ? "active" : ""} group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
-                                        >
-                                            <item.icon />
-                                            <span className="group-data-[state=closed]:hidden">
-                                                {item.title}
-                                            </span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
+                            {filteredItems.length > 0 ? (
+                                filteredItems.map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton asChild>
+                                            <Link
+                                                href={item.url}
+                                                className={`${item.active === activeTab ? "active" : ""} group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
+                                            >
+                                                <item.icon />
+                                                <span className="ml-2 group-data-[state=closed]:hidden">
+                                                    {item.title}
+                                                </span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))
+                            ) : (
+                                <p className="text-gray-500 text-center text-sm">No results found</p>
+                            )}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

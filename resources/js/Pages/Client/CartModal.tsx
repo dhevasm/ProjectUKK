@@ -30,7 +30,7 @@ export default function CartModal({ product, user }: { product: Product, user: U
         groom_name: "",
         groom_father_name: "",
         groom_mother_name: "",
-        location: user.address, 
+        location: user.address,
         note: "",
         akad: "",
         resepsi: "",
@@ -91,11 +91,9 @@ export default function CartModal({ product, user }: { product: Product, user: U
     };
 
 
-
     const formatDateForInput = () => {
         const fiveDaysLater = new Date();
         fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
-        fiveDaysLater.setHours(23, 59, 59, 999);
         return fiveDaysLater.toISOString().slice(0, 16);
     };
 
@@ -116,6 +114,62 @@ export default function CartModal({ product, user }: { product: Product, user: U
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         {/* Groom's Details */}
+                         <div className="space-y-4">
+                            <h3 className="text-lg font-semibold">
+                                Groom's Details
+                            </h3>
+                            <div className="space-y-2">
+                                <Label htmlFor="groom_name">Groom's Name</Label>
+                                <Input
+                                    id="groom_name"
+                                    value={data.groom_name}
+                                    onChange={(e) =>
+                                        setData({
+                                            ...data,
+                                            groom_name: e.target.value,
+                                        })
+                                    }
+                                    placeholder="Enter groom's name"
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="groom_father_name">
+                                    Groom's Father Name
+                                </Label>
+                                <Input
+                                    id="groom_father_name"
+                                    value={data.groom_father_name}
+                                    onChange={(e) =>
+                                        setData({
+                                            ...data,
+                                            groom_father_name: e.target.value,
+                                        })
+                                    }
+                                    placeholder="Enter groom's father name"
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="groom_mother_name">
+                                    Groom's Mother Name
+                                </Label>
+                                <Input
+                                    id="groom_mother_name"
+                                    value={data.groom_mother_name}
+                                    onChange={(e) =>
+                                        setData({
+                                            ...data,
+                                            groom_mother_name: e.target.value,
+                                        })
+                                    }
+                                    placeholder="Enter groom's mother name"
+                                    required
+                                />
+                            </div>
+                        </div>
+
                         {/* Bride's Details */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">
@@ -174,61 +228,7 @@ export default function CartModal({ product, user }: { product: Product, user: U
                             </div>
                         </div>
 
-                        {/* Groom's Details */}
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold">
-                                Groom's Details
-                            </h3>
-                            <div className="space-y-2">
-                                <Label htmlFor="groom_name">Groom's Name</Label>
-                                <Input
-                                    id="groom_name"
-                                    value={data.groom_name}
-                                    onChange={(e) =>
-                                        setData({
-                                            ...data,
-                                            groom_name: e.target.value,
-                                        })
-                                    }
-                                    placeholder="Enter groom's name"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="groom_father_name">
-                                    Groom's Father Name
-                                </Label>
-                                <Input
-                                    id="groom_father_name"
-                                    value={data.groom_father_name}
-                                    onChange={(e) =>
-                                        setData({
-                                            ...data,
-                                            groom_father_name: e.target.value,
-                                        })
-                                    }
-                                    placeholder="Enter groom's father name"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="groom_mother_name">
-                                    Groom's Mother Name
-                                </Label>
-                                <Input
-                                    id="groom_mother_name"
-                                    value={data.groom_mother_name}
-                                    onChange={(e) =>
-                                        setData({
-                                            ...data,
-                                            groom_mother_name: e.target.value,
-                                        })
-                                    }
-                                    placeholder="Enter groom's mother name"
-                                    required
-                                />
-                            </div>
-                        </div>
+
                     </div>
 
                     {/* Wedding Details */}
@@ -257,7 +257,7 @@ export default function CartModal({ product, user }: { product: Product, user: U
                                 <Label>Akad Date & Time</Label>
                                 <Input
                                     type="datetime-local"
-                                    className="w-full"
+                                    className="w-full custom-date-picker"
                                     value={data.akad}
                                     min={formatDateForInput()}
                                     onChange={(e) =>
@@ -274,7 +274,7 @@ export default function CartModal({ product, user }: { product: Product, user: U
                                 <Label>Resepsi Date & Time</Label>
                                 <Input
                                     type="datetime-local"
-                                    className="w-full"
+                                    className="w-full custom-date-picker"
                                     value={data.resepsi}
                                     min={formatDateForInput()}
                                     onChange={(e) =>

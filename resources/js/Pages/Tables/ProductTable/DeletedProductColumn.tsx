@@ -150,7 +150,7 @@ export const DeletedProductColumn: ColumnDef<ProductType>[] = [
                     {/* Modal Restore */}
                     <AlertDialog>
                         <AlertDialogTrigger>
-                            <Button className="bg-yellow-500 hover:bg-yellow-600 px-2 py-1 text-sm rounded h-8">
+                            <Button  title="Pulihkan Produk" className="bg-yellow-500 hover:bg-yellow-600 px-2 py-1 text-sm rounded h-8">
                                 <ArchiveRestore />
                             </Button>
                         </AlertDialogTrigger>
@@ -182,7 +182,7 @@ export const DeletedProductColumn: ColumnDef<ProductType>[] = [
                     {/* Modal Delete */}
                     <AlertDialog>
                         <AlertDialogTrigger>
-                            <Button className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8">
+                            <Button  title="Hapus Permanen" className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8">
                                 <Trash2 />
                             </Button>
                         </AlertDialogTrigger>

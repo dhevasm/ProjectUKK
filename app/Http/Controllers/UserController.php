@@ -22,13 +22,15 @@ class UserController extends Controller
 
     public function rootPage()
     {
+        $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'settings' => Setting::all(),
             'categories' => Category::all(),
-            'products' => Product::with(['category', 'product_images'])->get(),
+            'products' => Product::with(['category', 'product_images', 'reviews'])->get(),
             "totalCart" => Auth::user() ? Auth::user()->carts->count() : 0,
+            "role" =>  $role,
         ]);
     }
 
@@ -56,6 +58,12 @@ class UserController extends Controller
             ]);
         }else{
            Auth::login($user);
+
+           if($user->banned_until && $user->banned_until > now()) {
+            $id = $user->id;
+            Auth::guard('web')->logout();
+           return redirect()->route('user.banned', $id);
+        }
            return redirect()->route('welcome');
         }
 
@@ -78,7 +86,7 @@ class UserController extends Controller
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => array(
         'target' => Auth::user()->phone,
-        'message' => 'UNDANGAN.COM : Your One-Time Password (OTP) code is ' . $code . '. Please use this code to verify your phone number. The code will expire in 5 minutes.',
+        'message' => env("APP_NAME").': Your One-Time Password (OTP) code is ' . $code . '. Please use this code to verify your phone number. The code will expire in 5 minutes.',
         'countryCode' => '62',
         ),
         CURLOPT_HTTPHEADER => array(

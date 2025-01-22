@@ -1,6 +1,7 @@
 import { Label } from "@/Components/ui/label";
 import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
+import { Switch } from "@/Components/ui/switch";
 
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
@@ -22,11 +23,14 @@ interface EventSettingProps {
     setEvent: (event: string) => void;
     eventLink: string;
     setEventLink: (eventLink: string) => void;
+    eventMovingText: boolean;
+    setEventMovingText: (eventMovingText: boolean) => void
     eventSave: () => void;
 }
 
 
-export default function EventSetting({event, setEvent, eventLink, setEventLink, eventSave} : EventSettingProps) {
+export default function EventSetting({event, setEvent, eventLink, setEventLink, eventMovingText, setEventMovingText,  eventSave} : EventSettingProps) {
+
     const handleDelete = () => {
         router.delete(route('deleteEvent'), {
             preserveScroll: true,
@@ -45,6 +49,7 @@ export default function EventSetting({event, setEvent, eventLink, setEventLink, 
         });
     }
 
+
     return (
         <>
             <span className="w-full">
@@ -62,6 +67,10 @@ export default function EventSetting({event, setEvent, eventLink, setEventLink, 
                     value={eventLink}
                     onChange={(e) => setEventLink(e.target.value)}
                 />
+            </span>
+            <span className="w-fit whitespace-nowrap flex flex-col gap-2 items-center justify-center">
+                <Label>Moving Text</Label>
+                <Switch  checked={eventMovingText} onClick={(e) => setEventMovingText(!eventMovingText)} />
             </span>
             <span className="self-end flex gap-2">
                 <AlertDialog>

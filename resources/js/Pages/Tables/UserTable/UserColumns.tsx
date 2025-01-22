@@ -196,7 +196,7 @@ export const UserColumns: ColumnDef<UserType>[] = [
     <div className='flex gap-1'>
         <AlertDialog>
             <AlertDialogTrigger>
-                <Button className='bg-blue-500 hover:bg-blue-600 px-2 py-1 text-sm rounded h-8'>
+                <Button  title="Edit Pengguna" className='bg-blue-500 hover:bg-blue-600 px-2 py-1 text-sm rounded h-8'>
                     <Pencil />
                 </Button>
             </AlertDialogTrigger>
@@ -235,7 +235,7 @@ export const UserColumns: ColumnDef<UserType>[] = [
         </AlertDialog>
         <AlertDialog>
             <AlertDialogTrigger>
-                <Button className='bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8'>
+                <Button  title="Hapus Pengguna" className='bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8'>
                     <Trash2 />
                 </Button>
             </AlertDialogTrigger>
@@ -259,7 +259,7 @@ export const UserColumns: ColumnDef<UserType>[] = [
         </AlertDialog>
         <AlertDialog>
             <AlertDialogTrigger>
-                <Button className='bg-yellow-500 hover:bg-yellow-600 px-2 py-1 text-sm rounded h-8'>
+                <Button  title="Blokir Pengguna" className='bg-yellow-500 hover:bg-yellow-600 px-2 py-1 text-sm rounded h-8'>
                     <ShieldBan />
                 </Button>
             </AlertDialogTrigger>
@@ -272,7 +272,7 @@ export const UserColumns: ColumnDef<UserType>[] = [
                         <Label>
                             Ban until:
                         </Label>
-                        <Input type='date' id='inputDate' />
+                        <Input type='date' id='inputDate' className='custom-date-picker' />
                         <div className='flex gap-2'>
                             <Button onClick={() => {
                                 const input = document.querySelector('#inputDate') as HTMLInputElement;

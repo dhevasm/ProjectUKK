@@ -22,7 +22,7 @@ export default function ProductTable({
         >
             <Head title="Products" />
 
-            <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
+            <div className="py-12 flex-col md:flex-row flex gap-4 px-4 md:px-2 md:ps-6">
                 <div className="w-full">
                     <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm dark:shadow-slate-800/50 rounded-md sm:rounded-lg border dark:border-slate-800 transition-colors duration-300
 ">

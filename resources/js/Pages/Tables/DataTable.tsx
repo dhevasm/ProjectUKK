@@ -121,10 +121,10 @@ export function DataTable<TData, TValue>({
             <div className="flex flex-col md:flex-row items-center justify-between">
                 <div className=" flex items-center py-4">
                     <Input
-                        placeholder="Search Data..."
-                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                        placeholder={`Search Data..`}
+                        value={(table.getColumn(table.getAllColumns()[0].id)?.getFilterValue() as string) ?? ""}
                         onChange={(event) =>
-                            table.getColumn("name")?.setFilterValue(event.target.value)
+                            table.getColumn(table.getAllColumns()[0].id)?.setFilterValue(event.target.value)
                         }
                         className="max-w-sm"
                     />

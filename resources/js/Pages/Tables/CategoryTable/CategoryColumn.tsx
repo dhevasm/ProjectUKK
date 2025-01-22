@@ -154,7 +154,7 @@ export const CategoryColumn: ColumnDef<CategoryType>[] = [
                     {/* Edit Modal */}
                     <AlertDialog onOpenChange={() => {setCategory(row.getValue("name")); setPreviewImage(row.getValue("image"))}}>
                         <AlertDialogTrigger>
-                            <Button className="bg-blue-500 hover:bg-blue-600 px-2 py-1 text-sm rounded h-8">
+                            <Button title="Edit Kategori" className="bg-blue-500 hover:bg-blue-600 px-2 py-1 text-sm rounded h-8">
                                 <Pencil />
                             </Button>
                         </AlertDialogTrigger>
@@ -214,7 +214,7 @@ export const CategoryColumn: ColumnDef<CategoryType>[] = [
                     {/* Delete Modal */}
                     <AlertDialog>
                         <AlertDialogTrigger>
-                            <Button className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8">
+                            <Button  title="Hapus Kategori" className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm rounded h-8">
                                 <Trash2 />
                             </Button>
                         </AlertDialogTrigger>

@@ -61,6 +61,22 @@ export default function AddProduct({
         setPreviews([...previews, ...newPreviews]);
     };
 
+    const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+        e.preventDefault();
+
+        const fileList = e.dataTransfer.files;
+        if (fileList.length === 0) return;
+
+        const inputEvent = {
+            target: {
+                files: fileList,
+            },
+        } as unknown as ChangeEvent<HTMLInputElement>;
+
+        handleImageChange(inputEvent);
+    };
+
+
     const deleteImage = (index: number) => {
         const newImages = images.filter((_, i) => i !== index);
         const newPreviews = previews.filter((_, i) => i !== index);
@@ -114,13 +130,23 @@ export default function AddProduct({
         >
             <Head title="Add Product" />
 
-            <div className="py-12 flex-col md:flex-row flex gap-4 px-4">
+            <div className="py-12 flex-col md:flex-row flex gap-4 px-4 md:px-2 md:ps-6">
                 <div className="w-full">
                     <div className="overflow-hidden bg-white shadow-sm rounded-md sm:rounded-lg dark:bg-customDark">
                         <div className="p-6 text-gray- 900 dark:text-gray-300">
+                            <div className="flex justify-between items-center">
                             Add Products
+                            <Button
+                                variant="outline"
+                                onClick={() => router.get(route("product.index"))}
+                                className="mb-4"
+                            >
+                                Back
+                            </Button>
+
+                            </div>
                             <form onSubmit={submit} className="my-4">
-                                <div className="flex gap-4 mb-4">
+                                <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="w-full">
                                         <Label>Name</Label>
                                         <Input
@@ -219,7 +245,7 @@ export default function AddProduct({
                                     </div>
                                 </div>
 
-                                <div className="flex gap-4 mb-4">
+                                <div className="flex flex-col md:flex-row gap-4 mb-4">
                                     <div className="w-full">
                                         <Label>Price</Label>
                                         <Input
@@ -298,14 +324,15 @@ export default function AddProduct({
                                 <div className="space-y-4">
                                     <Label>Image</Label>
                                     <div className="flex items-center justify-center w-full">
-                                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-customDark2 dark:border-gray-600 dark:hover:bg-gray-600">
+                                        <label
+                                            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-customDark2 dark:border-gray-600 dark:hover:bg-gray-600"
+                                            onDragOver={(e) => e.preventDefault()}
+                                            onDrop={handleDrop}
+                                        >
                                             <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                 <Upload className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-300" />
                                                 <p className="mb-2 text-sm text-gray-500 dark:text-gray-300">
-                                                    <span className="font-semibold">
-                                                        Click to upload
-                                                    </span>{" "}
-                                                    or drag and drop
+                                                    <span className="font-semibold">Click to upload</span> or drag and drop
                                                 </p>
                                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                                     PNG, JPG, GIF up to 10MB
@@ -320,6 +347,7 @@ export default function AddProduct({
                                             />
                                         </label>
                                     </div>
+
 
                                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                                         {previews.map((preview, index) => (

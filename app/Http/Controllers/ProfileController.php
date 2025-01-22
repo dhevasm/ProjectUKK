@@ -120,6 +120,7 @@ class ProfileController extends Controller
     }
 
     public function userProfile(){
+        $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         return Inertia::render('Client/Profile', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
@@ -127,6 +128,7 @@ class ProfileController extends Controller
             'categories' =>Category::all(),
             'products' => Product::all(),
             "totalCart" => Auth::user() ? Auth::user()->carts->count() : 0,
+            "role" =>  $role,
         ]);
     }
 }
