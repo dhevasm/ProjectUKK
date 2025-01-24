@@ -1,6 +1,6 @@
 import { Link } from "@inertiajs/react";
 import { useState, useEffect, useContext } from "react";
-import { User, LayoutDashboard, Settings, ChartBarStacked, Package, Wallet, Truck, ChartNoAxesCombined } from "lucide-react";
+import { User, LayoutDashboard, Settings, ChartBarStacked, Package, Wallet, Truck, ChartNoAxesCombined, HandCoins,Star} from "lucide-react";
 import { AdminContext } from "@/Layouts/AuthenticatedLayout";
 import { Input } from "@/Components/ui/input";
 import { Search } from "lucide-react"
@@ -53,6 +53,18 @@ const items = [
         active: "delivery",
         url: route("delivery.index"),
         icon: Truck,
+    },
+    {
+        title: "Refund",
+        active: "refund",
+        url: route("refund.index"),
+        icon: HandCoins,
+    },
+    {
+        title: "Review",
+        active: "review",
+        url: route("review.index"),
+        icon: Star,
     },
     {
         title: "Settings",

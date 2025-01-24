@@ -30,7 +30,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
         groom_name: "",
         groom_father_name: "",
         groom_mother_name: "",
-        location: user.address,
+        location: user?.address,
         note: "",
         akad: "",
         resepsi: "",
@@ -90,15 +90,30 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
     };
 
     return (
+        <>
+        {
+            !user  &&
+            <Button
+                onClick={() => router.get(route("login"))}
+                variant="outline"
+                className="w-full"
+                size="lg"
+            >
+                Buy Now
+            </Button>
+        }
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="w-full"
-                    size="lg"
-                >
-                    Buy Now
-                </Button>
+                {
+                    user  &&
+                    <Button
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                    >
+                        Buy Now
+                    </Button>
+                }
             </DialogTrigger>
             <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
@@ -361,5 +376,6 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                 </form>
             </DialogContent>
         </Dialog>
+        </>
     );
 }

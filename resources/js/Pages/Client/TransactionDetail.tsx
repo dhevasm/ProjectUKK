@@ -7,6 +7,8 @@ import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/Components/ui/dialog";
 import { Category, Product, settings, User, dataUndangan } from '@/types';
+import RefundModal from './RefundModal';
+
 interface Payment{
     id: string;
     order_id: string;
@@ -98,6 +100,8 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({ transaction, onBa
   const currentStatus = getTimelineStatus();
 
   const formatDate = (dateString: string): string => {
+    if(!dateString) return '';
+
     return new Date(dateString).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
@@ -237,10 +241,10 @@ const continuePayment = () => {
         </button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3 mb-20">
         {/* Main Order Info */}
         <div className="lg:col-span-2 space-y-6">
-          <Card>
+          <Card className='bg-white dark:bg-customDark'>
             <CardHeader className="border-b">
               <div className="flex justify-between items-start">
                 <div>
@@ -306,7 +310,7 @@ const continuePayment = () => {
           </Card>
 
           {/* Timeline */}
-          <Card>
+          <Card className='bg-white dark:bg-customDark'>
             <CardHeader className="border-b">
               <h2 className="text-lg font-medium">Order Timeline</h2>
             </CardHeader>
@@ -362,7 +366,7 @@ const continuePayment = () => {
         {/* Sidebar Info */}
         <div className="space-y-6">
           {/* Delivery Info */}
-          <Card>
+          <Card className='bg-white dark:bg-customDark'>
             <CardHeader className="border-b">
               <h2 className="text-lg font-medium">Delivery Information</h2>
             </CardHeader>
@@ -385,7 +389,7 @@ const continuePayment = () => {
           </Card>
 
           {/* Payment Info */}
-          <Card>
+          <Card className='bg-white dark:bg-customDark'>
             <CardHeader className="border-b">
               <h2 className="text-lg font-medium">Payment Information</h2>
             </CardHeader>
@@ -440,7 +444,7 @@ const continuePayment = () => {
          {
             transaction.status == "cancelled" && transaction.payment.status == "settlement" ?  (
                 <div className='flex flex-col gap-2'>
-                    <Button variant={"theme"} className='w-full'>Pengembalian Dana</Button>
+                    <RefundModal orderId={transaction.payment.order_id} grossAmount={transaction.payment.gross_amount} />
                 </div>
             ) : null
          }

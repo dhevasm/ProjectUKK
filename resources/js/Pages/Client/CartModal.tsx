@@ -30,7 +30,7 @@ export default function CartModal({ product, user }: { product: Product, user: U
         groom_name: "",
         groom_father_name: "",
         groom_mother_name: "",
-        location: user.address,
+        location: user?.address,
         note: "",
         akad: "",
         resepsi: "",
@@ -98,20 +98,31 @@ export default function CartModal({ product, user }: { product: Product, user: U
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button className="w-full" size="lg" variant="theme">
+        <>
+            {
+                !user &&
+                <Button onClick={() => router.get(route("login"))} className="w-full" size="lg" variant="theme">
                     <ShoppingCart className="mr-2 h-5 w-5" />
                     Add to Cart
                 </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+
+            }
+        <Dialog open={open} onOpenChange={setOpen}>
+                 <DialogTrigger asChild>
+                    {
+                        user &&
+                        <Button className="w-full" size="lg" variant="theme">
+                        <ShoppingCart className="mr-2 h-5 w-5" />
+                        Add to Cart
+                    </Button>
+                    }
+                </DialogTrigger>
+             <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold">
                         Wedding Registration Form
                     </DialogTitle>
                 </DialogHeader>
-
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          {/* Groom's Details */}
@@ -364,5 +375,6 @@ export default function CartModal({ product, user }: { product: Product, user: U
                 </form>
             </DialogContent>
         </Dialog>
+        </>
     );
 }

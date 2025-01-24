@@ -106,7 +106,7 @@ const OrderHistory = ({
             </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 mb-20">
 
             {transactions.length === 0 && (
                 <div className="text-center py-10">
@@ -124,7 +124,7 @@ const OrderHistory = ({
             )}
 
             {transactions.map((transaction) => (
-                <Card key={transaction.id} className="hover:shadow-md transition-shadow">
+                <Card key={transaction.id} className="hover:shadow-md transition-shadow bg-white dark:bg-customDark">
                 <CardContent className="p-4">
                     <div className="flex items-center gap-4">
                     {/* Product Image */}

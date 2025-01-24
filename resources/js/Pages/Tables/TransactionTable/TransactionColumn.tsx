@@ -222,9 +222,9 @@ export const TransactionColumn: ColumnDef<TransactionType>[] = [
                     }
 
                     {
-                        transactionStatus == "delivery" && <Button title="Cetak Nota"  className="bg-blue-500 hover:bg-blue-600 px-2 py-1 text-white text-sm rounded h-8">
+                        transactionStatus != "proccess" && transactionStatus != "pending" ?  <Button title="Cetak Nota"  className="bg-blue-500 hover:bg-blue-600 px-2 py-1 text-white text-sm rounded h-8">
                             <Printer />
-                        </Button>
+                        </Button> : null
                     }
 
 

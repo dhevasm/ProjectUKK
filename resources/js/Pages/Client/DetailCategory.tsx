@@ -58,7 +58,7 @@ export default function DetailCategory({
                         </div>
                     </div>
                 </div>
-                <main className="flex-grow container mx-auto px-4 py-8">
+                <main className="flex-grow container mx-auto px-4 py-8 mb-20">
                     <div className="px-4 md:px-0">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-semibold">Products</h2>

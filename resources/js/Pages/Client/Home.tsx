@@ -103,7 +103,7 @@ export default function Home({ settings, categories, products }: HomeProps) {
     };
 
     return (
-        <div className="space-y-8 md:px-10 md:py-5">
+        <div className="space-y-8 md:px-10 md:py-5 mb-20">
             <Carousel
                 opts={{
                     align: "start",

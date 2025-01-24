@@ -5,6 +5,7 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import { Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
+import {Head} from '@inertiajs/react';
 
 interface VerifyOTPProps {
   status?: string;
@@ -45,6 +46,7 @@ export default function VerifyOTP({ status }: VerifyOTPProps) {
 
   return (
     <GuestLayout>
+        <Head title="Verify Phone" />
       <div className="text-center">
         <ShieldCheck
           className="w-12 h-12 mx-auto mb-4"

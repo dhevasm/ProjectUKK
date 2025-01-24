@@ -16,6 +16,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TransactionController;
 use App\Models\User;
@@ -50,6 +51,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get("/sendOTP", [UserController::class, 'createOTP'])->name('sendOTP');
     Route::post("/verifyOTP", [UserController::class, 'verifyOTP'])->name('verifyOTP');
     Route::get("/phone-verify", function() {return Inertia::render('Auth/VerifyPhone');})->name('phone-verify');
+    Route::post("/refund", [RefundController::class, "store"])->name('refund.store');
 });
 
 Route::group(['middleware' => ['auth', 'admin']], function () {
@@ -79,6 +81,9 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get("/deliveryStatus/{status}/{id}", [DeliveryController::class, 'changeStatus'])->name('delivery.changeStatus');
     Route::post("/banUser/{id}", [UserController::class, 'handleban'])->name('user.ban');
     Route::get("/unbanUser/{id}", [UserController::class, 'unban'])->name('user.unban');
+    Route::get("/refund", [RefundController::class, "index"])->name('refund.index');
+    Route::post("/refund/{id}", [RefundController::class, "changeStatus"])->name('refund.changeStatus');
+    Route::get("/review", [ReviewController::class, "index"])->name('review.index');
 });
 
 

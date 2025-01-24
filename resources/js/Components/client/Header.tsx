@@ -115,7 +115,7 @@ export default function Header({ settings, categories, auth, products, totalCart
 
     return (
         <>
-            {event && <div className="bg-[--app-color] mt-0.5 text-white text-center py-2 min-h-9 max-h-9 text-sm">
+            {event && <div className="bg-[--app-color] text-white text-center py-2 min-h-9 max-h-9 text-sm">
                 {
                     eventMovingText ? <div dangerouslySetInnerHTML={{ __html:
                     `<marquee>

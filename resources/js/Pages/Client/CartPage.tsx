@@ -283,7 +283,7 @@ export default function CartPage({
                     totalCart={carts.length}
                 />
 
-                <main className="flex-grow container mx-auto px-4 py-8">
+                <main className="flex-grow container mx-auto px-4 py-8 mb-20">
                     {carts.length > 0 ? (
                         <div className="lg:grid lg:grid-cols-12 gap-8">
                             <div className="lg:col-span-8 space-y-4">

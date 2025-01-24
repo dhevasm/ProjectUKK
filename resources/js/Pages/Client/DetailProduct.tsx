@@ -287,7 +287,7 @@ export default function DetailProduct({
                     </div>
 
                     <div id="review"></div>
-                   <Review reviews={reviews} isCanReview={isCanReview} productId={product.id}/>
+                   <Review reviews={reviews} role={role} isCanReview={isCanReview} productId={product.id} user={auth.user}/>
                 </main>
            </ClientLayout>
         </>

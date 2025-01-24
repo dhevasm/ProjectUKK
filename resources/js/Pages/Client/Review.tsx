@@ -9,8 +9,20 @@ import { cn } from "@/lib/utils";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+    } from "@/Components/ui/alert-dialog"
 
 interface User {
+    id: number;
     name: string;
     image: string;
 }
@@ -27,9 +39,11 @@ interface ReviewProps {
     reviews: Review[];
     isCanReview: boolean;
     productId: number;
+    user: User;
+    role: string;
 }
 
-export default function Review({ reviews, isCanReview, productId }: ReviewProps) {
+export default function Review({ reviews, isCanReview, productId, user, role }: ReviewProps) {
     const [rating, setRating] = useState<number>(0);
     const [hoverRating, setHoverRating] = useState<number>(0);
 
@@ -79,14 +93,13 @@ export default function Review({ reviews, isCanReview, productId }: ReviewProps)
     return (
         <div className="w-full bg-background dark:bg-customDark2 py-8">
             <div className="container mx-auto px-4">
-                {/* Header Section */}
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold text-foreground dark:text-white mb-2 lg:mb-0">
+                    <h2 className="text-2xl font-bold text-foreground dark:text-white mb-4 lg:mb-0">
                         Customer Reviews
                     </h2>
 
                     {reviews.length > 0 && (
-                        <div className="flex items-center space-x-6 p-4 rounded-lg bg-card dark:bg-cusborder-customDark shadow-md">
+                        <div className="flex items-center gap-2 p-4 rounded-lg bg-card dark:bg-customDark shadow-md">
                             <div className="text-center">
                                 <div className="text-4xl font-bold mb-1 bg-gradient-to-r from-primary to-primary/80 text-transparent bg-clip-text">
                                     {averageRating}
@@ -109,9 +122,8 @@ export default function Review({ reviews, isCanReview, productId }: ReviewProps)
                                 </div>
                             </div>
 
-                            <div className="hidden lg:block h-12 w-px bg-border dark:bg-customDark2" />
-
-                            <div className="hidden lg:block">
+                        <div className="block h-12 w-px bg-border dark:bg-customDark2" />
+                            <div className="block">
                                 {[5, 4, 3, 2, 1].map((num) => {
                                     const count = reviews.filter(r => r.rating === num).length;
                                     const percentage = (count / reviews.length) * 100;
@@ -119,7 +131,7 @@ export default function Review({ reviews, isCanReview, productId }: ReviewProps)
                                         <div key={num} className="flex items-center gap-2 mb-1">
                                             <div className="text-xs text-muted-foreground dark:text-slate-400 w-3">{num}</div>
                                             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                            <div className="w-24 h-1.5 bg-muted dark:bg-customDark2 rounded-full overflow-hidden">
+                                            <div className="w-20 h-1.5 bg-muted dark:bg-customDark2 rounded-full overflow-hidden">
                                                 <div
                                                     className="h-full bg-yellow-400 rounded-full transition-all duration-500"
                                                     style={{ width: `${percentage}%` }}
@@ -199,7 +211,7 @@ export default function Review({ reviews, isCanReview, productId }: ReviewProps)
                         reviews.map((review) => (
                             <Card
                                 key={review.id}
-                                className="group hover:shadow-lg transition-all duration-300 dark:bg-cusborder-customDark/50 backdrop-blur border border-border dark:border-cusbg-customDark2"
+                                className="group hover:shadow-lg transition-all duration-300 dark:bg-customDark backdrop-blur border border-border dark:border-cusbg-customDark2"
                             >
                                 <CardContent className="p-6">
 
@@ -245,21 +257,46 @@ export default function Review({ reviews, isCanReview, productId }: ReviewProps)
                                             </p>
                                         </div>
                                         <div className="self-end">
-                                        <Trash2 onClick={() => {
-                                            router.delete(route('review.destroy', { id: review.id }), {
-                                                preserveScroll: true,
-                                                onSuccess: () => {
-                                                    toast.success('Review Deleted.', {
-                                                        description : 'Your review has been deleted successfully.',
-                                                    });
-                                                },
-                                                onError: (errors) => {
-                                                    toast.error("Failed to delete review", {
-                                                        description: "An error occurred : " + Object.values(errors)[0],
-                                                    });
-                                                }
-                                            });
-                                        }} className="w-5 hover:cursor-pointer hover:text-red-500"/>
+
+                                        {
+                                            user && user.id == review.user.id ? <AlertDialog>
+                                            <AlertDialogTrigger>
+                                                <Button  title="Hapus Review" variant={"ghost"} className="hover:text-red-500 ">
+                                                    <Trash2 />
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Apakah kamu yakin?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Anda akan menghapus review dan rating anda saat ini.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                                                    <AlertDialogAction className='px-0' onClick={() => {
+                                                router.delete(route('review.destroy', { id: review.id }), {
+                                                    preserveScroll: true,
+                                                    onSuccess: () => {
+                                                        toast.success('Review Deleted.', {
+                                                            description : 'Your review has been deleted successfully.',
+                                                        });
+                                                    },
+                                                    onError: (errors) => {
+                                                        toast.error("Failed to delete review", {
+                                                            description: "An error occurred : " + Object.values(errors)[0],
+                                                        });
+                                                    }
+                                                });
+                                            }}>
+                                                        <Button className='bg-red-500 hover:bg-red-600 w-full px-2 py-1 text-sm rounded'>
+                                                            Hapus
+                                                        </Button>
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                            </AlertDialog> : null
+                                        }
                                     </div>
                                     </div>
 

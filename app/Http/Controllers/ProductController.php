@@ -108,9 +108,13 @@ class ProductController extends Controller
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         $reviews = review::where("product_id", $product->id)->with("user")->get();
-        $isCanReview = Transaction::where("user_id", Auth::user()->id)->where("product_id", $product->id)->where("status", "completed")->count() > 0 ? true : false;
-        if(review::where("user_id", Auth::user()->id)->where("product_id", $product->id)->count() > 0){
-            $isCanReview = false;
+        $isCanReview = false;
+
+        if(Auth::user()){
+            $isCanReview = Transaction::where("user_id", Auth::user()->id)->where("product_id", $product->id)->where("status", "completed")->count() > 0 ? true : false;
+            if(review::where("user_id", Auth::user()->id)->where("product_id", $product->id)->count() > 0){
+                $isCanReview = false;
+            }
         }
 
         return Inertia::render('Client/DetailProduct', compact("product", "canLogin", "canRegister", "settings", "categories", "totalCart", 'role', 'reviews', 'isCanReview'));
