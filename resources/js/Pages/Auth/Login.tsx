@@ -12,6 +12,14 @@ import { cn } from '@/lib/utils';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import { router } from '@inertiajs/react';
+import  { JwtPayload } from "jwt-decode";
+
+interface GoogleJwtPayload extends JwtPayload {
+    name: string;
+    email: string;
+    picture: string;
+    sub: string;
+  }
 
 export default function Login({
     status,
@@ -35,15 +43,15 @@ export default function Login({
         });
     };
 
-    const handleGoogleOAuth = (response : any) => {
-        const decoded = jwtDecode(response.credential);
+    const handleGoogleOAuth = (response: any) => {
+        const decoded = jwtDecode<GoogleJwtPayload>(response.credential);
+
         router.post(route('googleOauthHandle'), {
-            'name' : decoded.name,
-            'email' : decoded.email,
-            'picture' : decoded.picture,
-            'password' : decoded.sub,
+          'name': decoded.name,
+          'email': decoded.email,
+          'picture': decoded.picture,
+          'password': decoded.sub,
         });
-        console.log(decoded);
       };
 
       const handleGoogleOAuthError = (error : any) => {

@@ -11,20 +11,20 @@ import { LatLngExpression, LeafletEvent, LeafletMouseEvent } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { MapPin, Search } from 'lucide-react';
-import { User } from '@/types';
+import { User, settings, Category, Product } from '@/types';
+import { PageProps as InertiaPageProps } from '@inertiajs/core';
 
-// Fix leaflet icon
-delete L.Icon.Default.prototype._getIconUrl;
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-interface PageProps {
+interface PageProps extends InertiaPageProps {
     auth: {
-        user: User;
+      user: User;
     };
-}
+  }
 
 interface NominatimResponse {
     display_name: string;
