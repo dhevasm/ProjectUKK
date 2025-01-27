@@ -29,7 +29,7 @@ export default function Profile({
 
 
     return (
-        <div className="bg-gray-100 dark:bg-customDark2">
+        <div className="bg-gray-50 dark:bg-customDark2">
             <ClientLayout role={role} categories={categories} settings={settings} Products={products} auth={auth} totalCart={totalCart} header={"Profile"}>
                 <div className="py-7 ">
                     <div className="w-full px-4 sm:px-6 lg:px-8 space-y-4">
@@ -44,7 +44,7 @@ export default function Profile({
                                                     router.get(route("welcome"))
                                                 }
                                             >
-                                                Home
+                                                Beranda
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
                                         <BreadcrumbSeparator />
@@ -57,7 +57,7 @@ export default function Profile({
                                                     )
                                                 }
                                             >
-                                                Profile
+                                                Akun Saya
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
                                     </BreadcrumbList>

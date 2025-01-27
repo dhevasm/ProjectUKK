@@ -14,6 +14,7 @@ use App\Models\Tracking;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Refund;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -137,9 +138,11 @@ class TransactionController extends Controller
             array_push($deliveries_id, $transaction->delivery->id);
         }
 
+
+        $refund = Refund::where('user_id', Auth::user()->id)->with("payment")->get();
         $trackings = Tracking::whereIn("delivery_id", $deliveries_id)->get();
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
-        return Inertia::render('Client/OrderHistory', compact('categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', 'transactions', 'trackings', 'role'));
+        return Inertia::render('Client/OrderHistory', compact('categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', 'transactions', 'trackings', 'role', 'refund'));
     }
 
     public function cancelTransaction(string $id){

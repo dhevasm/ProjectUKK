@@ -27,7 +27,7 @@ const ProductCard = ({ product }: { product: Product }) => {
       onClick={() => {
         router.get(route('product.show.detail', { name: product.name.replace(/\s+/g, '-') }));
       }}
-      className="group hover:shadow-xl transition-all duration-300 cursor-pointer relative overflow-hidden"
+      className="group hover:shadow-xl bg-white dark:bg-customDark transition-all duration-300 cursor-pointer relative overflow-hidden"
     >
       <CardContent className="p-0">
 
@@ -38,26 +38,31 @@ const ProductCard = ({ product }: { product: Product }) => {
             className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span className="text-white text-sm font-medium">View Details</span>
+            <span className="text-white text-sm font-medium">Lihat Detail</span>
           </div>
         </div>
 
-        <div className="p-4 space-y-3">
+        <div className="p-4 space-y-1">
           <h3 className="font-medium line-clamp-2 text-sm leading-tight group-hover:text-[var(--app-color)] transition-colors duration-200">
             {product.name}
           </h3>
 
           <div className="space-y-1">
             <div className="text-lg font-bold text-[var(--app-color)]">
-              Rp {product.price.toLocaleString()} / lembar
+              Rp {product.price.toLocaleString("id-ID")}
             </div>
             <div className="flex items-center text-xs">
             <Package size={14} className="mr-1" />
-              <span>Stock: {product.stock} lembar</span>
+              <span>Stok: {product.stock}</span>
+                  {product.stock < product.min_order && (
+                    <Badge variant="destructive" className="ml-2">
+                      Habis
+                    </Badge>
+                  )}
             </div>
             <div className="flex items-center text-xs">
               <Info size={14} className="mr-1" />
-              <span>Min. {product.min_order} lembar</span>
+              <span>Min. {product.min_order}</span>
             </div>
           </div>
 

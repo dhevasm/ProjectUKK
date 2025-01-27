@@ -47,7 +47,12 @@ class CartController extends Controller
         $carts = Cart::where('user_id', Auth::user()->id)
                 ->whereHas('product', function($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->q . '%');
-                })->with('product.product_images')->get();
+                })->with([
+                    'product',
+                    'product.product_images',
+                    'data_undangan',
+                    'user'
+                ])->get();
         return Inertia::render('Client/CartPage', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),

@@ -81,12 +81,19 @@ const CheckoutPage = ({
 
         setSubtotal(newSubtotal);
 
+        let total = newSubtotal;
         const productionCost = priceData.productionPrice;
+        if(productionCost != 0){
+            total += productionCost;
+        }
         const shippingCost = priceData.deliveryCost;
+        if(shippingCost != 0){
+            total += shippingCost
+        }
         const tax = priceData.tax;
-
-        const taxPrice = subtotal * (tax / 100);
-        const total = subtotal + productionCost + shippingCost + taxPrice;
+        if(tax != 0){
+            total += (subtotal * (tax / 100));
+        }
 
         setTotalPrice(total);
     }, [items, priceData]);
@@ -160,7 +167,7 @@ const CheckoutPage = ({
             totalCart={totalCart}
             header={"Checkout"}
         >
-            <div className="min-h-screen bg-gray-50 dark:bg-customDark2">
+            <div className="min-h-screen bg-gray-50 pb-28 dark:bg-customDark2">
                 <div className="max-w-6xl mx-auto p-6">
                     <div className="flex justify-between items-center">
                         <div></div>
@@ -177,7 +184,7 @@ const CheckoutPage = ({
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="space-y-6">
                             <Card className="shadow-lg dark:border-cusbg-customDark">
-                                <CardHeader className="space-y-1 border-b bg-gray-50 dark:bg-customDark dark:border-gray-700">
+                                <CardHeader className="space-y-1 border-b bg-white dark:bg-customDark dark:border-gray-700">
                                     <div className="flex items-center space-x-2">
                                         <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                         <CardTitle className="dark:text-white">
@@ -255,7 +262,7 @@ const CheckoutPage = ({
                         {/* Ringkasan Pesanan */}
                         <div className="space-y-6">
                             <Card className="shadow-lg dark:border-cusbg-customDark">
-                                <CardHeader className="space-y-1 border-b bg-gray-50 dark:bg-customDark dark:border-gray-700">
+                                <CardHeader className="space-y-1 border-b bg-white dark:bg-customDark dark:border-gray-700">
                                     <div className="flex items-center space-x-2">
                                         <CreditCard className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                         <CardTitle className="dark:text-white">

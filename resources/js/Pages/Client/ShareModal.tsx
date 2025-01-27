@@ -67,8 +67,8 @@ export default function ShareModal({product} : {product: Product}) {
     <DialogContent className="sm:max-w-md">
         <DialogHeader>
             <DialogTitle>
-                Share
-                Product
+                Bagikan
+                Produk
             </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">

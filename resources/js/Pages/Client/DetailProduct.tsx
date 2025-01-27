@@ -12,6 +12,7 @@ import { User, settings, Category, Product } from "@/types";
 import { LucideMoveLeft, ShoppingBag } from "lucide-react";
 import { router } from "@inertiajs/react";
 import { Textarea } from "@/Components/ui/textarea";
+import StarRating from "./StartRating";
 
 import {
     ChevronLeft,
@@ -110,18 +111,24 @@ export default function DetailProduct({
                                                     router.get(route("welcome"))
                                                 }
                                             >
-                                                Home
+                                                Beranda
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
                                         <BreadcrumbSeparator />
                                         <BreadcrumbItem>
-                                            <BreadcrumbLink href={route("category.show", product.category.name.replace(/\s+/g, '-'))}>
+                                            <BreadcrumbLink href="#"
+                                             onClick={() =>
+                                                router.get(route("category.show", product.category.name.replace(/\s+/g, '-')))
+                                            }>
                                                 {product.category.name}
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
                                         <BreadcrumbSeparator />
                                         <BreadcrumbItem>
-                                            <BreadcrumbLink href={route("product.show.detail", product.name.replace(/\s+/g, '-'))}>
+                                            <BreadcrumbLink href="#"
+                                             onClick={() =>
+                                                router.get(route("product.show.detail", product.name.replace(/\s+/g, '-')))
+                                            }>
                                                 {product.name}
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
@@ -137,7 +144,7 @@ export default function DetailProduct({
                             </button>
                             </div>
                         </div>
-                        <div className="min-h-screen bg-background">
+                        <div className="min-h-screen">
                             <div className="mx-auto max-w-7xl">
                                 <div className="grid gap-8 lg:grid-cols-2">
                                     <div className="relative">
@@ -206,32 +213,15 @@ export default function DetailProduct({
                                                 {product.name}
                                             </h1>
                                             <div className="mt-4 flex items-center space-x-4">
-                                                <div className="flex items-center">
-                                                    {[...Array(5)].map(
-                                                        (_, i) => (
-                                                            <Star
-                                                                key={i}
-                                                                className={cn(
-                                                                    "h-5 w-5",
-                                                                    i <
-                                                                        Math.floor(
-                                                                            rating
-                                                                        )
-                                                                        ? "fill-yellow-500 text-yellow-500"
-                                                                        : "fill-muted text-muted"
-                                                                )}
-                                                            />
-                                                        )
-                                                    )}
-
-                                                    <span className="ml-2 text-sm text-muted-foreground">
-                                                     {rating.toFixed(1)}
-                                                    </span>
-                                                    <span className="ml-2 text-sm text-muted-foreground">
-
-                                                        ({reviews.length} reviews)
-                                                    </span>
-                                                </div>
+                                            <div className="flex items-center">
+                                                <StarRating averageRating={parseFloat(rating.toFixed(1))} />
+                                                <span className="ml-2 text-sm text-muted-foreground">
+                                                    {rating.toFixed(1)}
+                                                </span>
+                                                <span className="ml-2 text-sm text-muted-foreground">
+                                                    ({reviews.length} reviews)
+                                                </span>
+                                            </div>
                                                 <div className="flex space-x-2">
                                                     <ShareModal product={product} />
                                                 </div>
@@ -246,7 +236,7 @@ export default function DetailProduct({
                                         <div>
                                             <p className="text-3xl font-bold">
                                                 Rp.{" "}
-                                                {product.price.toLocaleString()}{" "}
+                                                {product.price.toLocaleString("id-ID")}{" "}
                                                 / Lembar
                                             </p>
                                             <div className="mt-2 flex items-center text-sm text-muted-foreground">
@@ -276,9 +266,9 @@ export default function DetailProduct({
 
                                         <div>
                                             <h3 className="font-medium ">
-                                                Description
+                                                Deskripsi
                                             </h3>
-                                            <Textarea  className="mt-2 h-52 border-none text-muted-foreground" value={product.description} readOnly/>
+                                            <Textarea  className="mt-2 h-52 border-none bg-transparent text-muted-foreground" value={product.description} readOnly/>
                                         </div>
                                     </div>
                                 </div>

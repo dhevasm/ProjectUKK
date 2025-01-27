@@ -71,9 +71,9 @@ export default function UpdateProfileImage() {
 
   return (
     <div className="max-w-md mx-auto">
-        <h1 className='text-2xl font-bold'>Update Profile Picture</h1>
+        <h1 className='text-2xl font-bold'>Update Foto Profil</h1>
         <p>
-          Choose a new profile image. Max size: 5MB
+          Pilih Foto Baru. Ukuran Maksimal: 5MB
         </p>
       <div className='py-5'>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -102,7 +102,7 @@ export default function UpdateProfileImage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="picture">Upload Image</Label>
+            <Label htmlFor="picture">Upload Gambar</Label>
             <Input
               id="picture"
               name="picture"
@@ -122,7 +122,7 @@ export default function UpdateProfileImage() {
             className="w-full"
             disabled={processing || !data.picture}
           >
-            {processing ? 'Updating...' : 'Update Profile Picture'}
+            {processing ? 'Updating...' : 'Update Foto Profil'}
           </Button>
         </form>
       </div>

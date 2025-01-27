@@ -86,6 +86,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
     const formatDateForInput = () => {
         const fiveDaysLater = new Date();
         fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
+        fiveDaysLater.setHours(7, 0, 0, 0);
         return fiveDaysLater.toISOString().slice(0, 16);
     };
 
@@ -99,7 +100,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                 className="w-full"
                 size="lg"
             >
-                Buy Now
+               Beli Sekarang
             </Button>
         }
         <Dialog open={open} onOpenChange={setOpen}>
@@ -111,14 +112,14 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                         className="w-full"
                         size="lg"
                     >
-                        Buy Now
+                        Beli Sekarang
                     </Button>
                 }
             </DialogTrigger>
             <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold">
-                        Wedding Registration Form
+                        Form Data Pernikahan
                     </DialogTitle>
                 </DialogHeader>
 
@@ -128,10 +129,10 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                          {/* Groom's Details */}
                          <div className="space-y-4">
                             <h3 className="text-lg font-semibold">
-                                Groom's Details
+                                Detail Pengantin Pria
                             </h3>
                             <div className="space-y-2">
-                                <Label htmlFor="groom_name">Groom's Name</Label>
+                                <Label htmlFor="groom_name">Nama Pengantin Pria</Label>
                                 <Input
                                     id="groom_name"
                                     value={data.groom_name}
@@ -141,13 +142,13 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                             groom_name: e.target.value,
                                         })
                                     }
-                                    placeholder="Enter groom's name"
+                                    placeholder="Nama pengantin pria"
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="groom_father_name">
-                                    Groom's Father Name
+                                    Ayah Pengantin Pria
                                 </Label>
                                 <Input
                                     id="groom_father_name"
@@ -158,13 +159,13 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                             groom_father_name: e.target.value,
                                         })
                                     }
-                                    placeholder="Enter groom's father name"
+                                    placeholder="Nama ayah pengantin pria"
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="groom_mother_name">
-                                    Groom's Mother Name
+                                    Ibu Pengantin Pria
                                 </Label>
                                 <Input
                                     id="groom_mother_name"
@@ -175,7 +176,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                             groom_mother_name: e.target.value,
                                         })
                                     }
-                                    placeholder="Enter groom's mother name"
+                                    placeholder="Nama ibu pengantin pria"
                                     required
                                 />
                             </div>
@@ -185,11 +186,11 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                         {/* Bride's Details */}
                         <div className="space-y-4">
                             <h3 className="text-lg font-semibold">
-                                Bride's Details
+                                Detail Pengantin Wanita
                             </h3>
                             <div className="space-y-2">
                                 <Label htmlFor="bridge_name">
-                                    Bride's Name
+                                  Nama Pengantin Wanita
                                 </Label>
                                 <Input
                                     id="bridge_name"
@@ -200,13 +201,13 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                             bride_name: e.target.value,
                                         })
                                     }
-                                    placeholder="Enter bride's name"
+                                    placeholder="Nama pengantin wanita"
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="bridge_father_name">
-                                    Bride's Father Name
+                                    Ayah Pengantin Wanita
                                 </Label>
                                 <Input
                                     id="bridge_father_name"
@@ -217,13 +218,13 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                             bride_father_name: e.target.value,
                                         })
                                     }
-                                    placeholder="Enter bride's father name"
+                                    placeholder="Nama ayah pengantin wanita"
                                     required
                                 />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="bridge_mother_name">
-                                    Bride's Mother Name
+                                    Ibu Pengantin Wanita
                                 </Label>
                                 <Input
                                     id="bridge_mother_name"
@@ -234,7 +235,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                             bride_mother_name: e.target.value,
                                         })
                                     }
-                                    placeholder="Enter bride's mother name"
+                                    placeholder="Nama ibu pengantin wanita"
                                     required
                                 />
                             </div>
@@ -246,10 +247,10 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                     {/* Wedding Details */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
-                            Wedding Details
+                            Detail Pernikahan
                         </h3>
                         <div className="space-y-2">
-                            <Label htmlFor="location">Location</Label>
+                            <Label htmlFor="location">Lokasi</Label>
                             <Input
                                 id="location"
                                 value={data.location}
@@ -259,14 +260,14 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                         location: e.target.value,
                                     })
                                 }
-                                placeholder="Enter wedding location"
+                                placeholder="Lokasi pernikahan"
                                 required
                             />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Akad Date & Time</Label>
+                                <Label>Tanggal Akad</Label>
                                 <Input
                                     type="datetime-local"
                                     className="w-full custom-date-picker"
@@ -283,7 +284,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Resepsi Date & Time</Label>
+                                <Label>Tanggal Resepsi</Label>
                                 <Input
                                     type="datetime-local"
                                     className="w-full custom-date-picker"
@@ -301,7 +302,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="note">Additional Notes</Label>
+                            <Label htmlFor="note">Catatan Tambahan</Label>
                             <Textarea
                                 id="note"
                                 value={data.note}
@@ -311,7 +312,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                         note: e.target.value,
                                     })
                                 }
-                                placeholder="Enter any additional notes or special requirements"
+                                placeholder="Masukkan catatan tambahan atau persyaratan khusus"
                                 className="min-h-[100px]"
                             />
                         </div>
@@ -319,7 +320,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
 
                     <div className="flex flex-col md:flex-row justify-between gap-2">
                         <div className="flex gap-4 items-center">
-                            <Label htmlFor="quantity">Quantity</Label>
+                            <Label htmlFor="quantity">Jumlah</Label>
                             <div className="flex items-center space-x-2">
                                 <Button
                                     type="button"
@@ -366,10 +367,10 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                                 variant="outline"
                                 onClick={() => setOpen(false)}
                             >
-                                Cancel
+                                Batal
                             </Button>
                             <Button type="submit" variant="theme">
-                                Buy Now
+                                Beli Sekarang
                             </Button>
                         </div>
                     </div>

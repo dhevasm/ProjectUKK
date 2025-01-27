@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('refunds', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('order_id');
-            $table->string('reason');
+            $table->foreignId("payment_id")->constrained()->onDelete('cascade');
+            $table->text('reason');
+            $table->string('no_rekening');
+            $table->string('name');
+            $table->string('bank');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->text('message')->nullable();
             $table->timestamps();
         });
     }

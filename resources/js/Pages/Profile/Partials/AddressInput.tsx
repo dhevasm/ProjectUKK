@@ -199,7 +199,7 @@ export default function AddressInput() {
 
             <div>
                 <div className='flex justify-between'>
-                <InputLabel htmlFor="address" value="Address" />
+                <InputLabel htmlFor="address" value="Alamat Lengkap (Pastikan Terdapat Nomor Rumah Anda)" />
                 {
                     auth.user.address == null && <p className="text-sm text-red-500">Alamat belum disimpan</p>
                 }

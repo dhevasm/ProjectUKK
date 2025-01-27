@@ -44,7 +44,9 @@ export default function ClientLayout({
     <>
         <Header role={role} settings={settings} totalCart={totalCart} categories={categories} auth={auth} products={Products} />
         <Head title={header} />
-        {children}
+        <div className="bg-gray-50 dark:bg-customDark2">
+            {children}
+        </div>
         <Toaster richColors position="top-right" theme={theme} />
         <Footer settings={settings} />
     </>

@@ -20,6 +20,7 @@ import { Label } from "@/Components/ui/label";
 import { User, Product, dataUndangan } from "@/types";
 import CartEdit from "@/Pages/Client/CartEdit";
 import PaymentStatusModal from "@/Pages/Client/PaymentStatusModal";
+import Summary from "./Summary";
 
 export type TransactionType = {
     id: number;
@@ -222,9 +223,7 @@ export const TransactionColumn: ColumnDef<TransactionType>[] = [
                     }
 
                     {
-                        transactionStatus != "proccess" && transactionStatus != "pending" ?  <Button title="Cetak Nota"  className="bg-blue-500 hover:bg-blue-600 px-2 py-1 text-white text-sm rounded h-8">
-                            <Printer />
-                        </Button> : null
+                        transactionStatus == "completed" || transactionStatus == "cancelled" ? <Summary quantity={parseInt(row.getValue("quantity"))} product={row.getValue("product")} payment={row.getValue("payment")} status={row.getValue("status") == "completed" ? "success" : "failed"}/>  : null
                     }
 
 

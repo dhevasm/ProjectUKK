@@ -297,149 +297,121 @@ export default function CartPage({
                                                 }
                                             />
                                             <span className="text-sm font-medium">
-                                                Select All Items
+                                                Pilih Semua Item
                                             </span>
                                         </div>
                                     </CardContent>
                                 </Card>
 
                                 <Card className="bg-white dark:bg-customDark">
-                                    <CardContent className="divide-y">
-                                        {carts.map((item) => (
-                                            <div
-                                                key={item.id}
-                                                className="p-4 flex space-x-4"
+    <CardContent className="divide-y">
+        {carts.map((item) => (
+            <div
+                key={item.id}
+                className="py-4 flex flex-col sm:flex-row gap-4"
+            >
+                <div className="flex items-start gap-4">
+                    <Checkbox
+                        id={`item-${item.id}`}
+                        checked={selectedItems.includes(item.id)}
+                        onCheckedChange={(checked) =>
+                            handleSelectItem(item.id, checked as boolean)
+                        }
+                        className="mt-1"
+                    />
+
+                    <div className="flex-shrink-0">
+                        <img
+                            src={"/" + item.product.product_images[0]?.url}
+                            alt={item.product.name}
+                            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex-grow space-y-2 ml-12 sm:ml-0">
+                    <h3
+                        onClick={() => router.get(route("product.show.detail", item.product.name.replace(/\s+/g, "-")))}
+                        className="font-medium line-clamp-2 hover:cursor-pointer hover:underline w-fit text-sm sm:text-base"
+                    >
+                        {item.product.name} {"("+ item.data_undangan.bride_name + " & " + item.data_undangan.groom_name +")"}
+                    </h3>
+
+                    <div className="text-xs sm:text-sm text-gray-500">
+                       Minimal : {item.product.min_order} pcs
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="text-base sm:text-lg font-bold text-[var(--app-color)]">
+                            Rp {item.product.price}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                            <div className="flex items-center space-x-2">
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => handleQuantityButton(item.id, "decrement")}
+                                    disabled={quantities[item.id] <= 1}
+                                >
+                                    <Minus className="h-4 w-4" />
+                                </Button>
+
+                                <Input
+                                    type="number"
+                                    value={quantities[item.id]}
+                                    onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                                    className="w-16 sm:w-20 text-center"
+                                    min={1}
+                                />
+
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => handleQuantityButton(item.id, "increment")}
+                                >
+                                    <Plus className="h-4 w-4" />
+                                </Button>
+                            </div>
+
+                            <div className="flex items-center space-x-2">
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-red-500 hover:text-red-600"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Hapus Item</DialogTitle>
+                                            <DialogDescription>
+                                                Apakah Anda yakin ingin menghapus item ini dari keranjang Anda? Tindakan ini tidak dapat dibatalkan.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <DialogFooter>
+                                            <Button
+                                                variant="outline"
+                                                className="bg-red-500 hover:bg-red-600 text-white hover:text-white"
+                                                onClick={() => handleDelete(item.id)}
                                             >
-                                                <Checkbox
-                                                    id={`item-${item.id}`}
-                                                    checked={selectedItems.includes(
-                                                        item.id
-                                                    )}
-                                                    onCheckedChange={(
-                                                        checked
-                                                    ) =>
-                                                        handleSelectItem(
-                                                            item.id,
-                                                            checked as boolean
-                                                        )
-                                                    }
-                                                />
-
-                                                <div className="flex-shrink-0">
-                                                    <img
-                                                        src={
-                                                            "/" +
-                                                            item.product
-                                                                .product_images[0]
-                                                                ?.url
-                                                        }
-                                                        alt={item.product.name}
-                                                        className="w-24 h-24 object-cover rounded-lg"
-                                                    />
-                                                </div>
-
-                                                <div className="flex-grow space-y-2">
-                                                    <h3 onClick={() => router.get(route("product.show.detail", item.product.name.replace(/\s+/g, "-")))} className="font-medium line-clamp-2 hover:cursor-pointer hover:underline w-fit">
-                                                        {item.product.name} {"("+ item.data_undangan.bride_name + " & " + item.data_undangan.groom_name +")"}
-                                                    </h3>
-
-                                                    <div className="text-sm text-gray-500">
-                                                        Min. Order:{" "}
-                                                        {item.product.min_order}{" "}
-                                                        pcs
-                                                    </div>
-
-                                                    <div className="flex items-center justify-between">
-                                                        <div className="text-lg font-bold text-[var(--app-color)]">
-                                                            Rp{" "}
-                                                            {item.product.price}
-                                                        </div>
-
-                                                        <div className="flex items-center space-x-2">
-                                                            <Button
-                                                                variant="outline"
-                                                                size="icon"
-                                                                onClick={() =>
-                                                                    handleQuantityButton(
-                                                                        item.id,
-                                                                        "decrement"
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    quantities[
-                                                                        item.id
-                                                                    ] <= 1
-                                                                }
-                                                            >
-                                                                <Minus className="h-4 w-4" />
-                                                            </Button>
-
-                                                            <Input
-                                                                type="number"
-                                                                value={
-                                                                    quantities[
-                                                                        item.id
-                                                                    ]
-                                                                }
-                                                                onChange={(e) =>
-                                                                    handleQuantityChange(
-                                                                        item.id,
-                                                                        parseInt(
-                                                                            e
-                                                                                .target
-                                                                                .value
-                                                                        )
-                                                                    )
-                                                                }
-                                                                className="w-20 text-center"
-                                                                min={1}
-                                                            />
-
-                                                            <Button
-                                                                variant="outline"
-                                                                size="icon"
-                                                                onClick={() =>
-                                                                    handleQuantityButton(
-                                                                        item.id,
-                                                                        "increment"
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Plus className="h-4 w-4" />
-                                                            </Button>
-
-                                                            <Dialog>
-                                                                <DialogTrigger asChild>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="icon"
-                                                                        className="text-red-500 hover:text-red-600"
-                                                                    >
-                                                                        <Trash2 className="h-4 w-4" />
-                                                                    </Button>
-                                                                </DialogTrigger>
-                                                                <DialogContent>
-                                                                    <DialogHeader>
-                                                                        <DialogTitle>Delete Item</DialogTitle>
-                                                                        <DialogDescription>
-                                                                            Are you sure you want to delete this item from your cart? This action cannot be undone.
-                                                                        </DialogDescription>
-                                                                    </DialogHeader>
-                                                                    <DialogFooter>
-                                                                        <Button variant="outline" className="bg-red-500 hover:bg-red-600 text-white hover:text-white" onClick={() => handleDelete(item.id)}>
-                                                                            Delete
-                                                                        </Button>
-                                                                    </DialogFooter>
-                                                                </DialogContent>
-                                                            </Dialog>
-                                                           <CartEdit product={item.product} dataUndangan={item.data_undangan}  />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </CardContent>
-                                </Card>
+                                                Hapus
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                                <CartEdit product={item.product} dataUndangan={item.data_undangan} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ))}
+    </CardContent>
+</Card>
                             </div>
 
                             <div className="lg:col-span-4 space-y-4 mt-4 lg:mt-0">
@@ -448,13 +420,13 @@ export default function CartPage({
                                         <div className="flex items-center space-x-2">
                                             <Gift className="h-5 w-5 text-[var(--app-color)]" />
                                             <span className="font-medium">
-                                                Apply Coupon
+                                               Gunakan Kode Kupon
                                             </span>
                                         </div>
                                         <div className="mt-4 flex space-x-2">
                                             <Input placeholder="Enter coupon code" />
                                             <Button variant="outline">
-                                                Apply
+                                                Gunakan
                                             </Button>
                                         </div>
                                     </CardContent>
@@ -463,7 +435,7 @@ export default function CartPage({
                                 <Card className="bg-white dark:bg-customDark">
                                     <CardContent className="p-4 space-y-4">
                                         <h3 className="font-semibold text-lg">
-                                            Order Summary
+                                            Ringkasan Belanja
                                         </h3>
 
                                         <div className="space-y-2 text-sm">
@@ -515,7 +487,7 @@ export default function CartPage({
                                             size="lg"
                                             onClick={handleCheckout}
                                         >
-                                            Proceed to Checkout
+                                            Checkout Sekarang
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Button>
                                     </CardContent>
@@ -537,17 +509,17 @@ export default function CartPage({
                         <div className="text-center py-12">
                             <ShoppingBag className="mx-auto h-16 w-16 text-gray-400" />
                             <h2 className="mt-4 text-lg font-medium">
-                                Your cart is empty
+                                Keranjang Anda Kosong
                             </h2>
                             <p className="mt-2 text-gray-500">
-                                Browse our products and find something you like
+                                Anda belum menambahkan produk ke keranjang Anda
                             </p>
                             <Button
                                 className="mt-6"
                                 onClick={() => router.get(route("welcome"))}
                                 variant={"theme"}
                             >
-                                Continue Shopping
+                                Belanja Sekarang
                             </Button>
                         </div>
                     )}

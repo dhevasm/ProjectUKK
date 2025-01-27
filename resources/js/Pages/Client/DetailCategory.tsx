@@ -43,7 +43,7 @@ export default function DetailCategory({
                                 className="flex items-center gap-2 rounded-lg bg-white/90 dark:bg-slate-900 dark:text-gray-200 px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-white shadow-lg"
                             >
                                 <ArrowLeft className="h-4 w-4" />
-                                Back to Store
+                                Kembali
                             </button>
                         </div>
                         <div className="relative flex flex-col items-center">
@@ -58,10 +58,10 @@ export default function DetailCategory({
                         </div>
                     </div>
                 </div>
-                <main className="flex-grow container mx-auto px-4 py-8 mb-20">
+                <main className="flex-grow container mx-auto px-4 py-8 pb-28">
                     <div className="px-4 md:px-0">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-2xl font-semibold">Products</h2>
+                            <h2 className="text-2xl font-semibold">Produk</h2>
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             {Products.length > 0 ?

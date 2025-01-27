@@ -108,7 +108,7 @@ export default function AddProduct({
                 resetForm();
                 setTimeout(() => {
                     router.get(route("product.index"));
-                }, 1000);
+                }, 100);
             },
             onError: (errors: any) => {
                 toast.error("Failed to add product", {

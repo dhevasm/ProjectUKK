@@ -13,20 +13,36 @@ import { RadioGroup, RadioGroupItem } from "@/Components/ui/radio-group";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
+import { User } from "@/types";
+
+interface Payment{
+    id: string;
+    order_id: string;
+    snap_token: string;
+    user: User;
+    payment_method: string;
+    gross_amount: number;
+    status: string;
+}
 
 interface RefundModalProps {
-    orderId: string;
-    grossAmount: number;
+    payment: Payment;
 }
 
 
-export default function RefundModal({ orderId, grossAmount } : RefundModalProps) {
+export default function RefundModal({ payment } : RefundModalProps) {
     const [reason, setReason] = useState("");
+    const [bank, setBank] = useState("");
+    const [accountNumber, setAccountNumber] = useState("");
+    const [accountName, setAccountName] = useState("");
 
     const handleRefund = () => {
         router.post(route("refund.store"), {
-            order_id : orderId,
+            payment_id : payment.id.toString(),
             reason : reason,
+            no_rekening : accountNumber,
+            name : accountName,
+            bank : bank
         }, {
             preserveScroll: true,
             onSuccess: () => {
@@ -49,25 +65,25 @@ export default function RefundModal({ orderId, grossAmount } : RefundModalProps)
         <Dialog>
             <DialogTrigger asChild>
                 <Button className="w-full" size="lg" variant="theme">
-                    Pengembalian Dana
+                   Kirim Permintaan Refund
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-6">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold mb-4">
-                        Kirim Permintaan Pengembalian Dana
+                        Kirim Permintaan Refund
                     </DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-4">
                     <div>
                         <Label className="mb-1">Order ID</Label>
-                        <Input value={orderId} readOnly className="bg-gray-100 cursor-not-allowed" />
+                        <Input value={payment.order_id} readOnly className="bg-gray-100 cursor-not-allowed" />
                     </div>
 
                     <div>
                         <Label className="mb-1">Total Pembayaran (Gross Amount)</Label>
-                        <Input value={`Rp ${grossAmount.toLocaleString('id-ID')}`} readOnly className="bg-gray-100 cursor-not-allowed" />
+                        <Input value={`Rp ${payment.gross_amount.toLocaleString('id-ID')}`} readOnly className="bg-gray-100 cursor-not-allowed" />
                     </div>
 
                     <div>
@@ -96,6 +112,20 @@ export default function RefundModal({ orderId, grossAmount } : RefundModalProps)
                             className="resize-none"
                             autoFocus
                         />
+                    </div>
+                    <div className="flex flex-col md:flex-row gap-2 ">
+                        <div className="w-full">
+                            <Label className="mb-1">No Rekening</Label>
+                            <Input type="number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} required/>
+                        </div>
+                        <div className="w-full">
+                            <Label className="mb-1">Nama</Label>
+                            <Input type="text" value={accountName} onChange={(e) => setAccountName(e.target.value)}  required/>
+                        </div>
+                        <div className="w-full">
+                            <Label className="mb-1">Jenis Bank</Label>
+                            <Input type="text" value={bank} onChange={(e) => setBank(e.target.value)} required/>
+                        </div>
                     </div>
 
                     <div className="p-4 bg-gray-50 rounded-md border border-gray-200">

@@ -81,8 +81,6 @@ const CarouselSetting: React.FC<CarouselSettingProps> = ({
         });
     }
 
-
-
     const handleLinkClick = (preview: any) => {
         setSelectedImage(preview);
         if(carouselLink.some((link) => link.key === preview.split("/").pop()?.split(".")[0])){

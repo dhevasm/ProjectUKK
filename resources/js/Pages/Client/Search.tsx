@@ -35,7 +35,7 @@ export default function Search({
   role
 }: PropsType) {
   const [filteredProducts, setFilteredProducts] = useState(Products);
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     priceRange: [0, Math.max(...Products.map(p => p.price))],
     sortBy: "newest",
@@ -45,6 +45,7 @@ export default function Search({
   });
 
   const uniqueCategories = Array.from(new Set(Products.map(p => p.category_id)));
+
 
   useEffect(() => {
     let result = [...Products];
@@ -108,7 +109,7 @@ export default function Search({
                 <aside className={`w-full md:w-64 space-y-6 ${showFilters ? 'block' : 'hidden md:block'}`}>
                     <div className="bg-white dark:bg-customDark p-4 rounded-lg shadow">
                     <div className="mb-6">
-                        <h3 className="font-medium mb-4">Price Range</h3>
+                        <h3 className="font-medium mb-4">Rentang Harga</h3>
                         <Slider
                         defaultValue={[0, Math.max(...Products.map(p => p.price))]}
                         max={Math.max(...Products.map(p => p.price))}
@@ -122,7 +123,7 @@ export default function Search({
                     </div>
 
                     <div className="mb-6">
-                        <h3 className="font-medium mb-4">Categories</h3>
+                        <h3 className="font-medium mb-4">Kategori</h3>
                         <div className="space-y-2">
                         {categories.map(cat => (
                             <div key={cat.id} className="flex items-center">
@@ -154,7 +155,7 @@ export default function Search({
                             }
                         />
                         <label htmlFor="in-stock" className="ml-2 text-sm">
-                            In Stock
+                            Tersedia
                         </label>
                         </div>
                     </div>
@@ -164,7 +165,7 @@ export default function Search({
                 <div className="flex-1">
                     <div className="flex justify-between items-center mb-6">
                     <p className="text-gray-600">
-                        Showing {filteredProducts.length} results
+                        Ditampilkan {filteredProducts.length} hasil
                     </p>
                     <Select
                         value={filters.sortBy}
@@ -174,10 +175,10 @@ export default function Search({
                         <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
                         <SelectContent>
-                        <SelectItem value="newest">Newest</SelectItem>
-                        <SelectItem value="price-low">Price: Low to High</SelectItem>
-                        <SelectItem value="price-high">Price: High to Low</SelectItem>
-                        <SelectItem value="bestselling">Best Selling</SelectItem>
+                        <SelectItem value="newest">Terbaru</SelectItem>
+                        <SelectItem value="price-low">Harga: Rendah ke Tinggi</SelectItem>
+                        <SelectItem value="price-high">Harga: Tinggi ke Rendah</SelectItem>
+                        <SelectItem value="bestselling">Terlaris</SelectItem>
                         </SelectContent>
                     </Select>
                     </div>
@@ -191,7 +192,7 @@ export default function Search({
                     {filteredProducts.length === 0 && (
                     <div className="text-center py-12">
                         <p className="text-gray-500 text-lg">
-                        No products found matching your criteria.
+                            Tidak ada produk yang ditemukan
                         </p>
                     </div>
                     )}

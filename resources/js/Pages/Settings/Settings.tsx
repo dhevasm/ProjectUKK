@@ -179,7 +179,7 @@ export default function Settings({ settings }: SettingsProps) {
         >
             <Head title="Settings" />
             <div className="py-12 space-y-3">
-                <div className="flex flex-col md:flex-row gap-2 w-full px-4  lg:px-8">
+                <div className="flex flex-col md:flex-row gap-2 w-full px-4 md:ps-8">
                     <div className="w-full">
                         <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
                             <div className="p-6 text-gray-900 dark:text-gray-200">
@@ -219,7 +219,7 @@ export default function Settings({ settings }: SettingsProps) {
                     </div>
                 </div>
 
-                <div className="w-full px-4 sm:px-6 lg:px-8">
+                <div className="w-full px-4 md:ps-8">
                     <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-200">
                            Additional Price Setting
@@ -231,7 +231,7 @@ export default function Settings({ settings }: SettingsProps) {
                     </div>
                 </div>
 
-                <div className="w-full px-4 sm:px-6 lg:px-8">
+                <div className="w-full px-4 md:ps-8">
                     <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-200">
                             Header Event Setting
@@ -268,7 +268,7 @@ export default function Settings({ settings }: SettingsProps) {
                     </div>
                 </div>
 
-                <div className="w-full px-4 sm:px-6 lg:px-8">
+                <div className="w-full px-4 md:ps-8">
                     <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-200">
                             Carousel Setting
@@ -280,7 +280,7 @@ export default function Settings({ settings }: SettingsProps) {
                         </div>
                     </div>
                 </div>
-                <div className="w-full px-4 sm:px-6 lg:px-8">
+                <div className="w-full px-4 md:ps-8">
                     <div className="overflow-hidden bg-white dark:bg-customDark shadow-sm rounded-md sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-200">
                             Footer Setting

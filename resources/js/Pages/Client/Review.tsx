@@ -2,13 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
 import { Textarea } from "@/Components/ui/textarea";
 import { Label } from "@/Components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/Components/ui/button";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
+import StarRating from "./StartRating";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -46,6 +47,7 @@ interface ReviewProps {
 export default function Review({ reviews, isCanReview, productId, user, role }: ReviewProps) {
     const [rating, setRating] = useState<number>(0);
     const [hoverRating, setHoverRating] = useState<number>(0);
+    const [filteredReviews, setFilteredReviews] = useState<Review[]>(reviews);
 
     const averageRating = reviews.length
         ? (reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length).toFixed(1)
@@ -90,12 +92,23 @@ export default function Review({ reviews, isCanReview, productId, user, role }: 
         });
     }
 
+    useEffect(() => {
+        if(!user) return;
+        const sortedReviews = [...reviews].sort((a, b) => {
+            const dateComparison = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+            if (a.user.id === user.id) return -1;
+            if (b.user.id === user.id) return 1;
+            return dateComparison;
+        });
+        setFilteredReviews(sortedReviews);
+    }, [reviews]);
+
     return (
-        <div className="w-full bg-background dark:bg-customDark2 py-8">
+        <div className="w-full dark:bg-customDark2 py-8">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8">
                     <h2 className="text-2xl font-bold text-foreground dark:text-white mb-4 lg:mb-0">
-                        Customer Reviews
+                        Review Pelanggan
                     </h2>
 
                     {reviews.length > 0 && (
@@ -105,20 +118,10 @@ export default function Review({ reviews, isCanReview, productId, user, role }: 
                                     {averageRating}
                                 </div>
                                 <div className="flex gap-0.5 mb-1">
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                        <Star
-                                            key={star}
-                                            className={cn(
-                                                "h-4 w-4",
-                                                star <= Number(averageRating)
-                                                    ? "fill-yellow-400 text-yellow-400"
-                                                    : "fill-muted text-muted dark:fill-slate-600 dark:text-slate-600"
-                                            )}
-                                        />
-                                    ))}
+                                    <StarRating averageRating={parseFloat(averageRating)} />
                                 </div>
                                 <div className="text-xs text-muted-foreground dark:text-slate-400">
-                                    from {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                                    Dari {reviews.length} review
                                 </div>
                             </div>
 
@@ -207,8 +210,8 @@ export default function Review({ reviews, isCanReview, productId, user, role }: 
 
                 {/* Existing Reviews */}
                 <div className="space-y-4">
-                    {reviews.length > 0 ? (
-                        reviews.map((review) => (
+                    {filteredReviews.length > 0 ? (
+                        filteredReviews.map((review) => (
                             <Card
                                 key={review.id}
                                 className="group hover:shadow-lg transition-all duration-300 dark:bg-customDark backdrop-blur border border-border dark:border-cusbg-customDark2"

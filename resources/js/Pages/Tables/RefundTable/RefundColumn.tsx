@@ -18,20 +18,34 @@ import { toast } from "sonner";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import { User, Product, dataUndangan } from "@/types";
+import { Textarea } from "@/Components/ui/textarea";
 
+
+interface Payment{
+    id: string;
+    order_id: string;
+    snap_token: string;
+    user: User;
+    payment_method: string;
+    gross_amount: number;
+    status: string;
+}
 
 export type RefundType = {
     id: number;
     user: User;
-    order_id: string;
+    payment: Payment;
     reason: string;
     status: string;
+    no_rekening: number;
+    name: string;
+    bank: string
     created_at: string;
 };
 
 export const RefundColumn: ColumnDef<RefundType>[] = [
     {
-        accessorKey: "order_id",
+        accessorKey: "payment.order_id",
         header: ({ column }) => {
             return (
                 <div className="whitespace-nowrap w-40">
@@ -44,7 +58,7 @@ export const RefundColumn: ColumnDef<RefundType>[] = [
         accessorKey: "user.name",
         header: ({ column }) => {
             return (
-                <div className="whitespace-nowrap">
+                <div className="">
                    Username
                 </div>
             );
@@ -53,7 +67,47 @@ export const RefundColumn: ColumnDef<RefundType>[] = [
 
     {
         accessorKey: "reason",
-        header: "Alasan",
+        header: ({ column }) => {
+            return (
+                <div className="w-40">
+                   Alasan
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "payment.gross_amount",
+        header: ({ column }) => {
+            return (
+                <div className="whitespace-nowrap">
+                  Nilai Refund
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "no_rekening",
+        header: ({ column }) => {
+            return (
+                <div className="whitespace-nowrap">
+                  No Rekening
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "name",
+        header: ({ column }) => {
+            return (
+                <div className="whitespace-nowrap">
+                   Nama Rekening
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "bank",
+        header: "Bank",
     },
     {
         accessorKey: "status",
@@ -105,16 +159,63 @@ export const RefundColumn: ColumnDef<RefundType>[] = [
         cell: ({ row }) => {
             const deliveryStatus = row.getValue("status");
 
+            const [message, setMessage] = useState<string>("");
+
+            const handleReject = () => {
+                router.post(route("refund.changeStatus", { id: row.getValue("id") }), {
+                    status : "rejected",
+                    message: message
+                },{
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        (document.querySelector('[data-state="open"]') as HTMLElement)?.click();
+                        toast.success("Refund rejected!", {
+                            description: "Refund has been rejected successfully",
+                        });
+                    },
+                    onError: (errors: any) => {
+                        (document.querySelector('[data-state="open"]') as HTMLElement)?.click();
+                        toast.error("Failed to reject refund", {
+                            description: "An error occurred : " + Object.values(errors)[0],
+                        });
+                    }
+                });
+            }
+
             return (
                  <div className="flex justify-center gap-2">
-                    <Button title="Tolak Refund" className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm text-white rounded h-8">
-                            <X />
-                        </Button>
+                    {
+                        row.getValue("status") === "pending" && (
+                            <>
+                                <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button title="Tolak Refund" className="bg-red-500 hover:bg-red-600 px-2 py-1 text-sm text-white rounded h-8">
+                                    <X />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Tolak Refund</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        <Label htmlFor="message">Enter your message:</Label>
+                                        <Textarea id="message" value={message} onChange={(e) => setMessage(e.target.value)} className="mt-2 w-full" />
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <Button variant={"destructive"} onClick={handleReject}>Tolak</Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                         <Button onClick={() => {
-                            router.post(route("refund.changeStatus", { id: row.getValue("id"), status: "approved" }));
-                        }} title="Proses Refund" className="bg-green-500 hover:bg-green-600 px-2 py-1 text-white text-sm rounded h-8">
+                            router.post(route("refund.changeStatus", { id: row.getValue("id")}), {status: "approved"});
+                        }} title="Refund Selesai" className="bg-green-500 hover:bg-green-600 px-2 py-1 text-white text-sm rounded h-8">
                             <Check />
                         </Button>
+                            </>
+                        )
+                    }
+
                 </div>
             )
         }

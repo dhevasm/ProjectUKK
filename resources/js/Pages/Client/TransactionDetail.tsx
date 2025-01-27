@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/Components/ui/dialog";
 import { Category, Product, settings, User, dataUndangan } from '@/types';
 import RefundModal from './RefundModal';
+import ClientSummary from './ClientSummary';
 
 interface Payment{
     id: string;
@@ -60,17 +61,33 @@ interface TimelineStep {
   icon: LucideIcon;
   date: string | null;
 }
+export type RefundType = {
+    id: number;
+    user: User;
+    payment: Payment;
+    reason: string;
+    status: string;
+    no_rekening: number;
+    name: string;
+    bank: string;
+    message: string;
+    created_at: string;
+};
 
 interface TransactionDetailProps {
   transaction: Transaction;
+  otherTransactions?: Transaction[];
   onBack: () => void;
   trackings: Tracking[];
+  refund?: RefundType;
 }
+
 
 type StepStatus = 'completed' | 'current' | 'upcoming' | 'cancelled';
 
-const TransactionDetail: React.FC<TransactionDetailProps> = ({ transaction, onBack, trackings }) => {
-  const getTimelineStatus = (): TimelineStep['status'] => {
+const TransactionDetail: React.FC<TransactionDetailProps> = ({ transaction, onBack, trackings, otherTransactions, refund }) => {
+
+    const getTimelineStatus = (): TimelineStep['status'] => {
     if (transaction.payment.status !== 'settlement') {
       return 'payment';
     }
@@ -228,91 +245,118 @@ const continuePayment = () => {
     });
 }
 
-  return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold">Order Details</h1>
+return (
+    <div className="container mx-auto py-4 px-2 sm:px-4 md:px-6">
+      <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-0">Detail Pesanan</h1>
         <button
           onClick={onBack}
           className="p-2 hover:bg-gray-100 dark:hover:bg-customDark rounded-full transition-colors"
           type="button"
         >
-          <LucideMoveLeft className="w-5 h-5 text-[var(--app-color)]" />
+          <LucideMoveLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--app-color)]" />
         </button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3 mb-20">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3 mb-20">
         {/* Main Order Info */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-4 sm:space-y-6">
           <Card className='bg-white dark:bg-customDark'>
-            <CardHeader className="border-b">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-sm text-gray-500">Order ID: {transaction.payment.order_id}</p>
-                  <p className="text-sm text-gray-500 mt-1">
+            <CardHeader className="border-b p-3 sm:p-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
+                <div className="mb-2 sm:mb-0">
+                  <p className="text-xs sm:text-sm text-gray-500">Order ID: {transaction.payment.order_id}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-1">
                     {formatDate(transaction.created_at)}
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 items-end">
-                    {
-                        transaction.delivery.status == "delivery" ?
-                        <Badge className='w-fit' variant={"info"}>
-                       Proses Pengiriman
-                    </Badge> : transaction.delivery.status == "delivered" ?
-                      <Badge className='w-fit' variant={"success"}>
-                     Barang Sampai Di Tujuan
-                  </Badge>
-                    : transaction.payment.status != "pending" ? <Badge className='w-fit' variant={getStatusBadgeVariant(transaction.status)}>
-                        {getStatusLabel(transaction.status)}
-                      </Badge> : <Badge className='w-fit' variant={getStatusBadgeVariant(transaction.status)}>
-                        Menuggu Pembayaran
-                      </Badge>
-                    }
+                <div className="flex flex-col gap-2 items-start sm:items-end">
+                  {transaction.delivery.status == "delivery" ? (
+                    <Badge className='w-fit' variant={"info"}>Proses Pengiriman</Badge>
+                  ) : transaction.delivery.status == "delivered" ? (
+                    <Badge className='w-fit' variant={"success"}>Barang Sampai Di Tujuan</Badge>
+                  ) : transaction.payment.status != "pending" ? (
+                    <Badge className='w-fit' variant={getStatusBadgeVariant(transaction.status)}>
+                      {getStatusLabel(transaction.status)}
+                    </Badge>
+                  ) : (
+                    <Badge className='w-fit' variant={getStatusBadgeVariant(transaction.status)}>
+                      Menuggu Pembayaran
+                    </Badge>
+                  )}
 
-                 {
-                    tracking?.status == "cancelled" && (
-                        <p className='text-red-500'>Dibatalkan pada {formatDate(tracking?.cancelled)}</p>
-                    )
-                  }
+                  {tracking?.status == "cancelled" && (
+                    <p className='text-xs sm:text-sm text-red-500'>
+                      Dibatalkan pada {formatDate(tracking?.cancelled)}
+                    </p>
+                  )}
                 </div>
-
               </div>
             </CardHeader>
-            <CardContent className="p-4">
-              <div className="flex gap-4">
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <img
                   src={transaction.product.product_images[0]?.url || '/placeholder.jpg'}
                   alt={transaction.product.name}
-                  className="w-24 h-24 object-cover rounded-lg"
+                  className="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-lg self-start"
                 />
                 <div className="flex-1">
-                  <h3 className="font-medium text-lg">
+                  <h3 className="font-medium text-base sm:text-lg">
                     {transaction.product.name}
                   </h3>
-                  <p className="text-gray-600 mt-1">
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
                     {transaction.data_undangan.groom_name} & {transaction.data_undangan.bride_name}
                   </p>
-                  <div className="mt-2 space-y-1">
-                    <p className="text-sm text-gray-600">
-                      Quantity: {transaction.quantity} pcs
+                  <div className="mt-2 space-y-1 text-xs sm:text-sm">
+                    <p className="text-gray-600">
+                      Jumlah item: {transaction.quantity} pcs
                     </p>
-                    <p className="text-sm text-gray-600">
-                      Price per pcs: Rp. {transaction.product.price.toLocaleString('id-ID')}
+                    <p className="text-gray-600">
+                     Harga per item: Rp. {transaction.product.price.toLocaleString('id-ID')}
                     </p>
-                    <p className="text-sm font-medium">
-                      Total: Rp. {transaction.payment.gross_amount.toLocaleString('id-ID')}
-                    </p>
+
                   </div>
                 </div>
-
               </div>
+              {otherTransactions && otherTransactions.length > 0 && (
+                <>
+                  {otherTransactions.map((transaction, index) => (
+                    <div key={index} className="flex flex-col sm:flex-row gap-4 mt-4">
+                      <img
+                        src={transaction.product.product_images[0]?.url || '/placeholder.jpg'}
+                        alt={transaction.product.name}
+                        className="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-lg self-start"
+                      />
+                      <div className="flex-1">
+                        <h3 className="font-medium text-base sm:text-lg">
+                          {transaction.product.name}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                          {transaction.data_undangan.groom_name} & {transaction.data_undangan.bride_name}
+                        </p>
+                        <div className="mt-2 space-y-1 text-xs sm:text-sm">
+                          <p className="text-gray-600">
+                            Jumlah item: {transaction.quantity} pcs
+                          </p>
+                          <p className="text-gray-600">
+                           Harga per item: Rp. {transaction.product.price.toLocaleString('id-ID')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+              <p className="font-medium mt-2">
+                      Total: Rp. {transaction.payment.gross_amount.toLocaleString('id-ID')}
+                    </p>
             </CardContent>
           </Card>
 
           {/* Timeline */}
           <Card className='bg-white dark:bg-customDark'>
             <CardHeader className="border-b">
-              <h2 className="text-lg font-medium">Order Timeline</h2>
+              <h2 className="text-lg font-medium">Timeline Pesanan</h2>
             </CardHeader>
             <CardContent className="p-6">
               <div className="relative">
@@ -326,14 +370,14 @@ const continuePayment = () => {
                       <div className="flex items-center">
                         <div className={`
                           relative z-10 flex items-center justify-center w-8 h-8 rounded-full
-                          ${stepStatus === 'completed' ? 'bg-green-100 ' :
-                            stepStatus === 'current' ? 'bg-blue-100' :
-                            stepStatus === 'cancelled' ? 'bg-red-100' : 'bg-gray-100'}
+                          ${stepStatus === 'completed' ? 'bg-green-100 dark:bg-green-950 ' :
+                            stepStatus === 'current' ? 'bg-blue-100 dark:bg-blue-950' :
+                            stepStatus === 'cancelled' ? 'bg-red-100 dark:bg-red-800' : 'bg-gray-100 dark:bg-gray-800'}
                         `}>
                           <Icon className={`w-5 h-5
-                            ${stepStatus === 'completed' ? 'text-green-600' :
-                              stepStatus === 'current' ? 'text-blue-600' :
-                              stepStatus === 'cancelled' ? 'text-red-600' : 'text-gray-400'}
+                            ${stepStatus === 'completed' ? 'text-green-600 dark:text-green-300' :
+                              stepStatus === 'current' ? 'text-blue-600 dark:text-blue-300' :
+                              stepStatus === 'cancelled' ? 'text-red-600 dark:text-red-300' : 'text-gray-400'}
                           `} />
                         </div>
                         {index < timelineSteps.length - 1 && (
@@ -368,20 +412,20 @@ const continuePayment = () => {
           {/* Delivery Info */}
           <Card className='bg-white dark:bg-customDark'>
             <CardHeader className="border-b">
-              <h2 className="text-lg font-medium">Delivery Information</h2>
+              <h2 className="text-lg font-medium">Informasi Pegiriman</h2>
             </CardHeader>
             <CardContent className="p-4">
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500">Recipient Name</p>
+                  <p className="text-sm text-gray-500">Nama Penerima</p>
                   <p className="font-medium">{transaction.delivery.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Phone Number</p>
+                  <p className="text-sm text-gray-500">Nomor Telepon</p>
                   <p className="font-medium">{transaction.delivery.phone}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Address</p>
+                  <p className="text-sm text-gray-500">Alamat</p>
                   <p className="font-medium">{transaction.delivery.address}</p>
                 </div>
               </div>
@@ -391,16 +435,16 @@ const continuePayment = () => {
           {/* Payment Info */}
           <Card className='bg-white dark:bg-customDark'>
             <CardHeader className="border-b">
-              <h2 className="text-lg font-medium">Payment Information</h2>
+              <h2 className="text-lg font-medium">Informasi Pembayaran</h2>
             </CardHeader>
             <CardContent className="p-4">
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500">Payment Method</p>
+                  <p className="text-sm text-gray-500">Metode Pembayaran</p>
                   <p className="font-medium">{transaction.payment.payment_method}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Amount Paid</p>
+                  <p className="text-sm text-gray-500">Jumlah Dibayar</p>
                   <p className="font-medium">Rp. {transaction.payment.gross_amount.toLocaleString('id-ID')}</p>
                 </div>
                 <div>
@@ -441,31 +485,18 @@ const continuePayment = () => {
                 </div>
             )
          }
-         {
-            transaction.status == "cancelled" && transaction.payment.status == "settlement" ?  (
-                <div className='flex flex-col gap-2'>
-                    <RefundModal orderId={transaction.payment.order_id} grossAmount={transaction.payment.gross_amount} />
-                </div>
-            ) : null
-         }
-         {
-            transaction.status == "completed" && transaction.payment.status == "settlement" ?  (
-                <div className='flex flex-col gap-2'>
-                    <Button variant={"theme"} onClick={() => router.get(`/product-details/${transaction.product.name.replace(/\s+/g, '-')}#review`)} className='w-full'>Berikan Ulasan</Button>
-                </div>
-            ) : null
-         }
-         {
-            transaction.payment.status != "settlement" && transaction.payment.status != "pending" ? (
+
+        {
+           transaction.payment.status != "settlement" && transaction.payment.status != "pending" ? (
                 <Dialog>
                 <DialogTrigger asChild>
-                <Button  variant={"outline"} className='w-full'>Delete History</Button>
+                <Button  variant={"outline"} className='w-full'>Hapus Histori</Button>
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Delete History</DialogTitle>
+                        <DialogTitle>Hapus Histori</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete this history? This action cannot be undone.
+                           Apakah anda yakin ingin menghapus histori ini?
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
@@ -473,13 +504,85 @@ const continuePayment = () => {
                         <Button  variant="outline" className="bg-red-500 hover:bg-red-600 text-white hover:text-white"onClick={() => {
                         router.get(route("delete.history", transaction.id));
         }}>
-                            Delete History
+                            Hapus
                         </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
             ) : null
          }
+
+         {
+            transaction.status == "cancelled" && transaction.payment.status == "settlement" && !refund ?  (
+                <div className='flex flex-col gap-2'>
+                    <RefundModal payment={transaction.payment} />
+                </div>
+
+            ) : null
+         }
+         {
+            refund ? (
+                <div className='flex flex-col gap-2'>
+                    {
+                        refund.status == "rejected" && (
+                            <Dialog>
+                            <DialogTrigger asChild>
+                            <Button  variant={"outline"} className='w-full'>Hapus Histori</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Hapus Histori</DialogTitle>
+                                    <DialogDescription>
+                                    Apakah anda yakin ingin menghapus histori ini?
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <DialogFooter>
+
+                                    <Button  variant="outline" className="bg-red-500 hover:bg-red-600 text-white hover:text-white"onClick={() => {
+                                    router.get(route("delete.history", transaction.id));
+                    }}>
+                                        Hapus
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+
+                        )
+                    }
+                    {
+                        refund.status == "pending" && (
+                            <Button variant={"theme"} className='w-full' disabled>Refund Telah Diajukan</Button>
+                        )
+                    }
+                    <p className='text-center text-sm text-gray-500'>
+                        {refund.status == "pending" ? "Menunggu Konfirmasi Admin" : refund.status == "rejected" ? "Pengajuan Refund Ditolak" : "Refund Diterima"}
+                    </p>
+                </div>
+            ) : null
+         }
+         {
+            refund?.message != null && refund?.status == "rejected" ? (
+                <div className='bg-red-50 dark:bg-red-950 p-3 rounded-lg'>
+                    <p className='text-red-600 text-sm'>Alasan Penolakan : {refund.message}</p>
+                </div>
+            ) : null
+         }
+         {
+            transaction.status == "completed" && transaction.payment.status == "settlement" ?  (
+                <div className='flex flex-col gap-2'>
+                    <Button variant={"theme"} onClick={() => router.get(`/product-details/${transaction.product.name.replace(/\s+/g, '-')}#review`)} className='w-full'>Berikan Ulasan</Button>
+
+                    {
+                        otherTransactions && otherTransactions.length > 0 ? (
+                            <ClientSummary otherTransactions={otherTransactions} name={transaction.delivery.name} product={transaction.product} quantity={transaction.quantity} payment={transaction.payment} status={transaction.status == "completed" ? "success" : "failed"} />
+                        ) : (
+                            <ClientSummary name={transaction.delivery.name} product={transaction.product} quantity={transaction.quantity} payment={transaction.payment} status={transaction.status == "completed" ? "success" : "failed"} />
+                        )
+                    }
+                </div>
+            ) : null
+         }
+
 
          {
             transaction.delivery.status == "delivered" && <Button onClick={() => {router.get(route("delivery.confirm", transaction.delivery.id))}}  variant={"theme"} className='w-full'>Konfirmasi Pesanan</Button>

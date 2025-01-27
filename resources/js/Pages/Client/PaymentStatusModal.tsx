@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Product, User, dataUndangan } from "@/types";
 import { Separator } from '@/Components/ui/separator';
-import { Check, Clock, XCircle, CreditCard, Receipt, ChevronRight, CreditCardIcon } from 'lucide-react';
+import { Check, Clock, XCircle, CreditCard, Receipt, ChevronRight, CreditCardIcon, HandCoins } from 'lucide-react';
 
 import {
     Dialog,
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { Input } from "@/Components/ui/input";
 import { Button } from "@/Components/ui/button";
 
-type PaymentStatusType = 'success' | 'pending' | 'error';
+type PaymentStatusType = 'success' | 'pending' | 'error' | "refund";
 
 interface StatusConfig {
   backgroundColor: string;
@@ -69,6 +69,14 @@ const getStatusConfig = (status: PaymentStatusType): StatusConfig => {
         icon: <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />,
         label: 'Pembayaran Gagal',
         description: 'Error saat pembayaran'
+      },
+      refund:{
+        backgroundColor: 'bg-blue-50 dark:bg-blue-900/30',
+        textColor: 'text-blue-800 dark:text-blue-300',
+        borderColor: 'border-blue-100 dark:border-blue-800',
+        icon: <HandCoins className="w-6 h-6 text-blue-600 dark:text-blue-400" />,
+        label: 'Refund',
+        description: 'Dana Telah di Kembalikan'
       }
     };
     return configs[status];
@@ -77,7 +85,7 @@ const getStatusConfig = (status: PaymentStatusType): StatusConfig => {
 const PaymentStatusModal : React.FC<PaymentStatusProps> = ({
  payment
 }) => {
-  const config = getStatusConfig(payment.status == "settlement" ? "success" : payment.status == "pending" ? "pending" : "error");
+  const config = getStatusConfig(payment.status == "settlement" ? "success" : payment.status == "pending" ? "pending" : payment.status == "refund" ? "refund" : "error");
     const [open, setOpen] = useState(false);
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -87,7 +95,7 @@ const PaymentStatusModal : React.FC<PaymentStatusProps> = ({
                     size="icon"
                     className="text-blue-500 hover:text-blue-600"
                 >
-                    {payment.status == "settlement" ? <Check className="h-4 w-4" /> : payment.status == "pending" ? <Clock className="h-4 w-4" /> : <XCircle className="h-4 w-4" /> }
+                    {payment.status == "settlement" ? <Check className="h-4 w-4" /> : payment.status == "pending" ? <Clock className="h-4 w-4" /> : payment.status == "refund" ? <HandCoins className="h-4 w-4" />   : <XCircle className="h-4 w-4" /> }
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">

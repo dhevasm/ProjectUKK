@@ -196,12 +196,14 @@ class SettingController extends Controller
             'carousel_image' => 'mimes:jpeg,jpg,png|max:2048',
         ]);
 
-        $fileName = time() . '.' . $request->file('carousel_image')->getClientOriginalExtension();
+        $uniquename = time();
+
+        $fileName = $uniquename . '.' . $request->file('carousel_image')->getClientOriginalExtension();
         $filePath = 'storage/images/carousels/' . $fileName;
         $request->file('carousel_image')->storeAs('images/carousels/', $fileName, 'public');
 
         Setting::create([
-            'key' => 'carousel_image_'.time(),
+            'key' => 'carousel_image_'. $uniquename,
             'value' => $filePath,
             'type' => 'image',
         ]);
@@ -270,7 +272,12 @@ class SettingController extends Controller
     }
 
     public function deleteCarousel(string $id){
+
         $file = Setting::where("key", $id)->first();
+        if(!$file){
+            return redirect()->route('setting.index')->withErrors("Something went wrong, please try again after refreshing the page.");
+        }
+
         unlink(public_path($file->value));
         $file->delete();
 

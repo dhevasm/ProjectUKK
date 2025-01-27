@@ -127,7 +127,6 @@ export default function Home({ settings, categories, products }: HomeProps) {
                 <CarouselNext ref={nextButton} className="hidden md:flex" />
             </Carousel>
 
-            {/* Categories section */}
             <div className="px-4 md:px-0">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-semibold mb-4">Kategori</h2>
@@ -142,7 +141,7 @@ export default function Home({ settings, categories, products }: HomeProps) {
                 {displayedCategories.map((category) => (
                     <Card
                         key={category.id}
-                        className="group hover:shadow-xl transition-all duration-300 cursor-pointer transform"
+                        className="group hover:shadow-xl bg-white dark:bg-customDark transition-all duration-300 cursor-pointer transform"
                         onClick={() => router.get(route("category.show", category.name.replace(/\s+/g, "-")))}
                     >
                         <CardContent className="p-4">
@@ -168,9 +167,9 @@ export default function Home({ settings, categories, products }: HomeProps) {
                     <div className="px-4 md:px-0">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-semibold">Terbaru</h2>
-                            <button className="text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                            {/* <button className="text-blue-600 hover:text-blue-800 transition-colors duration-300">
                                 Lihat Semua
-                            </button>
+                            </button> */}
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             {latestProducts.map((product) =>
@@ -190,11 +189,11 @@ export default function Home({ settings, categories, products }: HomeProps) {
                     <div className="px-4 md:px-0">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-semibold">
-                                Terpopuler
+                                Populer
                             </h2>
-                            <button className="text-blue-600 hover:text-blue-800 transition-colors duration-300">
+                            {/* <button className="text-blue-600 hover:text-blue-800 transition-colors duration-300">
                                 Lihat Semua
-                            </button>
+                            </button> */}
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             {popularProducts.map((product) =>

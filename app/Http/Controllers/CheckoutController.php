@@ -71,6 +71,15 @@ class CheckoutController extends Controller
 
         $items = cart::where("user_id", Auth::user()->id)->whereIn("id", $request->ids)->with(["product", "product.product_images", "data_undangan"])->get();
 
+        foreach($items as $item){
+            if($item->product->stock < $item->quantity){
+                return redirect()->back()->withErrors('Stock product is not enough');
+            }
+            if($item->product->min_order > $item->quantity){
+                return redirect()->back()->withErrors("Minimum order is ".$item->product->min_order);
+            }
+        }
+
         $productionPrice = Setting::where("key", "production_price")->first();
         $deliveryPrice = Setting::where("key", "delivery_price")->first();
         $tax = Setting::where("key", "tax")->first();
@@ -329,10 +338,10 @@ class CheckoutController extends Controller
         $product = Product::find($request->product_id);
         if($product->stock < $request->quantity){
 
-            return redirect()->back()->withErrors('message', 'Stock product is not enough');
+            return redirect()->back()->withErrors('Stock product is not enough');
         }
         if($product->min_order > $request->quantity){
-            return redirect()->back()->withErrors('message', "Minimum order is ".$product->min_order);
+            return redirect()->back()->withErrors("Minimum order is ".$product->min_order);
         }
 
         $dataUndangan = DataUndangan::create([

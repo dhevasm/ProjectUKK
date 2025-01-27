@@ -125,7 +125,7 @@ export default function CartHeader({
                             <form onSubmit={handleSearch}>
                                 <Input
                                     type="search"
-                                    placeholder="Search cart item..."
+                                    placeholder="Cari Item di keranjang..."
                                     className="w-full px-4 py-4 border rounded-full searchBar"
                                     value={searchTerm}
                                     onChange={handleSearchChange}
@@ -198,7 +198,7 @@ export default function CartHeader({
 
                                 <Dropdown.Content>
                                     <Dropdown.Link href={route("user.profile")}>
-                                        Profile
+                                        Akun Saya
                                     </Dropdown.Link>
                                     {
                                         role === "admin" ? (
@@ -212,7 +212,7 @@ export default function CartHeader({
                                      <Dropdown.Link
                                         href={route('order.history')}
                                     >
-                                        Order History
+                                        Pesanan Saya
                                     </Dropdown.Link>
                                     <Dropdown.Link
                                         href={route("logout")}
@@ -230,84 +230,96 @@ export default function CartHeader({
                 {/* Mobile Navigation */}
                 <div className="md:hidden">
                     <div className="flex justify-between items-center p-4">
-                        <div className="themeColor text-2xl font-bold ">
-                            {appName}
-                        </div>
-                        <button onClick={toggleMobileMenu}>
-                            {isMobileMenuOpen ? (
-                                <X size={24} />
-                            ) : (
-                                <Menu size={24} />
-                            )}
-                        </button>
+                    <Link
+                        href={"/"}
+                        className="text-[var(--app-color)] text-2xl font-bold flex items-center"
+                    >
+                        <img
+                            src="/favicon.ico"
+                            alt="favicon"
+                            className="w-8 h-8 inline-block mr-2"
+                        />
+                        {appName}
+                    </Link>
+
+                       <div className='flex items-center space-x-4'>
+                            <button onClick={() => {
+                                        router.get(route('cart.index'));
+                                    }} className="hover:text-[var(--app-color)] relative ">
+                                        <ShoppingCart size={24} />
+                                        {
+                                            totalCart > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
+                                                {totalCart}
+                                            </span>
+                                        }
+                                    </button>
+                            <button onClick={toggleMobileMenu}>
+                                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                            </button>
+                            </div>
                     </div>
 
                     {isMobileMenuOpen && (
                         <div className="absolute z-50 w-full bg-white shadow-lg">
                             <div className="p-4">
-                                <div className="relative mb-4">
+                                <form onSubmit={handleSearch} className="relative mb-4">
                                     <Input
                                         type="text"
-                                        placeholder="Search products..."
+                                        placeholder="Cari produk di keranjang..."
                                         className="w-full px-4 py-2 border rounded-full"
+                                        value={searchTerm}
+                                        onChange={handleSearchChange}
                                     />
-                                    <button className="absolute right-2 top-2.5">
+                                    <button type="submit" className="absolute right-2 top-2.5">
                                         <Search
                                             size={20}
                                             className="text-gray-500"
                                         />
                                     </button>
-                                </div>
+                                </form>
 
-                                <div className="flex justify-between items-center mb-4">
-                                    <div className="flex space-x-4">
-                                        <Link href={route("dashboard")}>
-                                            <User2 size={24} />
-                                        </Link>
-
-                                        <button className="relative">
-                                            <ShoppingCart size={24} />
-                                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
-                                                0
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <nav className="bg-gray-100">
-                                <div className="flex flex-col">
-                                    {categories
-                                        .map((category) => (
+                                <div className="flex space-x-2 justify-center w-full">
                                             <Link
-                                                key={category.id}
-                                                href={`/category/${category.name.replace(/\s+/g, "-")}`}
-                                                className="themeHover text-gray-700 transition p-4 border-b"
+                                                href={route("user.profile")}
+                                                className="hover:text-[var(--app-color)]"
                                             >
-                                                {category.name}
+                                                Akun Saya
                                             </Link>
-                                        ))
-                                        .slice(0, 5)}
-                                </div>
-                            </nav>
+                                            <div>|</div>
+                                            {role === "admin" && (
+                                                <>
+                                                    <Link
+                                                        href={route(
+                                                            "dashboard"
+                                                        )}
+                                                        className="hover:text-[var(--app-color)]"
+                                                    >
+                                                        Admin
+                                                    </Link>
+                                                    <div>|</div>
+                                                </>
+                                            )}
+                                            <Link
+                                                href={route("order.history")}
+                                                className="hover:text-[var(--app-color)]"
+                                            >
+                                                Pesanan Saya
+                                            </Link>
+                                            <div>|</div>
+                                            <Link
+                                                href={route("logout")}
+                                                method="post"
+                                                as="button"
+                                                className="hover:text-[var(--app-color)]"
+                                            >
+                                                Log Out
+                                            </Link>
+                                        </div>
+                            </div>
                         </div>
                     )}
                 </div>
 
-                {/* Desktop Category Navigation */}
-                {/* <nav className="bg-gray-100 py-3 hidden md:block">
-                        <div className="container mx-auto px-4 flex justify-center space-x-6">
-                            {categories.map((category) => (
-                                <Link
-                                    key={category.id}
-                                    href={`/category/${category.id}`}
-                                    className="text-gray-700 hover:text-[var(--app-color)] transition"
-                                >
-                                    {category.name}
-                                </Link>
-                            )).slice(0, 5)}
-                        </div>
-                    </nav> */}
             </header>
         </>
     );

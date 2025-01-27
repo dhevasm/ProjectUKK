@@ -8,7 +8,7 @@ export default function Welcome({auth, settings, categories, products, totalCart
     return (
         <>
             <Head title="E-commerce" />
-            <div className="bg-white dark:bg-customDark2 min-h-screen flex flex-col">
+            <div className="bg-gray-50 dark:bg-customDark2 min-h-screen flex flex-col">
                 <Header settings={settings} categories={categories} auth={auth} products={products} totalCart={totalCart} role={role} />
                     <main className="flex-grow container mx-auto px-4 py-8">
                         {
