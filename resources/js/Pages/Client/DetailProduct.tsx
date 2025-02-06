@@ -12,7 +12,7 @@ import { User, settings, Category, Product } from "@/types";
 import { LucideMoveLeft, ShoppingBag } from "lucide-react";
 import { router } from "@inertiajs/react";
 import { Textarea } from "@/Components/ui/textarea";
-import StarRating from "./StartRating";
+import StarRating from "./StarRating";
 
 import {
     ChevronLeft,
@@ -51,6 +51,7 @@ interface DetailProductProps {
     role: string;
     reviews: reviews[];
     isCanReview: boolean;
+    admin: User;
 }
 
 
@@ -64,7 +65,8 @@ export default function DetailProduct({
     totalCart,
     role,
     reviews,
-    isCanReview
+    isCanReview,
+    admin,
 }: DetailProductProps) {
     const [selectedImage, setSelectedImage] = useState(0);
 
@@ -97,7 +99,7 @@ export default function DetailProduct({
 
     return (
         <>
-           <ClientLayout role={role} categories={categories} settings={settings} Products={products} auth={auth} totalCart={totalCart} header={product.name}>
+           <ClientLayout admin={admin} role={role} categories={categories} settings={settings} Products={products} auth={auth} totalCart={totalCart} header={product.name}>
                 <main className="flex-grow container mx-auto px-4 py-4">
                     <div className="space-y-4 md:px-10 md:py-5">
                         <div className="flex justify-between items-center">
@@ -252,6 +254,7 @@ export default function DetailProduct({
                                                 <Info className="mr-2 h-4 w-4" />
                                                 Sisa Stock{" "}
                                                 {product.stock} Lembar
+                                                {product.stock < product.min_order && <p className="text-red-500 ms-1">(Habis)</p>}
                                             </div>
                                         </div>
 

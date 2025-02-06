@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react"
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { settings } from "@/types";
 import {
     Facebook,
     Twitter,
     Instagram,
     Linkedin,
+    MapPin
 } from 'lucide-react';
+import { User } from "@/types";
+
+import {BiLogoWhatsapp, BiEnvelope, BiPhone} from 'react-icons/bi'
 
 interface FooterData {
     description: string;
@@ -16,7 +20,8 @@ interface FooterData {
     linkedin: string;
 }
 
-export default function Footer({settings} : {settings: settings[]}) {
+
+export default function Footer({settings, admin} : {settings: settings[], admin: User}) {
     const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
         const [footerData, setFooterData] = useState<FooterData>({
             description: '',
@@ -50,36 +55,35 @@ export default function Footer({settings} : {settings: settings[]}) {
     <footer className="bg-gray-100 dark:bg-customDark py-12">
     <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="md:col-span-2 lg:col-span-1">
-            <h3 className="font-bold text-lg mb-4 flex items-center">
+            <Link href={route("welcome")} className="font-bold text-lg mb-4 flex items-center">
                 <img src="/favicon.ico" alt="favicon" className="w-8 h-8 inline-block mr-2" />
                 {appName}
-            </h3>
+            </Link>
             <p className="text-gray-600 text-sm">
                {footerData.description}
             </p>
         </div>
 
         <div>
-            <h4 className="font-semibold mb-4">Jelajahi</h4>
+            <h4 className="font-semibold mb-4">Layanan Pelanggan</h4>
             <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="text-gray-600 hover:text-[var(--app-color)]">Tentang Kami</Link></li>
-                <li><Link href="/shipping" className="text-gray-600 hover:text-[var(--app-color)]">Hubungi Kami</Link></li>
-                <li><Link href="/contact" className="text-gray-600 hover:text-[var(--app-color)]">Blog</Link></li>
-                <li><Link href="/faq" className="text-gray-600 hover:text-[var(--app-color)]">Kebijakan</Link></li>
+                <li><Link href={route("help")} className="text-gray-600 hover:text-[var(--app-color)]">Bantuan</Link></li>
+                <li><Link href={route("kebijakan")} className="text-gray-600 hover:text-[var(--app-color)]">Kebijakan</Link></li>
+                <li><Link href={route("feedback")} className="text-gray-600 hover:text-[var(--app-color)]">Umpan Balik</Link></li>
+                <li><Link href={route("about")} className="text-gray-600 hover:text-[var(--app-color)]">Tentang Kami</Link></li>
             </ul>
         </div>
 
         <div>
-            <h4 className="font-semibold mb-4">Layanan Pelanggan</h4>
+            <h4 className="font-semibold mb-4">Hubungi Kami</h4>
             <ul className="space-y-2 text-sm">
-                <li><Link href="/returns" className="text-gray-600 hover:text-[var(--app-color)]">Bantuan</Link></li>
-                <li><Link href="/track-order" className="text-gray-600 hover:text-[var(--app-color)]">Pembayaran</Link></li>
-                <li><Link href="/support" className="text-gray-600 hover:text-[var(--app-color)]">Lacak Pesanan</Link></li>
-                <li><Link href="/support" className="text-gray-600 hover:text-[var(--app-color)]">Pengembalian Dana</Link></li>
+                <li><a href={`https://mail.google.com/mail/u/0/?tf=cm&fs=1&to=${admin.email}`} target="_blank"  className="text-gray-600 hover:text-[var(--app-color)] flex gap-1"><BiEnvelope className="text-xl"/>{admin.email}</a></li>
+                <li><a href={`tel:${admin.phone}`} className="text-gray-600 hover:text-[var(--app-color)] flex gap-1"><BiPhone className="text-xl"/>{admin.phone}</a></li>
+                <li><a href={`https://wa.me/${admin.phone}`} target="_blank"  className="text-gray-600 hover:text-[var(--app-color)] flex gap-1"><BiLogoWhatsapp className="text-xl"/>
+                {admin.phone}</a></li>
+                <li><a href="https://maps.app.goo.gl/49qA1Xq1KqU1uMuy8" target="_blank" className="text-gray-600 hover:text-[var(--app-color)] flex gap-1"><MapPin className="self-start" size={50}/>{admin.address}</a></li>
             </ul>
         </div>
-
-
 
         <div className="col-span-1 md:col-span-2 lg:col-span-1">
             <h4 className="font-semibold mb-4">Pembayaran</h4>

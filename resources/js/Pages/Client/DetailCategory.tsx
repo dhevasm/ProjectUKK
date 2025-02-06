@@ -14,6 +14,7 @@ interface PropsType {
     };
     totalCart: number;
     role: string;
+    admin: User;
 }
 
 export default function DetailCategory({
@@ -23,11 +24,12 @@ export default function DetailCategory({
     Products,
     auth,
     totalCart,
-    role
+    role,
+    admin,
 }: PropsType) {
     return (
         <>
-            <ClientLayout role={role} categories={categories} settings={settings} Products={Products} auth={auth} totalCart={totalCart} header={category.name}>
+            <ClientLayout admin={admin} role={role} categories={categories} settings={settings} Products={Products} auth={auth} totalCart={totalCart} header={category.name}>
             <div className="min-h-screen bg-gray-50 dark:bg-customDark2">
                 <div className="    relative h-[300px] overflow-hidden">
                     <img

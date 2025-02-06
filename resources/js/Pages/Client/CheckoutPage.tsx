@@ -25,6 +25,7 @@ interface PropsType {
     snapToken: string;
     orderId: string;
     role: string;
+    admin: User;
 }
 
 const CheckoutPage = ({
@@ -38,6 +39,7 @@ const CheckoutPage = ({
     snapToken,
     orderId,
     role,
+    admin,
 }: PropsType) => {
     const [subtotal, setSubtotal] = useState<number>(0);
     const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -159,6 +161,7 @@ const CheckoutPage = ({
 
     return (
         <ClientLayout
+            admin={admin}
             role={role}
             categories={categories}
             settings={settings}

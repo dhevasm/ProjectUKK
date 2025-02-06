@@ -95,4 +95,5 @@ export type PageProps<
     products: Product[];
     totalCart: number;
     role: string;
+    admin: User;
 };

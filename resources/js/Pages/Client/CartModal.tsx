@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Product, User } from "@/types";
 
 import { ShoppingCart, Minus, Plus } from "lucide-react";
@@ -90,7 +90,6 @@ export default function CartModal({ product, user }: { product: Product, user: U
         setOpen(false);
     };
 
-
     const formatDateForInput = () => {
         const fiveDaysLater = new Date();
         fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
@@ -102,18 +101,17 @@ export default function CartModal({ product, user }: { product: Product, user: U
         <>
             {
                 !user &&
-                <Button onClick={() => router.get(route("login"))} className="w-full" size="lg" variant="theme">
-                    <ShoppingCart className="mr-2 h-5 w-5" />
+                <Button onClick={() => router.get(route("login"))} className="w-full" size="lg" variant="theme" disabled={product.stock < product.min_order}>
+                    <ShoppingCart className="mr-2 h-5 w-5"  />
                     Tambahkan Ke Keranjang
                 </Button>
-
             }
         <Dialog open={open} onOpenChange={setOpen}>
                  <DialogTrigger asChild>
                     {
                         user &&
-                        <Button className="w-full" size="lg" variant="theme">
-                        <ShoppingCart className="mr-2 h-5 w-5" />
+                        <Button className="w-full" size="lg" variant="theme" disabled={product.stock < product.min_order}>
+                        <ShoppingCart className="mr-2 h-5 w-5"/>
                         Tambahkan Ke Keranjang
                     </Button>
                     }

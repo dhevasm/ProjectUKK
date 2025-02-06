@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 use Generator;
 use App\Models\cart;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\review;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Category;
+use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ProductImages;
 use App\Http\Controllers\Controller;
-use App\Models\review;
-use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -117,7 +118,8 @@ class ProductController extends Controller
             }
         }
 
-        return Inertia::render('Client/DetailProduct', compact("product", "canLogin", "canRegister", "settings", "categories", "totalCart", 'role', 'reviews', 'isCanReview'));
+        $admin = User::find(1, ['email', 'phone', 'address']);
+        return Inertia::render('Client/DetailProduct', compact("admin","product", "canLogin", "canRegister", "settings", "categories", "totalCart", 'role', 'reviews', 'isCanReview'));
     }
 
     /**
@@ -224,6 +226,7 @@ class ProductController extends Controller
         $categories = Category::all();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
-        return Inertia::render('Client/Search', compact("canLogin", "canRegister", "settings", "categories", "Products", "totalCart", "role"));
+        $admin = User::find(1, ['email', 'phone', 'address']);
+        return Inertia::render('Client/Search', compact("admin","canLogin", "canRegister", "settings", "categories", "Products", "totalCart", "role"));
     }
 }

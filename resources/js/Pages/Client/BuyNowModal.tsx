@@ -99,6 +99,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                 variant="outline"
                 className="w-full"
                 size="lg"
+                disabled={product.stock < product.min_order}
             >
                Beli Sekarang
             </Button>
@@ -111,6 +112,7 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
                         variant="outline"
                         className="w-full"
                         size="lg"
+                        disabled={product.stock < product.min_order}
                     >
                         Beli Sekarang
                     </Button>

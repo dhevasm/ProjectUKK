@@ -14,6 +14,8 @@ import {
 } from "@/Components/ui/alert-dialog";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
+import { Badge } from "@/Components/ui/badge";
+import { Progress } from "@/Components/ui/progress";
 
 export type ProductType = {
     id: number;
@@ -139,8 +141,12 @@ export const ProductsColumn: ColumnDef<ProductType>[] = [
     },
     {
         accessorKey: "visible",
-        header: () => <div className="w-20">Visible</div>,
-        cell: ({ row }) => (row.getValue("visible") ? "Yes" : "No"), // Display Yes/No based on boolean
+        header: "Visibility",
+        cell: ({ row }) => (
+            <Badge variant={row.getValue("visible") ? "success" : "destructive"}>
+                {row.getValue("visible") ? "Visible" : "Hidden"}
+            </Badge>
+        ),
     },
     {
         accessorKey: "id",

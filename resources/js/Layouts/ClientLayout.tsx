@@ -17,6 +17,7 @@ interface PropsType {
     header: string;
     children: React.ReactNode;
     role: string;
+    admin: User;
 }
 
 
@@ -29,6 +30,7 @@ export default function ClientLayout({
     header,
     children,
     role,
+    admin,
 }: PropsType) {
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
@@ -48,7 +50,7 @@ export default function ClientLayout({
             {children}
         </div>
         <Toaster richColors position="top-right" theme={theme} />
-        <Footer settings={settings} />
+        <Footer settings={settings} admin={admin} />
     </>
   )
 }

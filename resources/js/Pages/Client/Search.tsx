@@ -24,6 +24,7 @@ interface PropsType {
   };
   totalCart: number;
   role: string;
+  admin: User;
 }
 
 export default function Search({
@@ -32,7 +33,8 @@ export default function Search({
   Products,
   auth,
   totalCart,
-  role
+  role,
+  admin,
 }: PropsType) {
   const [filteredProducts, setFilteredProducts] = useState(Products);
   const [showFilters, setShowFilters] = useState(false);
@@ -92,7 +94,7 @@ export default function Search({
 
   return (
     <>
-        <ClientLayout role={role} categories={categories} settings={settings} Products={Products} auth={auth} totalCart={totalCart} header={"Search"}>
+        <ClientLayout admin={admin} role={role} categories={categories} settings={settings} Products={Products} auth={auth} totalCart={totalCart} header={"Search"}>
             <main className="container mx-auto px-4 py-8">
                 <div className="md:hidden mb-4">
                 <Button
@@ -113,7 +115,7 @@ export default function Search({
                         <Slider
                         defaultValue={[0, Math.max(...Products.map(p => p.price))]}
                         max={Math.max(...Products.map(p => p.price))}
-                        step={1000}
+                        step={Math.max(...Products.map(p => p.price)) / 10}
                         onValueChange={(value : any) => setFilters({...filters, priceRange: value})}
                         />
                         <div className="flex justify-between mt-2 text-sm text-gray-600">

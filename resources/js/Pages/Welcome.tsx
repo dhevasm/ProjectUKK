@@ -4,7 +4,7 @@ import Home from './Client/Home';
 import Footer from '@/Components/client/Footer';
 import Header from '@/Components/client/Header';
 
-export default function Welcome({auth, settings, categories, products, totalCart, role}: PageProps) {
+export default function Welcome({auth, settings, categories, products, totalCart, role, admin}: PageProps) {
     return (
         <>
             <Head title="E-commerce" />
@@ -20,7 +20,7 @@ export default function Welcome({auth, settings, categories, products, totalCart
                         }
                         <Home settings={settings} categories={categories} products={products} />
                     </main>
-                <Footer settings={settings} />
+                <Footer settings={settings} admin={admin} />
             </div>
         </>
     );

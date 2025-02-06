@@ -142,7 +142,8 @@ class TransactionController extends Controller
         $refund = Refund::where('user_id', Auth::user()->id)->with("payment")->get();
         $trackings = Tracking::whereIn("delivery_id", $deliveries_id)->get();
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
-        return Inertia::render('Client/OrderHistory', compact('categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', 'transactions', 'trackings', 'role', 'refund'));
+        $admin = User::find(1, ['email', 'phone', 'address']);
+        return Inertia::render('Client/OrderHistory', compact("admin",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', 'transactions', 'trackings', 'role', 'refund'));
     }
 
     public function cancelTransaction(string $id){

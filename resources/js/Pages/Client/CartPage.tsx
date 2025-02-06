@@ -33,6 +33,7 @@ interface CartProps {
     };
     carts: Cart[];
     role: string;
+    admin: User;
 }
 
 export default function CartPage({
@@ -41,7 +42,8 @@ export default function CartPage({
     products,
     auth,
     carts,
-    role
+    role,
+    admin,
 }: CartProps) {
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -526,7 +528,7 @@ export default function CartPage({
                 </main>
 
                 <Toaster richColors position="top-right" theme={theme} />
-                <Footer settings={settings} />
+                <Footer admin={admin} settings={settings} />
             </div>
         </>
     );

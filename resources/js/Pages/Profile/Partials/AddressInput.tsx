@@ -48,7 +48,7 @@ export default function AddressInput() {
     const { data, setData, patch, errors, processing } = useForm<FormData>({
         address: auth.user.address,
         coordinates: auth.user.coordinates || '',
-        searchQuery: ''
+        searchQuery: auth.user.address || '',
     });
 
     const MyLocation = () => {
@@ -154,20 +154,30 @@ export default function AddressInput() {
         <form onSubmit={submit} className="space-y-4">
             <div className="relative">
                 <div className="flex gap-2">
-                    <div className="flex-1">
-                        <InputLabel htmlFor="searchQuery" value="Cari Lokasi" />
+                    <div className='flex-1'>
+                        <div className='flex justify-between'>
+                        <InputLabel htmlFor="address" value="Alamat Lengkap (Pastikan Terdapat Nomor Rumah Anda)" />
+                        {
+                            auth.user.address == null && <p className="text-sm text-red-500">Alamat belum disimpan</p>
+                        }
+                        </div>
                         <TextInput
-                            id="searchQuery"
+                            id="address"
                             type="text"
                             className="mt-1 block w-full"
-                            value={data.searchQuery}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            value={data.address}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            {
+                                setData('address', e.target.value);
                                 setData('searchQuery', e.target.value);
                                 setShowRecommendations(false);
-                            }}
-                            placeholder="Masukkan nama lokasi..."
+                            }
+                            }
+                            required
                         />
+                        <InputError message={errors.address} className="mt-2" />
                     </div>
+
                     <div className="flex items-end ">
                         <Button
                             type="button"
@@ -181,12 +191,12 @@ export default function AddressInput() {
                 </div>
 
                 {showRecommendations && searchResults.length > 0 && (
-                    <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border">
+                    <div className="absolute z-10 mt-1 w-full bg-white dark:bg-customDark2 shadow-lg rounded-md border">
                         <ul className="py-1">
                             {searchResults.map((result, index) => (
                                 <li
                                     key={index}
-                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-customDark cursor-pointer text-sm"
                                     onClick={() => selectLocation(result)}
                                 >
                                     {result.display_name}
@@ -196,27 +206,6 @@ export default function AddressInput() {
                     </div>
                 )}
             </div>
-
-            <div>
-                <div className='flex justify-between'>
-                <InputLabel htmlFor="address" value="Alamat Lengkap (Pastikan Terdapat Nomor Rumah Anda)" />
-                {
-                    auth.user.address == null && <p className="text-sm text-red-500">Alamat belum disimpan</p>
-                }
-                </div>
-                <TextInput
-                    id="address"
-                    type="text"
-                    className="mt-1 block w-full"
-                    value={data.address}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setData('address', e.target.value)
-                    }
-                    required
-                />
-                <InputError message={errors.address} className="mt-2" />
-            </div>
-
 
 
             <div className="h-64 w-full rounded-lg overflow-hidden">

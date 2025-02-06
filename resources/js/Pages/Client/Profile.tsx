@@ -24,13 +24,14 @@ export default function Profile({
     auth,
     products,
     totalCart,
-    role
+    role,
+    admin,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
 
 
     return (
         <div className="bg-gray-50 dark:bg-customDark2">
-            <ClientLayout role={role} categories={categories} settings={settings} Products={products} auth={auth} totalCart={totalCart} header={"Profile"}>
+            <ClientLayout admin={admin} role={role} categories={categories} settings={settings} Products={products} auth={auth} totalCart={totalCart} header={"Profile"}>
                 <div className="py-7 ">
                     <div className="w-full px-4 sm:px-6 lg:px-8 space-y-4">
                         <div className="flex justify-between items-center">

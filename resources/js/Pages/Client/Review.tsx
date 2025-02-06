@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { router } from "@inertiajs/react";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
-import StarRating from "./StartRating";
+import StarRating from "./StarRating";
 import {
     AlertDialog,
     AlertDialogAction,

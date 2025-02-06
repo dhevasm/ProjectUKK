@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\cart;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\cart;
 use App\Models\DataUndangan;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 class CartController extends Controller
@@ -28,6 +29,7 @@ class CartController extends Controller
             'user'
         ])->where('user_id', Auth::user()->id)->get();
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
+        $admin = User::find(1, ['email', 'phone', 'address']);
         return Inertia::render('Client/CartPage', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
@@ -35,6 +37,7 @@ class CartController extends Controller
             'categories' => Category::all(),
             'carts' => $carts,
             "role" =>  $role,
+            "admin" => $admin,
         ]);
     }
 

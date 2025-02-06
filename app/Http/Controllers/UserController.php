@@ -23,6 +23,7 @@ class UserController extends Controller
     public function rootPage()
     {
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
+        $admin = User::find(1, ['email', 'phone', 'address']);
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
@@ -31,6 +32,7 @@ class UserController extends Controller
             'products' => Product::with(['category', 'product_images', 'reviews'])->get(),
             "totalCart" => Auth::user() ? Auth::user()->carts->count() : 0,
             "role" =>  $role,
+            "admin" => $admin
         ]);
     }
 

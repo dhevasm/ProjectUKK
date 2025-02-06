@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\cart;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Setting;
@@ -73,7 +74,8 @@ class CategoryController extends Controller
         $Products = Product::where("category_id", $category->id)->with(['category', 'product_images', 'reviews'])->get();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
-        return Inertia::render('Client/DetailCategory', compact('category', 'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', "role"));
+        $admin = User::find(1, ['email', 'phone', 'address']);
+        return Inertia::render('Client/DetailCategory', compact('admin','category', 'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', "role"));
     }
 
     /**

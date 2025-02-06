@@ -78,6 +78,7 @@ interface PropsType {
     trackings: Tracking[];
     role: string;
     refund: RefundType[];
+    admin: User;
 }
 
 const OrderHistory = ({
@@ -89,7 +90,8 @@ const OrderHistory = ({
     transactions,
     trackings,
     role,
-    refund
+    refund,
+    admin
 }: PropsType) => {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [otherTransaction, setOtherTransaction] = useState<Transaction[]>([]);
@@ -123,6 +125,7 @@ const OrderHistory = ({
 
     return (
         <ClientLayout
+            admin={admin}
             role={role}
             categories={categories}
             settings={settings}

@@ -21,4 +21,4 @@ class CheckIsAdmin
         }
         return redirect('/');
     }
-}
+}                                          

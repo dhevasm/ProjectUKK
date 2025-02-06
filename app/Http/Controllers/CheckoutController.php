@@ -46,8 +46,9 @@ class CheckoutController extends Controller
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $Products = Product::all();
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
+        $admin = User::find(1, ['email', 'phone', 'address']);
 
-        return Inertia::render('Client/CheckoutPage', compact("items",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', "role"));
+        return Inertia::render('Client/CheckoutPage', compact("admin","items",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', "role"));
     }
 
     private function generateOrderId() {
@@ -370,14 +371,15 @@ class CheckoutController extends Controller
             "quantity" => $request->quantity,
         ]);
 
-        $items = $cart->with(["product", "product.product_images", "data_undangan"])->get();
+        $items = cart::where("data_undangan_id", $dataUndangan_id)->with(["product", "product.product_images", "data_undangan"])->get();
         $canLogin = Route::has('login');
         $canRegister = Route::has('register');
         $categories = Category::all();
         $settings = Setting::all();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $Products = Product::all();
-        return Inertia::render('Client/CheckoutPage', compact("items",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart'));
+        $admin = User::find(1, ['email', 'phone', 'address']);
+        return Inertia::render('Client/CheckoutPage', compact("admin","items",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart'));
     }
 }
 

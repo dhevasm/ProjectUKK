@@ -16,6 +16,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\FooterController;
 use App\Http\Controllers\RefundController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TransactionController;
@@ -27,6 +28,12 @@ Route::post('/googleOauthHandle', [UserController::class, 'googleOauthHandle'])-
 Route::get('/category/{id}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('/product-details/{name}', [ProductController::class, 'show'])->name('product.show.detail');
 Route::get('/banned/{id}', [UserController::class, 'bannedPage'])->name('user.banned');
+Route::get('/about', [FooterController::class, 'about'])->name('about');
+Route::get('/feedback', [FooterController::class, 'feedback'])->name('feedback');
+Route::get('/kebijakan', [FooterController::class, 'kebijakan'])->name('kebijakan');
+Route::get('/help', [FooterController::class, 'help'])->name('help');
+Route::post('/feedback', [FooterController::class, 'feedbackStore'])->name('feedback.store')->middleware('throttle:3,1');
+
 
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'userProfile'])->name('user.profile');
