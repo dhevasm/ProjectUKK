@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Product, User } from "@/types";
 
 import { ShoppingCart, Minus, Plus } from "lucide-react";
@@ -97,11 +97,26 @@ export default function CartModal({ product, user }: { product: Product, user: U
         return fiveDaysLater.toISOString().slice(0, 16);
     };
 
+    // Fungsi Untuk Auto Open Modal
+    useEffect(() => {
+        const target_action = sessionStorage.getItem('target_action');
+
+        if(target_action && target_action === 'atc') {
+            if(!user) {
+                sessionStorage.removeItem('target_action');
+                return;
+            }
+
+            sessionStorage.removeItem('target_action');
+            setOpen(true);
+        }
+    }, []);
+
     return (
         <>
             {
                 !user &&
-                <Button onClick={() => router.get(route("login"))} className="w-full" size="lg" variant="theme" disabled={product.stock < product.min_order}>
+                <Button onClick={() => { sessionStorage.setItem("target_product", product.name); sessionStorage.setItem("target_action", "atc"); router.get(route("login"))}} className="w-full" size="lg" variant="theme" disabled={product.stock < product.min_order}>
                     <ShoppingCart className="mr-2 h-5 w-5"  />
                     Tambahkan Ke Keranjang
                 </Button>

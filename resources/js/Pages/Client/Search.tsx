@@ -112,12 +112,12 @@ export default function Search({
                     <div className="bg-white dark:bg-customDark p-4 rounded-lg shadow">
                     <div className="mb-6">
                         <h3 className="font-medium mb-4">Rentang Harga</h3>
-                        <Slider
-                        defaultValue={[0, Math.max(...Products.map(p => p.price))]}
-                        max={Math.max(...Products.map(p => p.price))}
-                        step={Math.max(...Products.map(p => p.price)) / 10}
-                        onValueChange={(value : any) => setFilters({...filters, priceRange: value})}
-                        />
+                            <Slider
+                            defaultValue={[0, Math.max(...Products.map(p => p.price))]}
+                            max={Math.max(...Products.map(p => p.price))}
+                            step={Math.max(...Products.map(p => p.price)) / 10}
+                            onValueChange={(value : any) => setFilters({...filters, priceRange: value})}
+                            />
                         <div className="flex justify-between mt-2 text-sm text-gray-600">
                         <span>Rp {filters.priceRange[0].toLocaleString()}</span>
                         <span>Rp {filters.priceRange[1].toLocaleString()}</span>

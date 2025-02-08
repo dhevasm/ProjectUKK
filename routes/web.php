@@ -34,7 +34,6 @@ Route::get('/kebijakan', [FooterController::class, 'kebijakan'])->name('kebijaka
 Route::get('/help', [FooterController::class, 'help'])->name('help');
 Route::post('/feedback', [FooterController::class, 'feedbackStore'])->name('feedback.store')->middleware('throttle:3,1');
 
-
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'userProfile'])->name('user.profile');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

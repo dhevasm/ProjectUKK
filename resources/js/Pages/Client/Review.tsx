@@ -108,7 +108,7 @@ export default function Review({ reviews, isCanReview, productId, user, role }: 
             <div className="container mx-auto px-4">
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8">
                     <h2 className="text-2xl font-bold text-foreground dark:text-white mb-4 lg:mb-0">
-                        Review Pelanggan
+                        Review
                     </h2>
 
                     {reviews.length > 0 && (
@@ -309,9 +309,9 @@ export default function Review({ reviews, isCanReview, productId, user, role }: 
                     ) : (
                         <Card className="text-center py-12 dark:bg-cusborder-customDark/50 backdrop-blur border border-dashed border-border dark:border-cusbg-customDark2">
                             <Star className="h-12 w-12 mx-auto mb-4 text-muted dark:text-slate-600" />
-                            <h3 className="text-xl font-semibold text-foreground dark:text-white mb-1">No Reviews Yet</h3>
+                            <h3 className="text-xl font-semibold text-foreground dark:text-white mb-1">Tidak Ada Review</h3>
                             <p className="text-sm text-muted-foreground dark:text-slate-400">
-                                Be the first to share your experience!
+                                Jadilah yang pertama untuk berbagi pengalaman Anda!
                             </p>
                         </Card>
                     )}

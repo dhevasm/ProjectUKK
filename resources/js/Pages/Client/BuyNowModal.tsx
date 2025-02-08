@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Product, User } from "@/types";
 
 import { ShoppingCart, Minus, Plus } from "lucide-react";
@@ -90,12 +90,28 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
         return fiveDaysLater.toISOString().slice(0, 16);
     };
 
+
+    // Fungsi Untuk Auto Open Modal
+    useEffect(() => {
+        const target_action = sessionStorage.getItem('target_action');
+
+        if(target_action && target_action === 'buynow') {
+            if(!user) {
+                sessionStorage.removeItem('target_action');
+                return;
+            }
+
+            sessionStorage.removeItem('target_action');
+            setOpen(true);
+        }
+    }, []);
+
     return (
         <>
         {
             !user  &&
             <Button
-                onClick={() => router.get(route("login"))}
+                onClick={() => { sessionStorage.setItem("target_product", product.name); sessionStorage.setItem("target_action", "buynow"); router.get(route("login"))}}
                 variant="outline"
                 className="w-full"
                 size="lg"

@@ -89,11 +89,11 @@ export default function Footer({settings, admin} : {settings: settings[], admin:
             <h4 className="font-semibold mb-4">Pembayaran</h4>
             <div className="space-x-4 space-y-4">
                 <div className="flex gap-4 ms-4">
-                <img src="/payments/dana.png" className="w-11 bg-white" alt="qris" title="dana" />
-                <img src="/payments/gopay.png" className="w-11 " alt="gopay" title="gopay" />
-                <img src="/payments/ovo.png" className="w-10"  alt="ovo" title="ovo" />
-                <img src="/payments/shopepay.png" className="w-10 bg-white" alt="shopee pay" title="shopee pay" />
-                <img src="/payments/linkaja.png" className="w-10 bg-white" alt="link aja" title="link aja" />
+                <img src="/payments/dana.png" className="w-10 h-4 bg-white" alt="qris" title="dana" />
+                <img src="/payments/gopay.png" className="w-10 h-4 " alt="gopay" title="gopay" />
+                <img src="/payments/ovo.png" className="w-10 h-4"  alt="ovo" title="ovo" />
+                <img src="/payments/shopepay.png" className="w-10 h-4 bg-white" alt="shopee pay" title="shopee pay" />
+                <img src="/payments/linkaja.png" className="w-10 h-4 bg-white" alt="link aja" title="link aja" />
                 </div>
                 <div className="flex gap-4 ">
                 <img src="/payments/bca.png" className="w-10" alt="bri" title="bca" />

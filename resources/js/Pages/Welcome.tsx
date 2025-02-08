@@ -3,8 +3,28 @@ import { Head } from '@inertiajs/react';
 import Home from './Client/Home';
 import Footer from '@/Components/client/Footer';
 import Header from '@/Components/client/Header';
+import { useEffect } from 'react';
+import { router } from '@inertiajs/react';
 
 export default function Welcome({auth, settings, categories, products, totalCart, role, admin}: PageProps) {
+
+
+    // Fungsi Untuk Mengarahkan ke produk setelah login
+    useEffect(() => {
+        const target_product = sessionStorage.getItem('target_product');
+
+        if(target_product) {
+            if(!auth.user) {
+                sessionStorage.removeItem('target_product');
+                sessionStorage.removeItem('target_action');
+                return;
+            }
+
+            sessionStorage.removeItem('target_product');
+            router.get(route('product.show.detail', { name: target_product.replace(/\s+/g, '-') }));
+        }
+    }, []);
+
     return (
         <>
             <Head title="E-commerce" />
