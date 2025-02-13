@@ -105,6 +105,9 @@ export default function CartModal({ product, user }: { product: Product, user: U
             if(!user) {
                 sessionStorage.removeItem('target_action');
                 return;
+            }else if(user.email_verified_at === null) {
+                sessionStorage.removeItem('target_action');
+                return;
             }
 
             sessionStorage.removeItem('target_action');

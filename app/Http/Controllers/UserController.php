@@ -57,6 +57,7 @@ class UserController extends Controller
                 "email" => $request->email,
                 "image" => $request->picture,
                 "password" => bcrypt($request->password),
+                "email_verified_at" => now(),
             ]);
         }else{
            Auth::login($user);

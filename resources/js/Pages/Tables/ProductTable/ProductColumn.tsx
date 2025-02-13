@@ -105,41 +105,41 @@ export const ProductsColumn: ColumnDef<ProductType>[] = [
             </Button>
         ),
         cell: ({ row }) => row.getValue("sold"),
-    },
-    {
+        },
+        {
         accessorKey: "description",
         header: () => <div className="w-40">Description</div>,
         cell: ({ row }) => {
             const Description: string = row.getValue("description");
             const truncatedDescription =
-                Description.length > 20
-                    ? Description.substring(0, 20) + "..."
-                    : Description;
+            Description.length > 20
+                ? Description.substring(0, 20) + "..."
+                : Description;
             return (
-                <AlertDialog>
-                    <AlertDialogTrigger>
-                        <span className="cursor-pointer">
-                            {truncatedDescription}
-                        </span>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>
-                                Full Description
-                            </AlertDialogTitle>
-                        </AlertDialogHeader>
-                        <AlertDialogDescription>
-                            {Description}
-                        </AlertDialogDescription>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Close</AlertDialogCancel>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+            <AlertDialog>
+                <AlertDialogTrigger>
+                <span className="cursor-pointer block truncate">
+                    {truncatedDescription}
+                </span>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>
+                    Full Description
+                    </AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogDescription>
+                    {Description}
+                </AlertDialogDescription>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Close</AlertDialogCancel>
+                </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
             );
         },
-    },
-    {
+        },
+        {
         accessorKey: "visible",
         header: "Visibility",
         cell: ({ row }) => (

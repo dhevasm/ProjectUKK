@@ -98,24 +98,28 @@ export default function Register() {
                             </button>
                         </div>
                         {/* Password Strength Indicator */}
-                        <div className="mt-1 h-1 w-full bg-gray-200 rounded">
-                            <div
-                                className={`h-1 rounded transition-all duration-300 ${
-                                    passwordStrength === 0 ? 'bg-red-500 w-[20%]' :
-                                    passwordStrength === 1 ? 'bg-red-500 w-[40%]' :
-                                    passwordStrength === 2 ? 'bg-yellow-500 w-[60%]' :
-                                    passwordStrength === 3 ? 'bg-green-500 w-[80%]' :
-                                    'bg-green-500 w-full'
-                                }`}
-                            ></div>
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                            {passwordStrength === 0 && "Very weak password"}
-                            {passwordStrength === 1 && "Weak password"}
-                            {passwordStrength === 2 && "Moderate password"}
-                            {passwordStrength === 3 && "Strong password"}
-                            {passwordStrength >= 4 && "Very strong password"}
-                        </div>
+                        {/* {data.password && ( */}
+                            <>
+                                <div className="mt-1 h-1 w-full bg-gray-200 rounded">
+                                    <div
+                                        className={`h-1 rounded transition-all duration-300 ${
+                                            passwordStrength === 0 ? 'bg-red-500 w-[20%]' :
+                                            passwordStrength === 1 ? 'bg-red-500 w-[40%]' :
+                                            passwordStrength === 2 ? 'bg-yellow-500 w-[60%]' :
+                                            passwordStrength === 3 ? 'bg-green-500 w-[80%]' :
+                                            'bg-green-500 w-full'
+                                        }`}
+                                    ></div>
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">
+                                    {passwordStrength === 0 && "Very weak password"}
+                                    {passwordStrength === 1 && "Weak password"}
+                                    {passwordStrength === 2 && "Moderate password"}
+                                    {passwordStrength === 3 && "Strong password"}
+                                    {passwordStrength >= 4 && "Very strong password"}
+                                </div>
+                            </>
+                        {/* )} */}
                         <InputError message={errors.password} className="mt-2" />
                     </div>
 

@@ -69,6 +69,7 @@ type SummaryProps = {
   status: 'success' | 'failed';
   name: string;
   otherTransactions?: Transaction[];
+  admin: User;
 };
 
 const ClientSummary = ({
@@ -77,7 +78,8 @@ const ClientSummary = ({
   payment,
   status,
   name,
-  otherTransactions
+  otherTransactions,
+  admin,
 }: SummaryProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [Subtotal, setSubtotal] = useState(0);
@@ -114,43 +116,68 @@ const ClientSummary = ({
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
+    const App_Name = import.meta.env.VITE_APP_NAME;
 
+    // Add company logo space (placeholder)
     doc.setFillColor(245, 247, 250);
     doc.rect(0, 0, pageWidth, 50, 'F');
 
-    doc.setDrawColor(230, 232, 235);
-    doc.line(0, 50, pageWidth, 50);
-
-    doc.setFontSize(24);
+    // Company name and details
+    doc.setFontSize(20);
     doc.setTextColor(30, 41, 59);
-    doc.text('Transaction Summary', pageWidth / 2, 25, { align: 'center' });
+    doc.text(App_Name, 15, 20);
 
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
-    doc.text(`Order ID: ${payment.order_id}`, pageWidth / 2, 35, { align: 'center' });
+    const adminAddressLines = doc.splitTextToSize(admin.address, pageWidth - 100);
+    const adminContactLines = doc.splitTextToSize(`${admin.email} | ${admin.phone}`, pageWidth - 30);
+    doc.text(adminAddressLines, 15, 30);
+    doc.text(adminContactLines, 15, 35 + adminAddressLines.length * 5);
 
-    doc.setFontSize(12);
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Customer Name: ${name}`, pageWidth / 2, 40, { align: 'center' });
-
-    const statusText = `Status: ${status.toUpperCase()}`;
-    doc.setFontSize(12);
-    doc.setTextColor(status === 'success' ? '#059669' : '#DC2626');
-    doc.text(statusText, pageWidth / 2, 45, { align: 'center' });
+    // Receipt title and details
+    doc.setFillColor(241, 245, 249);
+    doc.rect(0, 55, pageWidth, 35, 'F');
 
     doc.setFontSize(16);
     doc.setTextColor(30, 41, 59);
-    doc.text('Product Details', 15, 70);
+    doc.text('RECEIPT', pageWidth - 15, 65, { align: 'right' });
 
+    doc.setFontSize(10);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - 15, 72, { align: 'right' });
+    doc.text(`Order ID: ${payment.order_id}`, pageWidth - 15, 77, { align: 'right' });
+    doc.text(`Invoice #: INV-${payment.order_id}`, pageWidth - 15, 82, { align: 'right' });
+
+    // Customer information
+    doc.setFontSize(12);
+    doc.text('Bill To:', 15, 65);
+    doc.setFontSize(11);
+    doc.text(name, 15, 72);
+
+    // Status badge
+    const statusText = status.toUpperCase();
+    doc.setFillColor(status === 'success' ? 230 : 254, status === 'success' ? 255 : 226, status === 'success' ? 237 : 226);
+    doc.setTextColor(status === 'success' ? 34 : 239, status === 'success' ? 197 : 68, status === 'success' ? 94 : 68);
+    doc.roundedRect(15, 75, 25, 7, 1, 1, 'F'); // Adjusted margin top
+    doc.setFontSize(8);
+    doc.text(statusText, 27.5, 80, { align: 'center' });
+
+    // Product details table
     doc.autoTable({
-      startY: 80,
-      head: [['Product Information', '']],
-      body: body,
-      theme: 'plain',
+      startY: 95,
+      head: [['Item Description', 'Qty', 'Unit Price', 'Amount']],
+      body: [
+        [product.name, quantity.toString(), `Rp. ${product.price.toLocaleString('id-ID')}`, `Rp. ${(product.price * quantity).toLocaleString('id-ID')}`],
+        ...(otherTransactions?.map(trans => [
+          trans.product.name,
+          trans.quantity.toString(),
+          `Rp. ${trans.product.price.toLocaleString('id-ID')}`,
+          `Rp. ${(trans.product.price * trans.quantity).toLocaleString('id-ID')}`
+        ]) || [])
+      ],
+      theme: 'striped',
       styles: {
-        fontSize: 12,
-        textColor: [30, 41, 59],
-        cellPadding: 8
+        fontSize: 10,
+        cellPadding: 5,
       },
       headStyles: {
         fillColor: [241, 245, 249],
@@ -158,44 +185,43 @@ const ClientSummary = ({
         fontStyle: 'bold'
       },
       columnStyles: {
-        0: { cellWidth: 100 },
-        1: { cellWidth: 'auto' }
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 20, halign: 'center' },
+        2: { cellWidth: 40, halign: 'right' },
+        3: { cellWidth: 40, halign: 'right' }
       },
       margin: { left: 15, right: 15 }
     });
 
-    const finalY = (doc as any).lastAutoTable.finalY + 20;
-    doc.setFontSize(16);
-    doc.text('Payment Summary', 15, finalY);
+    const finalY = (doc as any).lastAutoTable.finalY + 10;
 
-    doc.autoTable({
-      startY: finalY + 10,
-      body: [
-        ['Subtotal', `Rp. ${(Subtotal).toLocaleString('id-ID')}`],
-        ['Additional Cost', `Rp. ${(payment.gross_amount - Subtotal).toLocaleString('id-ID')}`],
-        ['Total Payment', `Rp. ${payment.gross_amount.toLocaleString('id-ID')}`]
-      ],
-      theme: 'plain',
-      styles: {
-        fontSize: 12,
-        textColor: [30, 41, 59],
-        cellPadding: 8
-      },
-      columnStyles: {
-        0: { cellWidth: 100 },
-        1: { cellWidth: 'auto', fontStyle: 'bold' }
-      },
-      margin: { left: 15, right: 15 }
-    });
+    // Payment summary
+    doc.setFillColor(250, 250, 250);
+    doc.rect(pageWidth - 95, finalY, 80, 45, 'F');
 
     doc.setFontSize(10);
     doc.setTextColor(100, 116, 139);
-    doc.text('Thank you for your purchase!', pageWidth / 2, pageHeight - 20, { align: 'center' });
-    doc.text(`Generated on ${new Date().toLocaleDateString()}`, pageWidth / 2, pageHeight - 15, { align: 'center' });
+    doc.text('Subtotal:', pageWidth - 90, finalY + 10);
+    doc.text('Additional Cost:', pageWidth - 90, finalY + 20);
+    doc.setFontSize(12);
+    doc.setTextColor(30, 41, 59);
+    doc.text('Total Amount:', pageWidth - 90, finalY + 35);
 
-    doc.save(`transaction_summary_${payment.order_id}.pdf`);
+    doc.setFontSize(10);
+    doc.text(`Rp. ${Subtotal.toLocaleString('id-ID')}`, pageWidth - 20, finalY + 10, { align: 'right' });
+    doc.text(`Rp. ${(payment.gross_amount - Subtotal).toLocaleString('id-ID')}`, pageWidth - 20, finalY + 20, { align: 'right' });
+    doc.setFontSize(12);
+    doc.setTextColor(30, 41, 59);
+    doc.text(`Rp. ${payment.gross_amount.toLocaleString('id-ID')}`, pageWidth - 20, finalY + 35, { align: 'right' });
+
+    // Footer
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Thank you for your business!', pageWidth / 2, pageHeight - 20, { align: 'center' });
+    doc.text('For any questions about this receipt, please contact ' + admin.email, pageWidth / 2, pageHeight - 15, { align: 'center' });
+
+    doc.save(`receipt_${payment.order_id}.pdf`);
   };
-
   return (
     <>
       <Button

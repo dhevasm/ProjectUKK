@@ -39,8 +39,6 @@ class CheckoutController extends Controller
         }
 
         $items = cart::whereIn("id", $request->ids)->with(["product", "product.product_images", "data_undangan"])->get();
-        $canLogin = Route::has('login');
-        $canRegister = Route::has('register');
         $categories = Category::all();
         $settings = Setting::all();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
@@ -48,7 +46,7 @@ class CheckoutController extends Controller
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         $admin = User::find(1, ['email', 'phone', 'address']);
 
-        return Inertia::render('Client/CheckoutPage', compact("admin","items",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', "role"));
+        return Inertia::render('Client/CheckoutPage', compact("admin","items",'categories', 'settings', 'Products', 'totalCart', "role"));
     }
 
     private function generateOrderId() {
@@ -146,13 +144,12 @@ class CheckoutController extends Controller
 
         $snapToken = \Midtrans\Snap::getSnapToken($params);
 
-        $canLogin = Route::has('login');
-        $canRegister = Route::has('register');
         $categories = Category::all();
         $settings = Setting::all();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $Products = Product::all();
-        return Inertia::render('Client/CheckoutPage', compact("items",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', 'snapToken', 'orderId'));
+        $admin = User::find(1, ['email', 'phone', 'address']);
+        return Inertia::render('Client/CheckoutPage', compact("admin","items",'categories', 'settings', 'Products', 'totalCart', 'snapToken', 'orderId'));
     }
 
     private function sendNotif(){
@@ -372,14 +369,12 @@ class CheckoutController extends Controller
         ]);
 
         $items = cart::where("data_undangan_id", $dataUndangan_id)->with(["product", "product.product_images", "data_undangan"])->get();
-        $canLogin = Route::has('login');
-        $canRegister = Route::has('register');
         $categories = Category::all();
         $settings = Setting::all();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $Products = Product::all();
         $admin = User::find(1, ['email', 'phone', 'address']);
-        return Inertia::render('Client/CheckoutPage', compact("admin","items",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart'));
+        return Inertia::render('Client/CheckoutPage', compact("admin","items",'categories', 'settings', 'Products', 'totalCart'));
     }
 }
 

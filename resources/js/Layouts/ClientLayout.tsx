@@ -20,7 +20,6 @@ interface PropsType {
     admin: User;
 }
 
-
 export default function ClientLayout({
     categories,
     settings,

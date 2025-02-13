@@ -31,8 +31,6 @@ class CartController extends Controller
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         $admin = User::find(1, ['email', 'phone', 'address']);
         return Inertia::render('Client/CartPage', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
             'settings' => Setting::all(),
             'categories' => Category::all(),
             'carts' => $carts,
@@ -56,14 +54,14 @@ class CartController extends Controller
                     'data_undangan',
                     'user'
                 ])->get();
+
+        $admin = User::find(1, ['email', 'phone', 'address']);
         return Inertia::render('Client/CartPage', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
             'settings' => Setting::all(),
             'categories' => Category::all(),
             'carts' => $carts,
             "role" =>  $role,
-
+            "admin" => $admin,
         ]);
     }
 

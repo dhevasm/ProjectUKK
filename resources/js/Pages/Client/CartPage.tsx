@@ -417,7 +417,7 @@ export default function CartPage({
                             </div>
 
                             <div className="lg:col-span-4 space-y-4 mt-4 lg:mt-0">
-                                <Card className="bg-white dark:bg-customDark">
+                                {/* <Card className="bg-white dark:bg-customDark">
                                     <CardContent className="p-4">
                                         <div className="flex items-center space-x-2">
                                             <Gift className="h-5 w-5 text-[var(--app-color)]" />
@@ -432,7 +432,7 @@ export default function CartPage({
                                             </Button>
                                         </div>
                                     </CardContent>
-                                </Card>
+                                </Card> */}
 
                                 <Card className="bg-white dark:bg-customDark">
                                     <CardContent className="p-4 space-y-4">
@@ -500,7 +500,7 @@ export default function CartPage({
                                         <div className="flex items-start space-x-3 text-sm text-gray-600">
                                             <Truck className="h-5 w-5 flex-shrink-0 mt-1" />
                                             <p>
-                                                Produk akan dikerjakan paling cepat 5 hari setelah pembayaran
+                                                Produk akan dikerjakan dalam waktu 5-7 hari kerja setelah pembayaran lunas
                                             </p>
                                         </div>
                                     </CardContent>

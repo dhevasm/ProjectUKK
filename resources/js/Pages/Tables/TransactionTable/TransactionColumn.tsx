@@ -56,10 +56,32 @@ export const TransactionColumn: ColumnDef<TransactionType>[] = [
         },
     },
     {
+        accessorKey: "user.phone",
+        header: ({ column }) => {
+            return (
+                <div className="whitespace-nowrap w-20">
+                    Phone
+                </div>
+            );
+        },
+        cell : ({row}) => {
+            const userdata : User = row.getValue("user");
+            return(
+                <div className="flex justify-center">
+                    <a className='text-green-500 underline' href={`https://wa.me/${userdata.phone}`} target="_blank" rel="noopener noreferrer">
+                        {userdata.phone}
+                    </a>
+                </div>
+            )
+
+        }
+
+    },
+    {
         accessorKey: "product.name",
         header: ({ column }) => {
             return (
-                <div className="whitespace-nowrap w-16">
+                <div className="whitespace-nowrap w-20">
                     Product
                 </div>
             );
@@ -253,9 +275,15 @@ export const TransactionColumn: ColumnDef<TransactionType>[] = [
             );
         },
     },
+    {
+        accessorKey: "user",
+        header: "",
+        cell: ({ row }) => {
+            return (
+                <div className="hidden">
 
-
-
-
-
+                </div>
+            );
+        },
+    },
 ];

@@ -146,7 +146,7 @@ export default function DetailProduct({
                             </button>
                             </div>
                         </div>
-                        <div className="min-h-screen">
+                        <div>
                             <div className="mx-auto max-w-7xl">
                                 <div className="grid gap-8 lg:grid-cols-2">
                                     <div className="relative">
@@ -161,20 +161,34 @@ export default function DetailProduct({
                                                 alt={`Product image ${
                                                     selectedImage + 1
                                                 }`}
-                                                className="h-full w-full object-cover"
+                                                className="h-full w-full object-cover cursor-pointer"
+                                                onClick={() => {
+                                                    const img = document.createElement("img");
+                                                    img.src = "/" + product.product_images[selectedImage].url;
+                                                    img.className = "fixed inset-0 z-50 h-full w-full object-contain bg-black bg-opacity-90 cursor-pointer";
+                                                    img.onclick = () => document.body.removeChild(img);
+                                                    document.body.appendChild(img);
+                                                }}
                                             />
-                                            <button
-                                                onClick={prevImage}
-                                                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 dark:bg-customDark p-2 shadow-lg backdrop-blur-sm transition hover:bg-white"
-                                            >
-                                                <ChevronLeft className="h-5 w-5" />
-                                            </button>
-                                            <button
-                                                onClick={nextImage}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80  dark:bg-customDark p-2 shadow-lg backdrop-blur-sm transition hover:bg-white"
-                                            >
-                                                <ChevronRight className="h-5 w-5" />
-                                            </button>
+                                            {
+                                                product.product_images.length > 1 && (
+                                                    <>
+                                                         <button
+                                                            onClick={prevImage}
+                                                            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 dark:bg-customDark p-2 shadow-lg backdrop-blur-sm transition hover:bg-white"
+                                                        >
+                                                            <ChevronLeft className="h-5 w-5" />
+                                                        </button>
+                                                        <button
+                                                            onClick={nextImage}
+                                                            className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80  dark:bg-customDark p-2 shadow-lg backdrop-blur-sm transition hover:bg-white"
+                                                        >
+                                                            <ChevronRight className="h-5 w-5" />
+                                                        </button>
+                                                    </>
+                                                )
+                                            }
+
                                         </div>
                                         <div className="mt-4 grid grid-cols-4 gap-4">
                                             {product.product_images.map(

@@ -87,12 +87,29 @@ export default function Home({ settings, categories, products }: HomeProps) {
 
     const itemsPerRow = {
         'default': 2,
-        'sm': 3,
+        'sm': 2,
+        'mdmini' : 3,
         'md': 4,
         'lg': 6
     };
 
-    const maxItemsCollapsed = itemsPerRow.lg;
+
+    const getMaxItemsCollapsed = () => {
+        if (window.innerWidth >= 1025) return itemsPerRow.lg;
+        if (window.innerWidth >= 821) return itemsPerRow.md;
+        if (window.innerWidth >= 768) return itemsPerRow.mdmini;
+        if (window.innerWidth >= 640) return itemsPerRow.sm;
+        return itemsPerRow.default;
+    };
+
+    const [maxItemsCollapsed, setMaxItemsCollapsed] = useState(getMaxItemsCollapsed());
+
+    useEffect(() => {
+        const handleResize = () => setMaxItemsCollapsed(getMaxItemsCollapsed());
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
 
     const displayedCategories = showAll
         ? categories
@@ -137,28 +154,53 @@ export default function Home({ settings, categories, products }: HomeProps) {
                     {showAll ? 'Lihat Sedikit' : 'Lihat Semua'}
                 </button>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {displayedCategories.map((category) => (
-                    <Card
-                        key={category.id}
-                        className="group hover:shadow-xl bg-white dark:bg-customDark transition-all duration-300 cursor-pointer transform"
-                        onClick={() => router.get(route("category.show", category.name.replace(/\s+/g, "-")))}
-                    >
-                        <CardContent className="p-4">
-                            <div className="aspect-square mb-2 overflow-hidden rounded-lg">
-                                <img
-                                    src={category.image}
-                                    alt={category.name}
-                                    className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
-                                />
-                            </div>
-                            <p className="text-center font-medium truncate group-hover:text-[var(--app-hover-color)] transition-colors duration-300">
-                                {category.name}
-                            </p>
-                        </CardContent>
-                    </Card>
-                ))}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 p-4">
+      {displayedCategories.map((category) => (
+        <Card
+          key={category.id}
+          className="group relative overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer bg-white dark:bg-customDark border-0"
+          onClick={() => router.get(route("category.show", category.name.replace(/\s+/g, "-")))}
+        >
+          <CardContent className="p-0">
+            <div className="relative">
+              <div className="aspect-square w-36 mx-auto overflow-hidden rounded-t-lg">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="w-full h-full object-cover transform transition-all duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
+                <p className="text-center font-semibold text-sm text-white drop-shadow-md">
+                  {category.name}
+                </p>
+              </div>
             </div>
+            <div className="bg-gradient-to-b from-gray-50 to-gray-100 dark:from-customDark dark:to-customDark2 p-2 rounded-b-lg">
+              <div className="flex justify-center items-center space-x-1">
+                <span className="text-xs  text-gray-600 dark:text-gray-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300">
+                  Lihat Undangan {category.name}
+                </span>
+                <svg
+                  className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
         </div>
 
             {/* Latest Products */}

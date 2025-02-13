@@ -80,12 +80,13 @@ interface TransactionDetailProps {
   onBack: () => void;
   trackings: Tracking[];
   refund?: RefundType;
+  admin : User;
 }
 
 
 type StepStatus = 'completed' | 'current' | 'upcoming' | 'cancelled';
 
-const TransactionDetail: React.FC<TransactionDetailProps> = ({ transaction, onBack, trackings, otherTransactions, refund }) => {
+const TransactionDetail: React.FC<TransactionDetailProps> = ({ transaction, onBack, trackings, otherTransactions, refund, admin }) => {
 
     const getTimelineStatus = (): TimelineStep['status'] => {
     if (transaction.payment.status !== 'settlement') {
@@ -574,9 +575,9 @@ return (
 
                     {
                         otherTransactions && otherTransactions.length > 0 ? (
-                            <ClientSummary otherTransactions={otherTransactions} name={transaction.delivery.name} product={transaction.product} quantity={transaction.quantity} payment={transaction.payment} status={transaction.status == "completed" ? "success" : "failed"} />
+                            <ClientSummary admin={admin} otherTransactions={otherTransactions} name={transaction.delivery.name} product={transaction.product} quantity={transaction.quantity} payment={transaction.payment} status={transaction.status == "completed" ? "success" : "failed"} />
                         ) : (
-                            <ClientSummary name={transaction.delivery.name} product={transaction.product} quantity={transaction.quantity} payment={transaction.payment} status={transaction.status == "completed" ? "success" : "failed"} />
+                            <ClientSummary admin={admin} name={transaction.delivery.name} product={transaction.product} quantity={transaction.quantity} payment={transaction.payment} status={transaction.status == "completed" ? "success" : "failed"} />
                         )
                     }
                 </div>

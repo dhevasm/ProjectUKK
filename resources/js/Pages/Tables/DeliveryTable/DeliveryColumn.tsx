@@ -56,16 +56,24 @@ export const DeliveryColumn: ColumnDef<DeliveryType>[] = [
         header: "Name",
     },
     {
-        accessorKey: "phone",
-        header: "Phone",
-    },
-    {
+        accessorKey: 'phone',
+        header: 'Phone',
+        cell: ({ row }) => {
+            const phone: string = row.getValue('phone');
+            return (
+                <a className='text-green-500 underline' href={`https://wa.me/${phone}`} target='_blank'>
+                    {phone}
+                </a>
+            );
+        }
+        },
+        {
         accessorKey: 'address',
         header: () => {
             return (
-                <div className='w-20'>
-                    Address
-                </div>
+            <div className='w-20'>
+                Address
+            </div>
             )
         },
         cell: ({ row }) => {
@@ -77,31 +85,32 @@ export const DeliveryColumn: ColumnDef<DeliveryType>[] = [
         return (
         <AlertDialog>
             <AlertDialogTrigger>
-                <span className='cursor-pointer'>{truncatedAddress}</span>
+            <span className='cursor-pointer truncate'>{truncatedAddress}</span>
             </AlertDialogTrigger>
             <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Full Address</AlertDialogTitle>
-                </AlertDialogHeader>
-                <AlertDialogDescription>
-                    {address}
-                </AlertDialogDescription>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>Close</AlertDialogCancel>
-                </AlertDialogFooter>
+            <AlertDialogHeader>
+                <AlertDialogTitle>Full Address</AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogDescription>
+                {address}
+            </AlertDialogDescription>
+            <AlertDialogFooter>
+                <AlertDialogCancel>Close</AlertDialogCancel>
+            </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
         );
         }
         },
-    {
+        {
         accessorKey: "coordinate",
         header: "Coordinate",
-    },
-    {
+        },
+        {
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => {
+
             const status: string = row.getValue("status");
             const statusColor = status === "proccess" ? "yellow" :  status === "pending"? "gray" : status === "delivery"? "blue" : status === "cancelled" ? "red" : status === "refund" ? "red" : "green";
             return (

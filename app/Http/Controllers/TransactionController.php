@@ -79,7 +79,7 @@ class TransactionController extends Controller
                     $product->save();
                 }
 
-                $this->sendNotif($transaction->user_id, env("APP_NAME").": Pesananmu sudah diproses, silahkan tunggu informasi selanjutnya");
+                $this->sendNotif($transaction->user_id, env("APP_NAME").": Pesananmu sudah diproses, pantau pesananmu melalui : ".route('order.history'));
             }
 
             if($status == "cancelled"){
@@ -90,7 +90,7 @@ class TransactionController extends Controller
                 Delivery::find($transaction->delivery_id)->update([
                     'status' => "cancelled",
                 ]);
-                $this->sendNotif($transaction->user_id, env("APP_NAME").": Pesananmu dibatalkan, silahkan ambil refund melalui website kami");
+                $this->sendNotif($transaction->user_id, env("APP_NAME").": Pesananmu dibatalkan, silahkan ambil refund melalui : ". route('order.history'));
             }
 
             if($status == "delivery"){
@@ -98,7 +98,7 @@ class TransactionController extends Controller
                     'delivery' => now(),
                     "status" => "delivery",
                 ]);
-                $this->sendNotif($transaction->user_id, env("APP_NAME").": Pesananmu sudah dikirim, silahkan tunggu informasi selanjutnya");
+                $this->sendNotif($transaction->user_id, env("APP_NAME").": Pesananmu sudah dikirim, pantau pesananmu melalui : ".route('order.history'));
             }
         }
 
@@ -117,11 +117,9 @@ class TransactionController extends Controller
 
     public function userIndex(){
 
-        $canLogin = Route::has('login');
-        $canRegister = Route::has('register');
         $categories = Category::all();
         $settings = Setting::all();
-        $Products = Product::all();
+        $Products = Product::with('product_images')->get();
         $totalCart = Auth::user() ? cart::where("user_id", Auth::user()->id)->count() : 0;
         $transactions = Transaction::where('user_id', Auth::user()->id)->with([
             "user",
@@ -143,7 +141,7 @@ class TransactionController extends Controller
         $trackings = Tracking::whereIn("delivery_id", $deliveries_id)->get();
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         $admin = User::find(1, ['email', 'phone', 'address']);
-        return Inertia::render('Client/OrderHistory', compact("admin",'categories', 'settings', 'Products', 'canLogin', 'canRegister', 'totalCart', 'transactions', 'trackings', 'role', 'refund'));
+        return Inertia::render('Client/OrderHistory', compact("admin",'categories', 'settings', 'Products', 'totalCart', 'transactions', 'trackings', 'role', 'refund'));
     }
 
     public function cancelTransaction(string $id){

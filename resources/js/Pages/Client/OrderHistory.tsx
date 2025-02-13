@@ -136,6 +136,7 @@ const OrderHistory = ({
         >
         {selectedTransaction ? (
             <TransactionDetail
+                admin={admin}
                 transaction={selectedTransaction}
                 onBack={() => setSelectedTransaction(null)}
                 trackings={trackings}
@@ -205,7 +206,7 @@ const OrderHistory = ({
                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2" >
                                         <div className="w-full">
                                             <p className="text-xs sm:text-sm text-gray-500 mb-1">Order Id : {firstTransaction.payment.order_id}</p>
-                                            <h3 className="font-medium text-sm sm:text-base mt-0.5 truncate">
+                                            <h3 className="font-medium text-sm sm:text-base mt-0.5 truncate hover:cursor-pointer hover:">
                                                 {transactionGroup.map(t => t.product.name).join(', ')}
                                             </h3>
                                         </div>

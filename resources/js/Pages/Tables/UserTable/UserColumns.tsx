@@ -61,6 +61,24 @@ export const UserColumns: ColumnDef<UserType>[] = [
     }
     },
     {
+        accessorKey: 'email_verified_at',
+        header: () => {
+            return (
+                <div className='w-20'>
+                    Email Verify
+                </div>
+            )
+        },
+        cell: ({ row }) => {
+            const emailVerifiedAt: string = row.getValue('email_verified_at');
+            return emailVerifiedAt ? (
+                <span className='text-green-500'>Verified</span>
+            ) : (
+                <span className='text-red-500'>Not Verified</span>
+            );
+        }
+    },
+    {
     accessorKey: 'created_at',
     header: ({ column }) => {
     return (
@@ -81,28 +99,54 @@ export const UserColumns: ColumnDef<UserType>[] = [
     {
     accessorKey: 'phone',
     header: 'Phone',
+    cell: ({ row }) => {
+        const phone: string = row.getValue('phone');
+        return (
+            <a className='text-green-500 underline' href={`https://wa.me/${phone}`} target='_blank'>
+                {phone}
+            </a>
+        );
+    }
     },
     {
-    accessorKey: 'address',
-    header: () => {
-        return (
+        accessorKey: 'phone_verified_at',
+        header: () => {
+            return (
+                <div className='w-20'>
+                    Phone Verify
+                </div>
+            )
+        },
+        cell: ({ row }) => {
+            const phoneVerifiedAt: string = row.getValue('phone_verified_at');
+            return phoneVerifiedAt ? (
+                <span className='text-green-500'>Verified</span>
+            ) : (
+                <span className='text-red-500'>Not Verified</span>
+            );
+        }
+    },
+    {
+        accessorKey: 'address',
+        header: () => {
+            return (
             <div className='w-20'>
                 Address
             </div>
-        )
-    },
-    cell: ({ row }) => {
-    const address: string = row.getValue('address');
-    let truncatedAddress = "";
-    if(address){
-    truncatedAddress = address.length > 20 ? address.substring(0, 20) + '...' : address;
-    }
-    return (
-    <AlertDialog>
-        <AlertDialogTrigger>
-            <span className='cursor-pointer'>{truncatedAddress}</span>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
+            )
+        },
+        cell: ({ row }) => {
+        const address: string = row.getValue('address');
+        let truncatedAddress = "";
+        if(address){
+        truncatedAddress = address.length > 20 ? address.substring(0, 20) + '...' : address;
+        }
+        return (
+        <AlertDialog>
+            <AlertDialogTrigger>
+            <span className='cursor-pointer truncate'>{truncatedAddress}</span>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
             <AlertDialogHeader>
                 <AlertDialogTitle>Full Address</AlertDialogTitle>
             </AlertDialogHeader>
@@ -112,11 +156,11 @@ export const UserColumns: ColumnDef<UserType>[] = [
             <AlertDialogFooter>
                 <AlertDialogCancel>Close</AlertDialogCancel>
             </AlertDialogFooter>
-        </AlertDialogContent>
-    </AlertDialog>
-    );
-    }
-    },
+            </AlertDialogContent>
+        </AlertDialog>
+        );
+        }
+        },
     {
         accessorKey: 'banned_until',
         header: () => {

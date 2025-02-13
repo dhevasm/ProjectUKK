@@ -123,11 +123,9 @@ class ProfileController extends Controller
         $role = Auth::check() ? (isset(Auth::user()->roles[0]->name) ? Auth::user()->roles[0]->name : 'client') : 'guest';
         $admin = User::find(1, ['email', 'phone', 'address']);
         return Inertia::render('Client/Profile', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
             'settings' =>Setting::all(),
             'categories' =>Category::all(),
-            'products' => Product::all(),
+            'products' => Product::with('product_images')->get(),
             "totalCart" => Auth::user() ? Auth::user()->carts->count() : 0,
             "role" =>  $role,
             "admin" => $admin

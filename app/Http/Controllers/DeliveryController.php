@@ -59,7 +59,7 @@ class DeliveryController extends Controller
                 "status" => "delivered",
             ]);
 
-            $this->sendNotif($delivery->user_id, env("APP_NAME").": Pesanan anda telah sampai. Periksa kelengkapan pesanan anda.");
+            $this->sendNotif($delivery->user_id, env("APP_NAME").": Pesanan anda telah sampai. Periksa kelengkapan pesanan dan konfirmasi melalui : ".route('order.history'));
         }
 
         $delivery->update([
@@ -75,7 +75,7 @@ class DeliveryController extends Controller
         $delivery->update([
             'status' => "completed",
         ]);
-        $this->sendNotif($delivery->user_id, env("APP_NAME").": Pesanan anda telah selesai. Anda dapat memberikan ulasan terkait layanan kami dan terima kasih telah berbelanja di website kami.");
+        $this->sendNotif($delivery->user_id, env("APP_NAME").": Pesanan anda telah selesai. Anda dapat memberikan ulasan terkait layanan kami dan terima kasih telah berbelanja.");
 
         $tracking = Tracking::where('delivery_id', $id)->first();
         $tracking->update([

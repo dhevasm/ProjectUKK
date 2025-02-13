@@ -18,6 +18,10 @@ export default function Welcome({auth, settings, categories, products, totalCart
                 sessionStorage.removeItem('target_product');
                 sessionStorage.removeItem('target_action');
                 return;
+            }else if(auth.user.email_verified_at === null) {
+                sessionStorage.removeItem('target_product');
+                sessionStorage.removeItem('target_action');
+                return;
             }
 
             sessionStorage.removeItem('target_product');

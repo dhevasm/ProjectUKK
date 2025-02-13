@@ -99,7 +99,21 @@ export default function UpdateProfileInformation({
                         type="number"
                         className="mt-1 block w-full"
                         value={data.phone}
-                        onChange={(e) => setData('phone', e.target.value)}
+                        onChange={(e) => {
+                            let value = e.target.value;
+                            if (value === '') {
+                                value = '0';
+                            }
+                            // if (value.startsWith('0') || value.startsWith('62')) {
+                            if (value.startsWith('0')) {
+                                setData('phone', value);
+                            } else {
+                                toast.error('Invalid phone number.', {
+                                    // description: 'Phone number must start with 0 or 62.'
+                                    description: 'Phone number must start with 0.'
+                                });
+                            }
+                        }}
                         autoComplete="tel-country-code webauthn"
                     />
                       { user.phone_verified_at === null && user.phone !== null ? (
@@ -110,7 +124,7 @@ export default function UpdateProfileInformation({
 
                     { user.phone_verified_at === null && (
                         <p className="mt-2 text-sm text-red-600">
-                            Your phone number is unverified. Please verify your phone number immediately.
+                            Nomor telepon Anda belum diverifikasi.
                         </p>
                     )}
 

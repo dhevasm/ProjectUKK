@@ -8,6 +8,7 @@ import {
     Linkedin,
     MapPin
 } from 'lucide-react';
+import { BsTwitterX } from "react-icons/bs";
 import { User } from "@/types";
 
 import {BiLogoWhatsapp, BiEnvelope, BiPhone} from 'react-icons/bi'
@@ -124,7 +125,7 @@ export default function Footer({settings, admin} : {settings: settings[], admin:
             <div className="flex space-x-4">
                 <a target='_blank' href={footerData.facebook} className="text-gray-600 hover:text-[var(--app-color)]"><Facebook size={24} /></a>
                 <a target='_blank' href={footerData.instagram} className="text-gray-600 hover:text-[var(--app-color)]"><Instagram size={24} /></a>
-                <a target='_blank' href={footerData.twitter} className="text-gray-600 hover:text-[var(--app-color)]"><Twitter size={24} /></a>
+                <a target='_blank' href={footerData.twitter} className="text-gray-600 hover:text-[var(--app-color)]"><BsTwitterX size={24} /></a>
                 <a target='_blank' href={footerData.linkedin} className="text-gray-600 hover:text-[var(--app-color)]"><Linkedin size={24} /></a>
             </div>
         </div>

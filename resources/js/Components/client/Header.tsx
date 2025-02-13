@@ -186,7 +186,7 @@ export default function Header({
 
                             {/* Search Suggestions */}
                             {showSuggestions && filteredProducts.length > 0 && (
-                                <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border dark:border-gray-700">
+                                <div className="absolute z-50 w-full mt-2 bg-white dark:bg-customDark2 rounded-lg shadow-lg border dark:border-gray-700">
                                     {filteredProducts.map((product) => (
                                         <div
                                             key={product.id}
@@ -200,7 +200,13 @@ export default function Header({
                                                 )
                                             }
                                         >
-                                            <div>
+                                            <div className="flex gap-5">
+                                                <img
+                                                    src={product.product_images[0].url}
+                                                    alt={product.name}
+                                                    className="w-10 h-10 object-cover rounded"
+                                                />
+                                                <div>
                                                 <div className="font-medium">
                                                     {product.name}
                                                 </div>
@@ -212,6 +218,7 @@ export default function Header({
                                                             currency: "IDR",
                                                         }
                                                     )}
+                                                </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -385,11 +392,11 @@ export default function Header({
                                             />
                                         </button>
                                     </form>
-
+e
                                     {/* Mobile Search Suggestions */}
                                     {showSuggestions &&
                                         filteredProducts.length > 0 && (
-                                            <div className="absolute z-50 w-full mt-2 bg-white dark:bg-slate-800 rounded-lg shadow-lg border dark:border-gray-700">
+                                            <div className="absolute z-50 w-full mt-2 bg-white dark:bg-customDark2 rounded-lg shadow-lg border dark:border-gray-700">
                                                 {filteredProducts.map(
                                                     (product) => (
                                                         <div
@@ -404,26 +411,30 @@ export default function Header({
                                                                 )
                                                             }
                                                         >
-                                                            <div>
+                                                             <div className="flex gap-5">
+                                                                <img
+                                                                    src={product.product_images[0].url}
+                                                                    alt={product.name}
+                                                                    className="w-10 h-10 object-cover rounded"
+                                                                />
+                                                                <div>
                                                                 <div className="font-medium">
-                                                                    {
-                                                                        product.name
-                                                                    }
+                                                                    {product.name}
                                                                 </div>
                                                                 <div className="text-sm text-gray-500 dark:text-gray-400">
                                                                     {product.price.toLocaleString(
                                                                         "id-ID",
                                                                         {
                                                                             style: "currency",
-                                                                            currency:
-                                                                                "IDR",
+                                                                            currency: "IDR",
                                                                         }
                                                                     )}
                                                                 </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    )
-                                                )}
+                                                                        </div>
+                                                                    )
+                                                                )}
                                             </div>
                                         )}
                                 </div>
@@ -435,7 +446,7 @@ export default function Header({
                                                 href={route("user.profile")}
                                                 className="hover:text-[var(--app-color)]"
                                             >
-                                                Akun Saya
+                                                Akun
                                             </Link>
                                             <div>|</div>
                                             {role === "admin" && (
@@ -455,7 +466,7 @@ export default function Header({
                                                 href={route("order.history")}
                                                 className="hover:text-[var(--app-color)]"
                                             >
-                                                Pesanan Saya
+                                                Pesanan
                                             </Link>
                                             <div>|</div>
                                             <Link
@@ -501,7 +512,7 @@ export default function Header({
                                         /\s+/g,
                                         "-"
                                     )}`}
-                                    className="text-gray-700 hover:text-[var(--app-color)] transition"
+                                    className="text-gray-700 dark:text-slate-200 dark:hover:text-[var(--app-color)] hover:text-[var(--app-color)] transition"
                                 >
                                     {category.name}
                                 </Link>

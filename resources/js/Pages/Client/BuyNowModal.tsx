@@ -99,6 +99,9 @@ export default function BuyNowModal({ product, user }: { product: Product, user:
             if(!user) {
                 sessionStorage.removeItem('target_action');
                 return;
+            }else if(user.email_verified_at === null) {
+                sessionStorage.removeItem('target_action');
+                return;
             }
 
             sessionStorage.removeItem('target_action');
